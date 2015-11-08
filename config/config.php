@@ -14,7 +14,8 @@
 | path to your installation.
 |
 */
-$config['base_url']	= 'http://sew.org.pl/';
+// $config['base_url']	= 'http://sew.org.pl/';
+$config['base_url']	= 'http://sew3.test2.slice.pl/';
 
 /*
 |--------------------------------------------------------------------------

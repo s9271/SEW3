@@ -48,10 +48,14 @@
 $active_group = 'default';
 $active_record = TRUE;
 
-$db['default']['hostname'] = 'sew.org.pl';
-$db['default']['username'] = 'horsham_2';
-$db['default']['password'] = 'Alicja2012';
-$db['default']['database'] = 'login';
+// $db['default']['hostname'] = 'sew.org.pl';
+// $db['default']['username'] = 'horsham_2';
+// $db['default']['password'] = 'Alicja2012';
+// $db['default']['database'] = 'login';
+$db['default']['hostname'] = 'localhost';
+$db['default']['username'] = 'marioxd_sew3';
+$db['default']['password'] = 'a8iYAwYt';
+$db['default']['database'] = 'marioxd_sew3';
 $db['default']['dbdriver'] = 'mysql';
 $db['default']['dbprefix'] = '';
 $db['default']['pconnect'] = TRUE;
