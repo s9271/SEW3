@@ -10,8 +10,14 @@ if (version_compare(PHP_VERSION, '5.3.7', '<')) {
     require_once("libraries/password_compatibility_library.php");
 }
 
-
+// pobieranie danych do bazy
 require_once("config/db.php");
+
+// klasa do obslugi bazy
+require_once("classes/ClassSQL.php");
+
+// globalna zmienna do operacji na bazie danych
+$DB = new ClassSQL(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 
 require_once("controllers/Login.php");
 

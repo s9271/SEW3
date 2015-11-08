@@ -32,7 +32,6 @@
       </ul>
     </div>
   </div>
-</div>
 </nav>
 <div id="sidebar-wrapper">
     <ul class="sidebar-nav">

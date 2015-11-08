@@ -1,0 +1,49 @@
+/* LISTA ZOLNIERZY */
+#soldier_list table{
+    width: 100%;
+}
+
+#soldier_list table th,
+#soldier_list table td{
+    text-align: left;
+    vertical-align: middle;
+}
+
+#soldier_list table .soldier_id{
+    text-align: center;
+    width: 45px;
+}
+
+#soldier_list table .soldier_akcje{
+    width: 150px;
+}
+
+#soldier_list table td a{
+    display: inline-block;
+    text-decoration: none;
+}
+
+#soldier_list table td a > span{
+    font-size: 18px;
+    line-height: normal;
+}
+
+#soldier_list table td a.soldier_edit{
+    color: #ff0000;
+}
+
+#soldier_list table td a.soldier_equipment{
+    color: #fe9900;
+}
+
+#soldier_list table td a.soldier_missions{
+    color: #0000ff;
+}
+
+#soldier_list table td a.soldier_traniings{
+    color: #00ff00;
+}
+
+#soldier_list table td a.soldier_orders{
+    color: #777777;
+}

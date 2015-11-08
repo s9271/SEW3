@@ -9,95 +9,92 @@
 
 
 <!-- Body -->
-<div class="container">
-  <div class="jumbotron">
-    <span class="glyphicon glyphicon-star"</span><h6>S.E.W.</h6>
-    <h5>Lista Żołnierzy</h5>
+<div id="soldier_list" class="container">
+    <div class="jumbotron">
+        <span class="glyphicon glyphicon-star"></span><h6>S.E.W.</h6>
+        
+        <h5>Lista Żołnierzy</h5>
 
-    <?php
-
-    if (isset($this)) {
-        if ($this->errors) {
-            foreach ($this->errors as $error) {
-                echo $error;
+        <?php
+            if (isset($this)) {
+                if ($this->errors) {
+                    foreach ($this->errors as $error) {
+                        echo $error;
+                    }
+                }
+                
+                if ($this->messages) {
+                    foreach ($this->messages as $message) {
+                        echo $message;
+                    }
+                }
             }
-        }
-        if ($this->messages) {
-            foreach ($this->messages as $message) {
-                echo $message;
-            }
-        }
-    }
-    ?>
-    <table class="table table-condensed">
-        <thead>
-        <tr class="info" align="center">
-            <th align="center"><h6>id</h6></th>
-            <th class="success" align="center"><h6>IM</h6></th>
-            <th align="center"><h6>NZ</h6></th>
-            <th class="success" align="center"><h6>D/U</h6></th>
-            <th align="center"><h6>PŁ</h6></th>
-            <th class="success" align="center"><h6>TL</h6></th>
-            <th align="center"><h6>EM</h6></th>
-            <th class="success" align="center"><h6>KDPT</h6></th>
-            <th align="center"><h6>MT</h6></th>
-            <th class="success" align="center"><h6>UL</h6></th>
-            <th align="center"><h6>N/L</h6></th>
-            <th class="success" align="center"><h6>ST</h6></th>
-            <th align="center"><h6>JW/N</h6></th>
-            <th class="success" align="center"><h6>MJ</h6></th>
-            <th align="center"><h6>SZ</h6></th>
-            <th class="success" align="center"><h6>BR</h6></th>
-            <th align="center"><h6>NR/B</h6></th>
-            <th class="success" align="center"><h6>WP</h6></th>
-            <th align="center"><h6>IN</h6></th>
-        </tr>
-        </thead>
-        <tbody>
-        <?php foreach ($this->items as $item): ?>
-            <tr class="sm">
-              <div class="tr">
-                <div class="col-sm">
-                <td><h6><?php echo $item['id'] ?></h6></td>
-                <td class="success"><h6 align="left"><?php echo $item['soldierName'] ?></h6></td>
-                <td><h6 align="left"><?php echo $item['soldierSurname'] ?></h6></td>
-                <td class="success"><h6 align="left"><?php echo $item['birthday'] ?></h6></td>
-                <td><h6 align="left"><?php echo $item['sex'] ?></h6></td>
-                <td class="success"><h6 align="left"><?php echo $item['phone'] ?></h6></td>
-                <td><h6 align="left"><?php echo $item['email'] ?></h6></td>
-                <td class="success"><h6 align="left"><?php echo $item['code'] ?></h6></td>
-                <td><h6 align="left"><?php echo $item['city'] ?></h6></td>
-                <td class="success"><h6><?php echo $item['street'] ?></h6></td>
-                <td><h6 align="left"><?php echo $item['numberHouse'] ?></h6></td>
-                <td class="success"><h6 align="left"><?php echo $item['militaryRank'] ?></h6></td>
-                <td><h6 align="left"><?php echo $item['jwNumber'] ?></h6></td>
-                <td class="success"><h6 align="left"><?php echo $item['missions'] ?></h6></td>
-                <td><h6 align="left"><?php echo $item['training'] ?></h6></td>
-                <td class="success"><h6 align="left"><?php echo $item['weapon'] ?></h6></td>
-                <td><h6 align="left"><?php echo $item['weaponsNumber'] ?></h6></td>
-                <td class="success"><h6 align="left"><?php echo $item['equipmentSoldier'] ?></h6></td>
-                <td><h6 align="left"><?php echo $item['someText'] ?></h6></td>
-                <!--<td><a href="soldier.php?action=update"style="text-decoration:none" data-toggle="popover" data-trigger="hover"<span>&emsp;</span><span class="glyphicon glyphicon-pencil">&emsp;|&emsp;</span></a><a href="#" style="text-decoration:none"<span class="glyphicon glyphicon-zoom-in"></span></a></td>-->
-                <td><a href="soldier.php?action=update" style="text-decoration:none"  title="Edytuj" data-toggle="tooltip" data-trigger="hover" data-content="Some content"><span>&emsp;</span><span class="glyphicon glyphicon-pencil">&emsp;|&emsp;</span></a><a href="#" style="text-decoration:none" title="Podgląd" data-toggle="tooltip" data-trigger="hover" data-content="Some content"><span>&emsp;</span><span class="glyphicon glyphicon-zoom-in">&emsp;|&emsp;</span></a></td>
-                  <script>
-                  $(document).ready(function(){
-                      $('[data-toggle="tooltip"]').tooltip();
-                  });
-                  </script>
-                </div>
-              </div>
-            </tr>
-        <?php endforeach;?>
-        </tbody>
-    </table>
+        ?>
+        
+        <table class="table table-striped table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th class="soldier_id">ID</th>
+                    <th class="soldier_imie">Imię</th>
+                    <th class="soldier_nazwisko">Nazwisko</th>
+                    <th class="soldier_telefon">Telefon</th>
+                    <th class="soldier_mail">Mail</th>
+                    <th class="soldier_druzyna">Drużyna</th>
+                    <th class="soldier_misja">Aktualna misja</th>
+                    <th class="soldier_akcje">Akcje</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php 
+                    if($this->items):
+                    foreach ($this->items as $key => $item):
+                ?>
+                <tr>
+                    <td class="soldier_id"><?php echo $key; ?></td>
+                    <td class="soldier_imie"><?php echo $item['soldier_imie']; ?></td>
+                    <td class="soldier_nazwisko"><?php echo $item['soldier_nazwisko']; ?></td>
+                    <td class="soldier_telefon"><?php echo $item['soldier_telefon']; ?></td>
+                    <td class="soldier_mail"><?php echo $item['soldier_mail']; ?></td>
+                    <td class="soldier_druzyna"><?php echo $item['soldier_druzyna']; ?></td>
+                    <td class="soldier_misja"><?php echo $item['soldier_misja']; ?></td>
+                    <td class="soldier_akcje">
+                    
+                        <a href="soldier.php?action=update" class="soldier_edit" title="Edytuj">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </a>
+                        
+                        <a href="#" class="soldier_view" title="Podgląd">
+                            <span class="glyphicon glyphicon-zoom-in"></span>
+                        </a>
+                        
+                        <a href="#" class="soldier_equipment" title="Wyposażenie">
+                            <span class="glyphicon glyphicon-screenshot"></span>
+                        </a>
+                        
+                        <a href="#" class="soldier_missions" title="Misje">
+                            <span class="glyphicon glyphicon-move"></span>
+                        </a>
+                        
+                        <a href="#" class="soldier_traniings" title="Szkolenia">
+                            <span class="glyphicon glyphicon-check"></span>
+                        </a>
+                        
+                        <a href="#" class="soldier_orders" title="Odznaczenia">
+                            <span class="glyphicon glyphicon-tags"></span>
+                        </a>
+                    </td>
+                </tr>
+                <?php
+                    endforeach;
+                    endif;
+                ?>
+            </tbody>
+        </table>
 
-    <a href="soldier.php?action=create"><span class="btn   btn-info"/>Dodaj Żołnierza</a>
+        <a href="soldier.php?action=create" class="btn btn-info">Dodaj Żołnierza</a>
 
+    </div>
 </div>
-</div>
-</div>
-
-
 <!-- End Body -->
 
 <!-- Footer -->
