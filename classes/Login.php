@@ -18,7 +18,7 @@ class Login
     public function __construct()
     {
 
-        session_start();
+        // session_start();
 
         if (isset($_GET["logout"])) {
             $this->doLogout();

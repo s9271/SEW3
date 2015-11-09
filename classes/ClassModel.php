@@ -1,5 +1,11 @@
 <?php
     class ClassModel{
+        // prefix uzywany do nazw tabel w bazach
+        protected $prefix = 'sew_';
+        protected $prefix_log = 'log_';
+        protected $use_prefix = false;
+        
+        // bledy
         public $errors = array();
         
         // id
