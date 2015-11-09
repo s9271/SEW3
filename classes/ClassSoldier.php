@@ -86,5 +86,18 @@
             
             return $sql;
         }
+        
+        // pobieranie zolnierzy
+        public static function sqlGetAllSoldiers(){
+            global $DB;
+            $zapytanie = "SELECT * FROM soldiers";
+            $sql = $DB->pdo_fetch_all($zapytanie);
+            
+            if(!$sql || !is_array($sql) || count($sql) < 1){
+                return false;
+            }
+            
+            return $sql;
+        }
     }
 ?>
