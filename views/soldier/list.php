@@ -56,7 +56,7 @@
                     <td class="soldier_telefon"><?php echo $item['soldier_telefon']; ?></td>
                     <td class="soldier_mail"><?php echo $item['soldier_mail']; ?></td>
                     <td class="soldier_druzyna"><?php echo $item['soldier_druzyna']; ?></td>
-                    <td class="soldier_misja"><?php echo $item['soldier_misja']; ?></td>
+                    <td class="soldier_status"><?php echo $item['soldier_status']; ?></td>
                     <td class="soldier_akcje">
                     
                         <a href="soldier.php?action=update" class="soldier_edit" title="Edytuj">

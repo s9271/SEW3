@@ -149,5 +149,67 @@
             public function pobierz_wszystkie($sql){
                 return $this->pdo_fetch_all($sql);
             }
+        
+        /* ************* SPECJALNE ************ */
+        /* ************************************ */
+        
+            public function insert($table, $data){
+                if(!$data || !is_array($data) || count($data) < 1){
+                    return false;
+                }
+                
+                $keys = '`'.implode('`, `', array_keys($data)).'`';
+                $keys_values = ':'.implode(', :', array_keys($data));
+                
+                $sql = "INSERT INTO `{$table}`({$keys}) VALUES ({$keys_values})";
+                $statement = $this->pdo->prepare($sql);
+                
+                foreach($data as $key => $value){
+                    $statement->bindValue(':'.$key, $value, PDO::PARAM_STR);  
+                }
+                
+                $statement->execute();
+                
+                $id = $this->pdo->lastInsertId();
+                
+                if($id != 0){
+                    return $id;
+                }
+                return false;
+            }
+        
+            public function update($table, $data, $where = false){
+                if(!$data || !is_array($data) || count($data) < 1){
+                    return false;
+                }
+                
+                $sql = "UPDATE `{$table}` SET ";
+                foreach ($data as $key => $value) {
+                    $sql .= "`{$key}` = :{$key},";
+                }
+
+                $sql = rtrim($sql, ',');
+                if ($where) {
+                    $sql .= ' WHERE '.$where;
+                }
+                
+                $statement = $this->pdo->prepare($sql);
+                
+                foreach($data as $key => $value){
+                    $statement->bindValue(':'.$key, $value, PDO::PARAM_STR);  
+                }
+                
+                $statement->execute();
+                return true;
+            }
+        
+            public function delete($table, $where = false){
+                if(!$where){
+                    return false;
+                }
+                
+                $sql = "DELETE FROM `{$table}` WHERE {$where}";
+                return $this->pdo_query($sql);
+            }
     }
 ?>

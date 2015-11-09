@@ -165,7 +165,7 @@ class Soldier
                 $this->items[$wyj['id']]['soldier_telefon'] = $wyj['phone'];
                 $this->items[$wyj['id']]['soldier_mail'] = $wyj['email'];
                 $this->items[$wyj['id']]['soldier_druzyna'] = '';
-                $this->items[$wyj['id']]['soldier_misja'] = '';
+                $this->items[$wyj['id']]['soldier_status'] = '';
             }
         }
 

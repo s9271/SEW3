@@ -21,10 +21,18 @@
                 // $sql = $DB->pdo_fetch_all_column($zapytanie);
                 // $sql = $DB->pdo_fetch_all_group($zapytanie);
                 // $sql = $DB->pdo_fetch_all_group_column($zapytanie);
-                $sql = $DB->pobierz_wszystkie($zapytanie);
+                // $sql = $DB->pobierz_wszystkie($zapytanie);
                 
-                print_r($sql);
+                // print_r($sql);
                 
+                $data = array(
+                    "string_test" => "Xas'dC90sółądsfgćźda'fdf\"gdfh",
+                    "string_test2" => "X5dgh`''jgdio;'gosdi"
+                );
+                
+                // $id = $DB->delete('test_sql', 'id_test = 1');
+                
+                // var_dump($id);
             ?>
             
         </body>
