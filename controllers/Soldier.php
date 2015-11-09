@@ -119,8 +119,6 @@ class Soldier
      *//* 
     public function getAllItems()
     {
-        global $DB;
-        
         $this->db_connection = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 
         if (!$this->db_connection->connect_errno) {
@@ -138,28 +136,19 @@ class Soldier
         } else {
             $this->errors[] = "Nie ma połączenia z bazą danych.";
         }
-        
-        $wyj = $DB->pdo_fetch_all($sql);
-        
-        print_r($wyj);
 
         // draw view
         include("views/soldier/list.php");
         return;
     } */
     
-    public function getAllItems()
-    {
-        global $DB;
-        $zapytanie = "SELECT * FROM soldiers";
-        
-        $sql = $DB->pdo_fetch_all($zapytanie);
-        
-        if(!$sql || !is_array($sql) || count($sql) < 1){
+    // pobieranie wszystkich zolnierzy
+    public function getAllItems(){
+        if(!$sql_soldiers = ClassSoldier::sqlGetAllSoldiers()){
             $this->errors[] = "Brak żołnierzy";
             $this->items = false;
         }else{
-            foreach($sql as $wyj){
+            foreach($sql_soldiers as $wyj){
                 $this->items[$wyj['id']]['soldier_imie'] = $wyj['soldierName'];
                 $this->items[$wyj['id']]['soldier_nazwisko'] = $wyj['soldierSurname'];
                 $this->items[$wyj['id']]['soldier_telefon'] = $wyj['phone'];

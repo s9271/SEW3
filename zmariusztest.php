@@ -12,6 +12,7 @@
 
                 require_once("config/db.php");
                 require_once("classes/ClassSQL.php");
+                require_once("classes/ClassModel.php");
                 require_once("classes/ClassSoldier.php");
                 
                 $DB = new ClassSQL(DB_HOST, DB_USER, DB_PASS, DB_NAME);
@@ -35,9 +36,11 @@
                 $value = '483 551 222 2224';
                 
                 $ClassSoldier = new ClassSoldier();
-                $ClassSoldier->validByMethod('isPhone', $value, 'nazwa');
+                $ClassSoldier->id = '123';
+                // $ClassSoldier->validByMethod('isPhone', $value, 'nazwa');
                 
-                var_dump($ClassSoldier->errors);
+                var_dump($ClassSoldier->id);
+                var_dump($ClassSoldier->load_class);
             ?>
             
         </body>

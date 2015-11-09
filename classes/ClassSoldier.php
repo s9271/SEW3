@@ -69,6 +69,7 @@
             $this->code = $soldier['code'];
             $this->city = $soldier['city'];
             
+            $this->load_class = true;
             return true;
         }
         

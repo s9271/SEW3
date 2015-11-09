@@ -5,6 +5,9 @@
         // id
         public $id = false;
         
+        // pokazuje, czy dany id zostal poprawnie zaladowany
+        public $load_class = false;
+        
         // walidacja, primary id, tabela i kolumny
         public $definition = array();
         
@@ -127,6 +130,9 @@
             }
             
             unset($this->id);
+            if($this->load_class){
+                $this->load_class = false;
+            }
             return true;
         }
         

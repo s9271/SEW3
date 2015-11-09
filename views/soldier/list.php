@@ -40,7 +40,7 @@
                     <th class="soldier_telefon">Telefon</th>
                     <th class="soldier_mail">Mail</th>
                     <th class="soldier_druzyna">Drużyna</th>
-                    <th class="soldier_misja">Aktualna misja</th>
+                    <th class="soldier_status">Status</th>
                     <th class="soldier_akcje">Akcje</th>
                 </tr>
             </thead>
