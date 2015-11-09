@@ -102,12 +102,31 @@
                 return false;
             }
             
-            if (!$id = $this->sqlUpdate($this->definition['table'], $values, $this->definition['primary'].' = '.$this->id)){
+            if ($this->sqlUpdate($this->definition['table'], $values, $this->definition['primary'].' = '.$this->id)){
                 $this->errors[] = "Błąd aktualizacji rekordu w bazie.";
                 return false;
             }
             
-            $this->id = $id;
+            return true;
+        }
+        
+        // aktualizacja
+        public function delete(){
+            if(!isset($this->id)){
+                $this->errors[] = "Brak podanego id.";
+                return false;
+            }
+            
+            if ($auto_date && property_exists($this, 'date_update')) {
+                $this->date_update = date('Y-m-d H:i:s');
+            }
+            
+            if ($this->sqlDelete($this->definition['table'], $this->definition['primary'].' = '.$this->id)){
+                $this->errors[] = "Błąd usuwania rekordu z bazy.";
+                return false;
+            }
+            
+            unset($this->id);
             return true;
         }
         
@@ -245,6 +264,11 @@
         protected function sqlAdd($table, $data){
             global $DB;
             return $Db->insert($table, $data);
+        }
+        
+        protected function sqlUpdate($table, $data, $where){
+            global $DB;
+            return $Db->update($table, $data, $where);
         }
         
     }

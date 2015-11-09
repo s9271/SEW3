@@ -1,7 +1,7 @@
 <?php
     /*
         Klasa: ClassSQL
-        Wersja: 1.4
+        Wersja: 1.5
         Opis: Obsluga baz danych
         
         Brak praw do kopiowania klasy!!!
@@ -9,6 +9,7 @@
     */
 
     class ClassSQL{
+        public $errors = array();
         private $pdo;
         private $host;
         private $user;
@@ -183,6 +184,15 @@
                     return false;
                 }
                 
+                if($where){
+                    $record = pdo_fetch("SELECT * FROM `{$table}` WHERE {$where}");
+                    
+                    if(!$record || !is_array($record) || count($record) < 1){
+                        $this->errors[] = "</b>SQL Aktualizacja<b>: Brak rekordu w bazie.";
+                        return false;
+                    }
+                }
+                
                 $sql = "UPDATE `{$table}` SET ";
                 foreach ($data as $key => $value) {
                     $sql .= "`{$key}` = :{$key},";
@@ -205,6 +215,14 @@
         
             public function delete($table, $where = false){
                 if(!$where){
+                    $this->errors[] = "</b>SQL Usuwanie<b>: Nie podano wartości where.";
+                    return false;
+                }
+                
+                $record = pdo_fetch("SELECT * FROM `{$table}` WHERE {$where}");
+                
+                if(!$record || !is_array($record) || count($record) < 1){
+                    $this->errors[] = "</b>SQL Usuwanie<b>: Brak rekordu w bazie.";
                     return false;
                 }
                 
