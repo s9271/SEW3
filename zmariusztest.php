@@ -12,6 +12,7 @@
 
                 require_once("config/db.php");
                 require_once("classes/ClassSQL.php");
+                require_once("classes/ClassSoldier.php");
                 
                 $DB = new ClassSQL(DB_HOST, DB_USER, DB_PASS, DB_NAME);
                 $zapytanie = "SELECT * FROM soldiers";
@@ -31,8 +32,12 @@
                 );
                 
                 // $id = $DB->delete('test_sql', 'id_test = 1');
+                $value = '483 551 222 2224';
                 
-                // var_dump($id);
+                $ClassSoldier = new ClassSoldier();
+                $ClassSoldier->validByMethod('isPhone', $value, 'nazwa');
+                
+                var_dump($ClassSoldier->errors);
             ?>
             
         </body>
