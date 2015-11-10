@@ -1,5 +1,5 @@
 <?php
-    class ControllerMissions{
+    class ControllerMissions extends ControllerModel{
         public function getContent(){
             return $this->getPage();
         }
@@ -21,7 +21,10 @@
         
         // strona lista misjii
         protected function getPageList(){
-            return ClassTools::loadTemplate('/mission/list', ClassMission::sqlGetAllItems());
+            $this->tpl_title = 'Lista misji';
+            $this->tpl_values = ClassMission::sqlGetAllItems();
+            
+            return $this->loadTemplate('/mission/list');
         }
         
         // strona dodawania

@@ -3,23 +3,6 @@
         
         <span class="glyphicon glyphicon-star"></span><h6>S.E.W.</h6>
         <h5>Lista Misji</h5>
-
-        <?php
-
-        if (isset($this)) {
-            if ($this->errors) {
-                foreach ($this->errors as $error) {
-                    echo $error;
-                }
-            }
-            if ($this->messages) {
-                foreach ($this->messages as $message) {
-                    echo $message;
-                }
-            }
-        }
-        ?>
-        
         
         <table class="table table-striped table-bordered table-hover">
             <thead>
@@ -36,8 +19,8 @@
             </thead>
             <tbody>
                 <?php 
-                    if($values):
-                    foreach ($values as $key => $item):
+                    if($this->tpl_values):
+                    foreach ($this->tpl_values as $key => $item):
                 ?>
                 <tr>
                     <td class="soldier_id"><?php echo $key; ?></td>
