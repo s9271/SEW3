@@ -76,6 +76,17 @@
                     <li><a href="mission.php?action=list"><span class="glyphicon glyphicon-list-alt"></span>&emsp;&emsp;Pokaż Misje</a></li>
                   </ul>
               </li>
+              
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="/misje">
+                        <span class="glyphicon glyphicon-move"></span>&emsp;&emsp;Misje 2<span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu sidebar-nav">
+                        <li><a href="/misje/dodaj"><span class="glyphicon glyphicon-plus"></span>&emsp;&emsp;Dodaj Misje</a></li>
+                        <li><a href="/misje"><span class="glyphicon glyphicon-list-alt"></span>&emsp;&emsp;Pokaż Misje</a></li>
+                    </ul>
+                </li>
+              
               <li class="dropdown">
                   <a class="dropdown-toggle" data-toggle="dropdown" href="training.php"><span class="glyphicon glyphicon-check"></span>&emsp;&emsp;Szkolenia<span class="caret"></span></a>
                   <ul class="dropdown-menu sidebar-nav">

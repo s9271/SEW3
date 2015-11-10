@@ -1,6 +1,6 @@
 <?php
     class ClassMission extends ClassModel{
-        protected $use_prefix = true;
+        protected static $use_prefix = true;
         
         // id
         public $id = false;
@@ -30,7 +30,7 @@
         public $active;
         
         // walidacja, primary id, tabela i kolumny
-        public $definition = array(
+        public static $definition = array(
             'table' => 'missions',
             'primary' => 'id_mission',
             'fields' => array(
@@ -64,14 +64,40 @@
         
         // przypisanie cech
         protected function setProperties($values){
-            if(!isset($definition['fields'])){
+            if(!isset(self::$definition['fields'])){
                 return;
             }
             
-            foreach($definition['fields'] as $key => $val){
+            foreach(self::$definition['fields'] as $key => $val){
                 $this->$key = $values[$key];
             }
             $this->load_class = true;
+        }
+        
+        // pobieranie rodzajow misji
+        public static function getTypes($id_current_type = false){
+            if(!$groups = self::sqlGetGroups()){
+                return false;
+            }
+            
+            $array = array();
+            
+            foreach($groups as $group){
+                $array[$group['id_mission_group']]['name'] = $group['name'];
+                $array[$group['id_mission_group']]['childs'] = array();
+                
+                if($types = self::sqlGetTupesByGroupId($group['id_mission_group'])){
+                    foreach($types as $type){
+                        $array[$group['id_mission_group']]['childs'][$type['id_mission_type']]['name'] = $type['name'];
+                        
+                        if($id_current_type && $id_current_type == $type['id_mission_type']){
+                            $array[$group['id_mission_group']]['childs'][$type['id_mission_type']]['current'] = true;
+                        }
+                    }
+                }
+            }
+            
+            return $array;
         }
         
         /* **************** SQL *************** */
@@ -79,9 +105,9 @@
         
         protected function sqlGetItem($id){
             global $DB;
-            $table_name = ($this->use_prefix : $this->prefix ? '').$definition['table'];
+            $table_name = (self::$use_prefix ? self::$prefix : '').self::$definition['table'];
             
-            $zapytanie = "SELECT * FROM {$table_name} WHERE {$definition['primary']} = {$id}";
+            $zapytanie = "SELECT * FROM {$table_name} WHERE ".self::$definition['primary']." = {$id}";
             
             $sql = $DB->pdo_fetch($zapytanie);
             
@@ -92,17 +118,68 @@
             return $sql;
         }
         
-        // pobieranie zolnierzy
-        // public static function sqlGetAllSoldiers(){
-            // global $DB;
-            // $zapytanie = "SELECT * FROM soldiers";
-            // $sql = $DB->pdo_fetch_all($zapytanie);
+        // pobieranie wszystkich rekordow
+        public static function sqlGetAllItems(){
+            global $DB;
+            $table_name = (self::$use_prefix ? self::$prefix : '').self::$definition['table'];
             
-            // if(!$sql || !is_array($sql) || count($sql) < 1){
-                // return false;
-            // }
+            $zapytanie = "SELECT * FROM {$table_name}";
             
-            // return $sql;
-        // }
+            $sql = $DB->pdo_fetch_all($zapytanie);
+            
+            if(!$sql || !is_array($sql) || count($sql) < 1){
+                return false;
+            }
+            
+            return $sql;
+        }
+        
+        // pobieranie wszystkich grup
+        public static function sqlGetGroups(){
+            global $DB;
+            $table_name = (self::$use_prefix ? self::$prefix : '').'mission_groups';
+            
+            $zapytanie = "SELECT * FROM {$table_name}";
+            
+            $sql = $DB->pdo_fetch_all($zapytanie);
+            
+            if(!$sql || !is_array($sql) || count($sql) < 1){
+                return false;
+            }
+            
+            return $sql;
+        }
+        
+        // pobieranie wszystkich rodzajow
+        public static function sqlGetTupes(){
+            global $DB;
+            $table_name = (self::$use_prefix ? self::$prefix : '').'mission_types';
+            
+            $zapytanie = "SELECT * FROM {$table_name}";
+            
+            $sql = $DB->pdo_fetch_all($zapytanie);
+            
+            if(!$sql || !is_array($sql) || count($sql) < 1){
+                return false;
+            }
+            
+            return $sql;
+        }
+        
+        // pobieranie wszystkich rodzajow danej grupy
+        public static function sqlGetTupesByGroupId($id_mission_group){
+            global $DB;
+            $table_name = (self::$use_prefix ? self::$prefix : '').'mission_types';
+            
+            $zapytanie = "SELECT * FROM {$table_name} WHERE id_mission_group = '{$id_mission_group}'";
+            
+            $sql = $DB->pdo_fetch_all($zapytanie);
+            
+            if(!$sql || !is_array($sql) || count($sql) < 1){
+                return false;
+            }
+            
+            return $sql;
+        }
     }
 ?>

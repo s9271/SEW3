@@ -51,3 +51,26 @@
 #soldier_list table td a.soldier_orders{
     color: #777777;
 }
+
+/* LISTA MISJI */
+#mission_list table{
+    width: 100%;
+}
+
+/* FORMULARZ MISJI */
+.btn.mar_button{
+    font-family: Arial;
+    font-weight: bold;
+}
+
+button.btn.mar_button .glyphicon{
+    margin-right: 4px;
+    top: 2px;
+}
+
+.container .controller_title{
+    display: block;
+    font-size: 36px;
+    line-height: normal;
+    margin: 0 0 30px;
+}

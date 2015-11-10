@@ -31,7 +31,7 @@
         public $date_add;
         
         // walidacja, primary id, tabela i kolumny
-        public $definition = array(
+        public static $definition = array(
             'table' => 'soldiers',
             'primary' => 'id',
             'fields' => array(

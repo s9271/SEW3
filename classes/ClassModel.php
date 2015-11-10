@@ -1,9 +1,9 @@
 <?php
     class ClassModel{
         // prefix uzywany do nazw tabel w bazach
-        protected $prefix = 'sew_';
-        protected $prefix_log = 'log_';
-        protected $use_prefix = false;
+        protected static $prefix = 'sew_';
+        protected static $prefix_log = 'log_';
+        protected static $use_prefix = false;
         
         // bledy
         public $errors = array();
@@ -15,7 +15,7 @@
         public $load_class = false;
         
         // walidacja, primary id, tabela i kolumny
-        public $definition = array();
+        public static $definition = array();
         
         public function __construct($id = false){
             if ($id){
@@ -33,7 +33,7 @@
         protected function getFieldsValidate(){
             $values = array();
             
-            foreach($this->definition['fields'] as $key => $valid){
+            foreach(self::$definition['fields'] as $key => $valid){
                 if (!property_exists($this, $key)){
                     $this->errors[] = "</b>{$valid['name']}<b>: Brak wlaściwości w klasie.";
                     continue;
@@ -85,7 +85,7 @@
                 return false;
             }
             
-            if (!$id = $this->sqlAdd($this->definition['table'], $values)){
+            if (!$id = $this->sqlAdd(self::$definition['table'], $values)){
                 $this->errors[] = "Błąd zapisu do bazy.";
                 return false;
             }
@@ -111,7 +111,7 @@
                 return false;
             }
             
-            if ($this->sqlUpdate($this->definition['table'], $values, $this->definition['primary'].' = '.$this->id)){
+            if ($this->sqlUpdate(self::$definition['table'], $values, self::$definition['primary'].' = '.$this->id)){
                 $this->errors[] = "Błąd aktualizacji rekordu w bazie.";
                 return false;
             }
@@ -130,7 +130,7 @@
                 $this->date_update = date('Y-m-d H:i:s');
             }
             
-            if ($this->sqlDelete($this->definition['table'], $this->definition['primary'].' = '.$this->id)){
+            if ($this->sqlDelete(self::$definition['table'], self::$definition['primary'].' = '.$this->id)){
                 $this->errors[] = "Błąd usuwania rekordu z bazy.";
                 return false;
             }
