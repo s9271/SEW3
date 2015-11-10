@@ -21,7 +21,7 @@
     }
     
     
-    print_r($_GET);
+    // print_r($_GET);
 
     // if (version_compare(PHP_VERSION, '5.3.7', '<')) {
         // exit("Sorry, Simple PHP Login does not run on a PHP version smaller than 5.3.7 !");
@@ -31,18 +31,31 @@
 
     // pobieranie danych do bazy
     require_once("config/db.php");
+    
+    // pobieranie zarejestrowanych controllerow
+    require_once("config/controllers.php");
 
     // globalna zmienna do operacji na bazie danych
     $DB = new ClassSQL(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+    
+    // sprawdzenie czy w linku jest controller
+    if($controller = ClassTools::getValue('controller')){
+        if(isset($controllers[$controller])){ // sprawdzenie czy jest zdefiniowany controller
+            $loadController = new $controllers[$controller];
+            print $loadController->getContent();
+        }else{ // jezeli nie jest zdefiniowany to zaladuje 404
+            ClassTools::redirect('404');
+        }
+    }else{
+        $login = new Login();
 
+        if ($login->isUserLoggedIn() == true) {
 
-$login = new Login();
+            include("views/logged_in.php");
 
-if ($login->isUserLoggedIn() == true) {
+        } else {
 
-    include("views/logged_in.php");
-
-} else {
-
-    include("views/not_logged_in.php");
-}
+            include("views/not_logged_in.php");
+        }
+    }
+?>
