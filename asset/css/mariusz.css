@@ -54,7 +54,35 @@
 
 /* LISTA MISJI */
 #mission_list table{
+    text-align: left;
     width: 100%;
+}
+
+#mission_list table .table_status{
+    font-weight: bold;
+    width: 110px;
+}
+
+#mission_list table .table_id{
+    text-align: center;
+    width: 50px;
+}
+
+#mission_list table .table_date_start,
+#mission_list table .table_date_end{
+    width: 190px;
+}
+
+#mission_list table .table_akcje{
+    width: 230px;
+}
+
+#mission_list table td{
+    vertical-align: middle;
+}
+
+#mission_list .sew-alert{
+    margin: 0 0;
 }
 
 /* FORMULARZ MISJI */
@@ -94,6 +122,26 @@ button.btn.mar_button .glyphicon{
 
 .sew-alert .sew_alert_small ul{
     padding-left: 20px;
+}
+
+.require_text{
+    color: #c7254e;
+}
+
+.sew_green{
+    color: #008000;
+}
+
+.sew_orange{
+    color: #ef8f00;
+}
+
+.sew_red{
+    color: #ff0000;
+}
+
+.sew_purple{
+    color: #800080;
 }
 
 #mission_form .alert,

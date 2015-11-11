@@ -25,19 +25,47 @@ if (typeof jQuery === 'undefined') {
         return;
     };
     
-    $.fn.sewSelect = function() {
+    $.fn.sewJsSelect = function() {
         $(this).select2();
         return;
+    };
+    
+    $.fn.sewJsConfirm = function(){
+        $(this).on( "click", function(){
+            var show_text = 'Czy na pewno chcesz usunąć rekord?';
+            
+            if ($(this).attr('data-confirm')) {
+                show_text = $(this).data('confirm');
+            }
+            
+            var odpowiedz = confirm(show_text);
+            if(odpowiedz){
+                return true;
+            }else{
+                return false;
+            }
+        });
     };
 })(jQuery);
 
 jQuery(document).ready(function($){
     // DatePicker
-    $('.jsdate').sewJsDate();
+    if ($('.jsdate').length > 0){
+        $('.jsdate').sewJsDate();
+    }
     
     // DateTimePicker
-    $('.jsdatetime').sewJsDateTime();
+    if ($('.jsdatetime').length > 0){
+        $('.jsdatetime').sewJsDateTime();
+    }
     
     // Select
-    $('.jsselect').sewSelect();
+    if ($('.jsselect').length > 0){
+        $('.jsselect').sewJsSelect();
+    }
+    
+    // Potwierdzenie (wyskakujace okienko)
+    if ($('.jsconfirm').length > 0){
+        $('.jsconfirm').sewJsConfirm();
+    }
 });

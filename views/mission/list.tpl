@@ -1,8 +1,8 @@
 <div id="mission_list" class="container">
     <div class="jumbotron">
+        <h1 class="controller_title">Lista Misji</h1>
         
-        <span class="glyphicon glyphicon-star"></span><h6>S.E.W.</h6>
-        <h5>Lista Misji</h5>
+        <?php $this->getAlerts(false); ?>
         
         <table class="table table-striped table-bordered table-hover">
             <thead>
@@ -23,38 +23,20 @@
                     foreach ($this->tpl_values as $key => $item):
                 ?>
                 <tr>
-                    <td class="soldier_id"><?php echo $key; ?></td>
-                    <td class="soldier_imie"><?php echo $item['soldier_imie']; ?></td>
-                    <td class="soldier_nazwisko"><?php echo $item['soldier_nazwisko']; ?></td>
-                    <td class="soldier_telefon"><?php echo $item['soldier_telefon']; ?></td>
-                    <td class="soldier_mail"><?php echo $item['soldier_mail']; ?></td>
-                    <td class="soldier_druzyna"><?php echo $item['soldier_druzyna']; ?></td>
-                    <td class="soldier_status"><?php echo $item['soldier_status']; ?></td>
-                    <td class="soldier_akcje">
-                    
-                        <a href="soldier.php?action=update" class="soldier_edit" title="Edytuj">
-                            <span class="glyphicon glyphicon-pencil"></span>
-                        </a>
-                        
-                        <a href="#" class="soldier_view" title="Podgląd">
-                            <span class="glyphicon glyphicon-zoom-in"></span>
-                        </a>
-                        
-                        <a href="#" class="soldier_equipment" title="Wyposażenie">
-                            <span class="glyphicon glyphicon-screenshot"></span>
-                        </a>
-                        
-                        <a href="#" class="soldier_missions" title="Misje">
-                            <span class="glyphicon glyphicon-move"></span>
-                        </a>
-                        
-                        <a href="#" class="soldier_traniings" title="Szkolenia">
-                            <span class="glyphicon glyphicon-check"></span>
-                        </a>
-                        
-                        <a href="#" class="soldier_orders" title="Odznaczenia">
-                            <span class="glyphicon glyphicon-tags"></span>
-                        </a>
+                    <td class="table_id"><?php echo $item['id_mission']; ?></td>
+                    <td class="table_name"><?php echo $item['name']; ?></td>
+                    <td class="table_rodzaj"><?php echo $item['mission_type_name']; ?></td>
+                    <td class="table_lokalizacja"><?php echo $item['location']; ?></td>
+                    <td class="table_date_start"><?php echo $item['date_start']; ?></td>
+                    <td class="table_date_end"><?php echo $item['date_end_name']; ?></td>
+                    <td class="table_status"><?php echo $item['status']; ?></td>
+                    <td class="table_akcje">
+                        <form method="post" action="">
+                            <a href="/misje/podglad/<?php echo $item['id_mission']; ?>" class="btn btn-primary" title="Podgląd">Podgląd</a>
+                            <a href="/misje/edytuj/<?php echo $item['id_mission']; ?>" class="btn btn-warning" title="Edytuj">Edytuj</a>
+                            <input type="hidden" name="id_mission" value="<?php echo $item['id_mission']; ?>" />
+                            <button class="btn btn-danger jsconfirm" data-confirm="<?php echo $item['name']; ?>: Czy na pewno chcesz usunąć misję?" type="submit" name="form_action" value="mission_delete">Usuń</button>
+                        </form>
                     </td>
                 </tr>
                 <?php

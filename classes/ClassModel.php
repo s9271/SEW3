@@ -5,6 +5,12 @@
         protected static $prefix_log = 'log_';
         protected static $use_prefix = false;
         
+        // przypisuje sie na tru, gdy modul ma tabele z logami
+        protected static $is_log = false;
+        
+        // podczas pobierania rekordow, wywoluje sprawdzenie, ktore sa usuniete
+        protected static $has_deleted_column = false;
+        
         // bledy
         public $errors = array();
         
@@ -25,7 +31,15 @@
         }
         
         // pobieranie danych gdy jest podane id
+        // public function load(){
+            // return;
+        // }
+        
+        // pobieranie danych gdy jest podane id
         public function load(){
+            if($values = $this->getItem($this->id)){
+                $this->setProperties($values);
+            }
             return;
         }
         
@@ -120,7 +134,7 @@
         }
         
         // aktualizacja
-        public function delete(){
+        public function delete($auto_date = true){
             if(!isset($this->id)){
                 $this->errors[] = "Brak podanego id.";
                 return false;
@@ -130,15 +144,19 @@
                 $this->date_update = date('Y-m-d H:i:s');
             }
             
-            if ($this->sqlDelete(static::$definition['table'], static::$definition['primary'].' = '.$this->id)){
-                $this->errors[] = "Błąd usuwania rekordu z bazy.";
-                return false;
+            if(static::$has_deleted_column){
+                $this->sqlDeleteOnColumn(static::$definition['table'], $this->id);
             }
             
-            unset($this->id);
-            if($this->load_class){
-                $this->load_class = false;
-            }
+            // if ($this->sqlDelete(static::$definition['table'], static::$definition['primary'].' = '.$this->id)){
+                // $this->errors[] = "Błąd usuwania rekordu z bazy.";
+                // return false;
+            // }
+            
+            // unset($this->id);
+            // if($this->load_class){
+                // $this->load_class = false;
+            // }
             return true;
         }
         
@@ -300,19 +318,115 @@
             return false;
         }
         
+        // pobieranie rekordu
+        public function getItem($id){
+            if(!$values = $this->sqlGetItem($id)){
+                $this->errors[] = "Brak rekordu w bazie.";
+                return false;
+            }
+            return $values;
+        }
+        
+        // przypisanie cech
+        protected function setProperties($values){
+            if(!isset(static::$definition['fields'])){
+                return;
+            }
+            
+            foreach(static::$definition['fields'] as $key => $val){
+                $this->$key = $values[$key];
+            }
+            $this->load_class = true;
+        }
+        
         /* **************** SQL *************** */
         /* ************************************ */
         
+        // dodawanie do bazy
         protected function sqlAdd($table, $data){
             global $DB;
             $table_name = (static::$use_prefix ? static::$prefix : '').$table;
             return $DB->insert($table_name, $data);
         }
         
+        // aktualizacja w bazie
         protected function sqlUpdate($table, $data, $where){
             global $DB;
             $table_name = (static::$use_prefix ? static::$prefix : '').$table;
             return $DB->update($table_name, $data, $where);
+        }
+        
+        // zmiana w tabeli w kolumnie deleted rekordu na 0
+        protected function sqlDeleteOnColumn($table, $id_item){
+            global $DB;
+            $table_name = (static::$use_prefix ? static::$prefix : '').$table;
+            $where = static::$definition['primary'].' = '.$id_item;
+            
+            if(static::$is_log){
+                $table_name_log = static::$prefix_log.$table;
+                
+                if(!$item_to_log = $this->sqlGetItem($id_item)){
+                    $this->errors[] = "LOG: Błąd podczas pobierania rekordu z bazy.";
+                    return false;
+                }
+                
+                if(!$DB->insert($table_name_log, $item_to_log)){
+                    $this->errors[] = "LOG: Błąd podczas zapisywania rekordu w tabeli z logami.";
+                    return false;
+                }
+            }
+            
+            $data = array();
+            // $data['id_user'] = ClassAuth::getCurrentUserId();
+            $data['id_user'] = '3';
+            $data['deleted'] = '1';
+            
+            if (property_exists($this, 'date_update')) {
+                $data['date_update'] = $this->date_update;
+            }
+            
+            return $DB->update($table_name, $data, $where);
+        }
+        
+        // pobieranie rekordu
+        protected function sqlGetItem($id){
+            global $DB;
+            $table_name = (static::$use_prefix ? static::$prefix : '').static::$definition['table'];
+            $where = '';
+            
+            if(static::$has_deleted_column){
+                $where = " AND `deleted` = '0'";
+            }
+            
+            $zapytanie = "SELECT * FROM {$table_name} WHERE ".static::$definition['primary']." = {$id}{$where}";
+            
+            $sql = $DB->pdo_fetch($zapytanie);
+            
+            if(!$sql || !is_array($sql) || count($sql) < 1){
+                return false;
+            }
+            
+            return $sql;
+        }
+        
+        // pobieranie wszystkich rekordow
+        public static function sqlGetAllItems(){
+            global $DB;
+            $table_name = (static::$use_prefix ? static::$prefix : '').static::$definition['table'];
+            $where = '';
+            
+            if(static::$has_deleted_column){
+                $where = " WHERE `deleted` = '0'";
+            }
+            
+            $zapytanie = "SELECT * FROM {$table_name}{$where} ORDER BY `".static::$definition['primary']."`";
+            $sql = $DB->pdo_fetch_all($zapytanie);
+            
+            if(!$sql || !is_array($sql) || count($sql) < 1){
+                return false;
+            }
+            
+            return $sql;
         }
         
     }

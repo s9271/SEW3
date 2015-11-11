@@ -7,6 +7,12 @@
         <form method="post" action="" class="form-horizontal">
 
             <div class="form-group">
+                <div class="col-sm-2 text-right require_text">
+                    * - wymagane pola
+                </div>
+            </div>
+
+            <div class="form-group">
                 <div class="col-sm-2 text-right">
                     <label for="form_name" class="control-label">*Kryptonim misji:</label>
                 </div>

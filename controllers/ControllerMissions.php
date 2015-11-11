@@ -13,6 +13,9 @@
                     case 'dodaj':
                         return $this->getPageAdd();
                     break;
+                    case 'edytuj':
+                        return $this->getPageEdit();
+                    break;
                 }
             }
             
@@ -21,8 +24,12 @@
         
         // strona lista misjii
         protected function getPageList(){
+            $this->actions();
+            
             $this->tpl_title = 'Misja: Lista';
+            $this->load_js_functions = true;
             $this->tpl_values = ClassMission::sqlGetAllItems();
+            // print_r($this->tpl_values);
             
             return $this->loadTemplate('/mission/list');
         }
@@ -47,6 +54,26 @@
             return $this->loadTemplate('/mission/form');
         }
         
+        // strona edycji
+        protected function getPageEdit(){
+            $this->actions();
+            
+            // $id_current_type = false;
+            
+            // if(isset($_POST['form_type']) && $_POST['form_type'] != ''){
+                // $id_current_type = $_POST['form_type'];
+            // }
+            
+            // $this->tpl_title = 'Misja: Edycja';
+            // $this->load_datetimepicker = true;
+            // $this->load_select2 = true;
+            // $this->load_js_functions = true;
+            // $this->tpl_values['form_type'] = ClassMission::getTypes($id_current_type);
+            // $this->tpl_values['sew_action'] = 'add';
+            
+            // return $this->loadTemplate('/mission/form');
+        }
+        
         /* *************** AKCJE ************** */
         /* ************************************ */
         
@@ -55,14 +82,17 @@
                 return;
             }
             
-            // print_r($_POST);
+            print_r($_POST);
             
             // przypisanie zmiennych posta do zmiennych template
             $this->tpl_values = $_POST;
             
             switch($_POST['form_action']){
                 case 'mission_add':
-                    return $this->add();
+                    return $this->add(); // dodawanie
+                break;
+                case 'mission_delete':
+                    return $this->delete(); // usuwanie
                 break;
             }
             
@@ -81,6 +111,7 @@
             $mission->date_start = $_POST['form_date_start'];
             $mission->date_end = $_POST['form_date_end'] != '' ? $_POST['form_date_end'] : NULL;
             $mission->active = (isset($_POST['form_active']) && $_POST['form_active'] == '1') ? '1' : '0';
+            $mission->deleted = '0';
             
             // custom - dodatkowy warunek odnosnie dat
             if($mission->date_end != NULL && ClassMission::validIsDateTime($mission->date_start) && ClassMission::validIsDateTime($mission->date_end)){
@@ -107,5 +138,28 @@
             
             return;
         }
+        
+        // usuwanie
+        protected function delete(){
+            $mission = new ClassMission($_POST['id_mission']);
+            
+            if($mission->load_class){
+                if($mission->delete()){
+            
+                    // komunikat
+                    $this->alerts['success'] = "Poprawnie usunięto misję: <b>{$mission->name}</b>";
+                    return;
+                }else{
+                    $this->alerts['danger'] = $mission->errors;
+                }
+            }
+            
+            $this->alerts['danger'] = 'Misja nie istnieje';
+            $_POST = array();
+            
+            return;
+        }
+        
+        
     }
 ?>

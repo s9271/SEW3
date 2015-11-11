@@ -1,6 +1,8 @@
 <?php
     class ClassMission extends ClassModel{
         protected static $use_prefix = true;
+        protected static $has_deleted_column = true;
+        protected static $is_log = true;
         
         // id
         public $id = false;
@@ -32,6 +34,18 @@
         // Aktywny
         public $active;
         
+        // Usunięty
+        public $deleted = '0';
+        
+        // Rodzaj misji nazwa
+        public $mission_type_name;
+        
+        // Data zakończenia nazwa
+        public $date_end_name;
+        
+        // Status
+        public $status;
+        
         // walidacja, primary id, tabela i kolumny
         public static $definition = array(
             'table' => 'missions',
@@ -46,36 +60,19 @@
                 'date_start' =>         array('required' => true, 'validate' => array('isDateTime'), 'name' => 'Data rozpoczęcia'),
                 'date_end' =>           array('validate' => array('isDateTime'), 'name' => 'Data zakończenia'),
                 'active' =>             array('validate' => array('isBool'), 'name' => 'Aktywny'),
+                'deleted' =>             array('validate' => array('isBool'), 'name' => 'Usunięty'),
             ),
         );
         
         // pobieranie danych gdy jest podane id
         public function load(){
-            if($values = $this->getItem($this->id)){
-                $this->setProperties($values);
-            }
-            return;
-        }
-        
-        // pobieranie misji
-        public function getItem($id){
-            if(!$values = $this->sqlGetItem($id)){
-                $this->errors[] = "Brak misji w bazie.";
-                return false;
-            }
-            return $values;
-        }
-        
-        // przypisanie cech
-        protected function setProperties($values){
-            if(!isset(self::$definition['fields'])){
-                return;
-            }
+            parent::load();
             
-            foreach(self::$definition['fields'] as $key => $val){
-                $this->$key = $values[$key];
+            if($this->load_class){
+                $this->mission_type_name = self::sqlGetTypeNameId($this->id_mission_type);
+                $this->date_end_name = self::getDateEndNameByDateEnd($this->date_end);
+                $this->status = self::getStatusName($this->date_end, $this->active);
             }
-            $this->load_class = true;
         }
         
         // pobieranie rodzajow misji
@@ -90,7 +87,7 @@
                 $array[$group['id_mission_group']]['name'] = $group['name'];
                 $array[$group['id_mission_group']]['childs'] = array();
                 
-                if($types = self::sqlGetTupesByGroupId($group['id_mission_group'])){
+                if($types = self::sqlGetTypesByGroupId($group['id_mission_group'])){
                     foreach($types as $type){
                         $array[$group['id_mission_group']]['childs'][$type['id_mission_type']]['name'] = $type['name'];
                         
@@ -104,39 +101,52 @@
             return $array;
         }
         
+        // pobieranie nazwy daty po dacie zakonczenia
+        public static function getDateEndNameByDateEnd($date_end){
+            if($date_end == NULL || $date_end == '0000-00-00 00:00:00'){
+                return 'Niezdefiniowano';
+            }
+            
+            return $date_end;
+        }
+        
+        // pobieranie nazwy daty po dacie zakonczenia
+        public static function getStatusName($date_end, $active, $deleted = false, $color = true){
+            switch(self::getStatus($date_end, $active, $deleted, $color)){
+                case '0':
+                    return $color ? '<span class="sew_red">Usunięta</span>' : 'Usunięta';
+                break;
+                case '1':
+                    return $color ? '<span class="sew_green">Aktywna</span>' : 'Aktywna';
+                break;
+                case '2':
+                    return $color ? '<span class="sew_orange">Nieaktywna</span>' : 'Nieaktywna';
+                break;
+                case '3':
+                    return $color ? '<span class="sew_purple">Zakoczońe</span>' : 'Zakoczońe';
+                break;
+            }
+        }
+        
+        // pobieranie nazwy daty po dacie zakonczenia
+        public static function getStatus($date_end, $active, $deleted = false, $color = true){
+            if($deleted && $deleted == '1'){
+                return '0';
+            }
+            
+            if(($date_end != NULL && $date_end != '0000-00-00 00:00:00') && (strtotime($date_end) < strtotime("now"))){
+                return '3';
+            }
+            
+            if($active == '1'){
+                return '1';
+            }
+            
+            return '2';
+        }
+        
         /* **************** SQL *************** */
         /* ************************************ */
-        
-        protected function sqlGetItem($id){
-            global $DB;
-            $table_name = (self::$use_prefix ? self::$prefix : '').self::$definition['table'];
-            
-            $zapytanie = "SELECT * FROM {$table_name} WHERE ".self::$definition['primary']." = {$id}";
-            
-            $sql = $DB->pdo_fetch($zapytanie);
-            
-            if(!$sql || !is_array($sql) || count($sql) < 1){
-                return false;
-            }
-            
-            return $sql;
-        }
-        
-        // pobieranie wszystkich rekordow
-        public static function sqlGetAllItems(){
-            global $DB;
-            $table_name = (self::$use_prefix ? self::$prefix : '').self::$definition['table'];
-            
-            $zapytanie = "SELECT * FROM {$table_name}";
-            
-            $sql = $DB->pdo_fetch_all($zapytanie);
-            
-            if(!$sql || !is_array($sql) || count($sql) < 1){
-                return false;
-            }
-            
-            return $sql;
-        }
         
         // pobieranie wszystkich grup
         public static function sqlGetGroups(){
@@ -171,7 +181,7 @@
         }
         
         // pobieranie wszystkich rodzajow danej grupy
-        public static function sqlGetTupesByGroupId($id_mission_group){
+        public static function sqlGetTypesByGroupId($id_mission_group){
             global $DB;
             $table_name = (self::$use_prefix ? self::$prefix : '').'mission_types';
             
@@ -181,6 +191,35 @@
             
             if(!$sql || !is_array($sql) || count($sql) < 1){
                 return false;
+            }
+            
+            return $sql;
+        }
+        
+        // pobieranie wszystkich rodzajow danej grupy
+        public static function sqlGetTypeNameId($id_mission_type){
+            global $DB;
+            $table_name = (self::$use_prefix ? self::$prefix : '').'mission_types';
+            
+            $zapytanie = "SELECT `name` FROM {$table_name} WHERE id_mission_type = '{$id_mission_type}'";
+            
+            $sql = $DB->pdo_fetch($zapytanie);
+            
+            if(!$sql || !is_array($sql) || count($sql) < 1){
+                return false;
+            }
+            
+            return $sql['name'];
+        }
+        
+        // pobieranie wszystkich rekordow
+        public static function sqlGetAllItems(){
+            if($sql = parent::sqlGetAllItems()){
+                foreach($sql as $key => $val){
+                    $sql[$key]['mission_type_name'] = self::sqlGetTypeNameId($val['id_mission_type']);
+                    $sql[$key]['date_end_name'] = self::getDateEndNameByDateEnd($val['date_end']);
+                    $sql[$key]['status'] = self::getStatusName($val['date_end'], $val['active']);
+                }
             }
             
             return $sql;
