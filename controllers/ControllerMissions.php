@@ -21,7 +21,7 @@
         
         // strona lista misjii
         protected function getPageList(){
-            $this->tpl_title = 'Lista misji';
+            $this->tpl_title = 'Misja: Lista';
             $this->tpl_values = ClassMission::sqlGetAllItems();
             
             return $this->loadTemplate('/mission/list');
@@ -29,9 +29,9 @@
         
         // strona dodawania
         protected function getPageAdd(){
-            $values = array();
-            $values['form_type'] = ClassMission::getTypes();
-            return ClassTools::loadTemplate('/mission/form', $values);
+            $this->tpl_title = 'Misja: Dodaj';
+            $this->tpl_values['form_type'] = ClassMission::getTypes();
+            return $this->loadTemplate('/mission/form');
         }
     }
 ?>
