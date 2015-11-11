@@ -33,26 +33,26 @@
         protected function getFieldsValidate(){
             $values = array();
             
-            foreach(self::$definition['fields'] as $key => $valid){
+            foreach(static::$definition['fields'] as $key => $valid){
                 if (!property_exists($this, $key)){
-                    $this->errors[] = "</b>{$valid['name']}<b>: Brak wlaściwości w klasie.";
+                    $this->errors[] = "<b>{$valid['name']}</b>: Brak wlaściwości w klasie.";
                     continue;
                 }
                 
                 $values[$key] = trim($this->$key);
                 
                 if((isset($valid['required']) && $valid['required']) && $values[$key] == ''){
-                    $this->errors[] = "</b>{$valid['name']}<b>: Proszę uzupełnić pole.";
+                    $this->errors[] = "<b>{$valid['name']}</b>: Proszę uzupełnić pole.";
                     continue;
                 }
                 
                 if(isset($valid['validate']) && is_array($valid['validate']) && count($valid['validate']) > 0){
                     foreach($valid['validate'] as $valid_key){
-                        $this->validByMethod($valid_key, $values[$key], $valid['name']);
+                        $values[$key] = $this->validByMethod($valid_key, $values[$key], $valid['name'], $key);
                     }
                 }
             }
-            
+            // print_r($values);
             return $values;
         }
         
@@ -79,13 +79,13 @@
                 $this->date_update = date('Y-m-d H:i:s');
             }
             
-            $values = getFieldsValidate();
+            $values = $this->getFieldsValidate();
             
             if($this->errors && count($this->errors) > 0){
                 return false;
             }
             
-            if (!$id = $this->sqlAdd(self::$definition['table'], $values)){
+            if (!$id = $this->sqlAdd(static::$definition['table'], $values)){
                 $this->errors[] = "Błąd zapisu do bazy.";
                 return false;
             }
@@ -111,7 +111,7 @@
                 return false;
             }
             
-            if ($this->sqlUpdate(self::$definition['table'], $values, self::$definition['primary'].' = '.$this->id)){
+            if ($this->sqlUpdate(static::$definition['table'], $values, static::$definition['primary'].' = '.$this->id)){
                 $this->errors[] = "Błąd aktualizacji rekordu w bazie.";
                 return false;
             }
@@ -130,7 +130,7 @@
                 $this->date_update = date('Y-m-d H:i:s');
             }
             
-            if ($this->sqlDelete(self::$definition['table'], self::$definition['primary'].' = '.$this->id)){
+            if ($this->sqlDelete(static::$definition['table'], static::$definition['primary'].' = '.$this->id)){
                 $this->errors[] = "Błąd usuwania rekordu z bazy.";
                 return false;
             }
@@ -146,46 +146,52 @@
         /* ************************************ */
         
         // walidacja wartosci
-        public function validByMethod($method, $value, $name){
+        public function validByMethod($method, $value, $name, $key){
+            $value_new = false;
+            
             switch($method){
                 case 'isName':
-                    if(!self::validIsName($value)){
+                    if(!$value_new = self::validIsName($value)){
                         $this->errors[] = "<b>{$name}</b>: Pole nie jest tekstem.";
                     }
                 break;
                 case 'isDate':
-                    if(!self::validIsDate($value)){
+                    if(!$value_new = self::validIsDate($value)){
                         $this->errors[] = "<b>{$name}</b>: Niepoprawny format daty.";
                     }
                 break;
                 case 'isDateTime':
-                    if(!self::validIsDateTime($value)){
+                    if(!$value_new = self::validIsDateTime($value)){
                         $this->errors[] = "<b>{$name}</b>: Niepoprawny format daty.";
                     }
                 break;
                 case 'isInt':
-                    if(!self::validIsInt($value)){
+                    if(!$value_new = self::validIsInt($value)){
                         $this->errors[] = "<b>{$name}</b>: Pole nie jest liczbą.";
                     }
                 break;
                 case 'isPhone':
-                    if(!self::validIsPhone($value)){
+                    if(!$value_new = self::validIsPhone($value)){
                         $this->errors[] = "<b>{$name}</b>: Niepoprawny format telefonu.";
                     }
                 break;
                 case 'isEmail':
-                    if(!self::validIsEmail($value)){
+                    if(!$value_new = self::validIsEmail($value)){
                         $this->errors[] = "<b>{$name}</b>: Niepoprawny format maila.";
                     }
                 break;
                 case 'isBool':
-                    if(!self::validIsBool($value)){
+                    if(!$value_new = self::validIsBool($value)){
                         $this->errors[] = "<b>{$name}</b>: Niepoprawny format.";
                     }
                 break;
             }
             
-            return;
+            if($value_new !== true && $value_new !== false && $value_new != $value){
+                $value = $value_new;
+            }
+            
+            return $value;
         }
         
         // sprawdzanie czy wartosc sklada sie tylko z liter
@@ -200,9 +206,18 @@
         
         // sprawdzanie czy wartosc jest data
         public static function validIsDate($value){
+            if($value == NULL){
+                return true;
+            }
+            
             // 2012-09-12
             if (preg_match('/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/', $value)) {
                 return true;
+            }
+            
+            if (preg_match('/^(0[1-9]|[1-2][0-9]|3[0-1])[\.](0[1-9]|1[0-2])[\.]([0-9]{4})$/', $value)){
+                $date = DateTime::createFromFormat('d.m.Y', $value);
+                return $date->format('Y-m-d');
             }
             
             return false;
@@ -210,10 +225,25 @@
         
         // sprawdzanie czy wartosc jest datetime
         public static function validIsDateTime($value){
+            if($value == NULL){
+                return true;
+            }
+            
             // 2012-09-12 12:35:45
             // if (preg_match('/^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})$/', $value)) {
             if (preg_match('/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) ([0-1][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$/', $value)) {
                 return true;
+            }
+            
+            if (preg_match('/^(0[1-9]|[1-2][0-9]|3[0-1])[\.](0[1-9]|1[0-2])[\.]([0-9]{4}) ([0-1][0-9]|2[0-3]):([0-5][0-9])$/', $value)) {
+                $value = $value.':00';
+                $date = DateTime::createFromFormat('d.m.Y H:i:s', $value);
+                return $date->format('Y-m-d H:i:s');
+            }
+            
+            if (preg_match('/^(0[1-9]|[1-2][0-9]|3[0-1])[\.](0[1-9]|1[0-2])[\.]([0-9]{4}) ([0-1][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$/', $value)) {
+                $date = DateTime::createFromFormat('d.m.Y H:i:s', $value);
+                return $date->format('Y-m-d H:i:s');
             }
             
             return false;
@@ -275,12 +305,14 @@
         
         protected function sqlAdd($table, $data){
             global $DB;
-            return $Db->insert($table, $data);
+            $table_name = (static::$use_prefix ? static::$prefix : '').$table;
+            return $DB->insert($table_name, $data);
         }
         
         protected function sqlUpdate($table, $data, $where){
             global $DB;
-            return $Db->update($table, $data, $where);
+            $table_name = (static::$use_prefix ? static::$prefix : '').$table;
+            return $DB->update($table_name, $data, $where);
         }
         
     }

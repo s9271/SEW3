@@ -74,3 +74,33 @@ button.btn.mar_button .glyphicon{
     line-height: normal;
     margin: 0 0 30px;
 }
+
+.sew_hint{
+    color: #737373;
+    display: block;
+    font-size: 12px;
+    line-height: normal;
+    margin: 5px;
+    text-align: left;
+}
+
+.sew-alert{
+    margin: 0 10px;
+}
+
+.sew-alert .sew_alert_small{
+    padding: 10px;
+}
+
+.sew-alert .sew_alert_small ul{
+    padding-left: 20px;
+}
+
+#mission_form .alert,
+#mission_form form{
+    text-align: left;
+}
+
+#mission_form form label{
+    width: auto;
+}

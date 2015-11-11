@@ -41,6 +41,8 @@
         public function connect(){
             try {
                 $this->pdo = $this->_getPDO($this->host, $this->user, $this->password, $this->database, 5);
+                // $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                // $this->pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
             } catch (PDOException $e) {
                 die("Problem z połączeniem się do bazy danych: ".utf8_encode($e->getMessage()));
             }
@@ -169,7 +171,13 @@
                     $statement->bindValue(':'.$key, $value, PDO::PARAM_STR);  
                 }
                 
-                $statement->execute();
+                // $statement->execute();
+                
+                if (!$statement->execute()) {
+                    $error = $statement->errorInfo();
+                    die("Problem z dodaniem rekordu: ".utf8_encode($error['2']));
+                    return false;
+                }
                 
                 $id = $this->pdo->lastInsertId();
                 
@@ -209,7 +217,14 @@
                     $statement->bindValue(':'.$key, $value, PDO::PARAM_STR);  
                 }
                 
-                $statement->execute();
+                // $statement->execute();
+                
+                if (!$statement->execute()) {
+                    $error = $statement->errorInfo();
+                    die("Problem z aktualizacja rekordu: ".utf8_encode($error['2']));
+                    return false;
+                }
+                
                 return true;
             }
         

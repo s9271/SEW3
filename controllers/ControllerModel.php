@@ -1,7 +1,7 @@
 <?php
     class ControllerModel{
-        // bledy
-        protected $errors = array();
+        // alerty, dostepne: success, info, warning, danger
+        protected $alerts = array();
         
         // zaladowane skrypty
         private $scripts = false;
@@ -17,6 +17,9 @@
         
         // select
         protected $load_select2 = false;
+        
+        // wlasne przygotowane funkcje
+        protected $load_js_functions = false;
         
         // vartosci uzywane w tpl
         protected $tpl_values = array();
@@ -60,6 +63,7 @@
             if($this->load_datetimepicker){
                 $this->scripts[] = '<!-- Bootstrap 3 Datepicker v4 -->';
                 $this->scripts[] = '<script src="/asset/moment/2.10.6/moment.min.js"></script>';
+                $this->scripts[] = '<script src="/asset/moment/2.10.6/locale/pl.js"></script>';
                 $this->scripts[] = '<script src="/asset/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>';
                 $this->scripts[] = '<link href="/asset/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />';
                 $this->scripts[] = '';
@@ -70,6 +74,35 @@
                 $this->scripts[] = '<link href="/asset/select2/4.0.1/css/select2.min.css" rel="stylesheet" />';
                 $this->scripts[] = '<script src="/asset/select2/4.0.1/js/select2.min.js"></script>';
                 $this->scripts[] = '';
+            }
+            
+            if($this->load_js_functions){
+                $this->scripts[] = '<!-- Własne funkcje -->';
+                $this->scripts[] = '<script src="/asset/js/funkcje.js"></script>';
+                $this->scripts[] = '';
+            }
+            
+            return;
+        }
+        
+        // wyswietlanie alertow w template
+        private function getAlerts($small = false){
+            if (!is_array($this->alerts) && count($this->alerts) < 1){
+                return;
+            }
+            
+            foreach ($this->alerts as $key => $alerts){
+                if(is_array($alerts)){
+                    $o = '<ul>';
+                        foreach ($alerts as $alert){
+                            $o .= "<li>{$alert}</li>";
+                        }
+                    $o .= '</ul>';
+                }else{
+                    $o = $alerts;
+                }
+                
+                echo '<div class="sew-alert clearfix"><div class="alert alert-'.$key.($small ? ' col-sm-offset-2 col-sm-8 sew_alert_small' : '').'" role="alert">'.$o.'</div></div>';
             }
             
             return;

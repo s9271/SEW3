@@ -1776,6 +1776,10 @@
                 throw new TypeError('locale() locale ' + locale + ' is not loaded from moment locales!');
             }
 
+            // if (!moment.locale(locale)) {
+                // throw new TypeError('locale() locale ' + locale + ' is not loaded from moment locales!');
+            // }
+
             options.locale = locale;
             date.locale(options.locale);
             viewDate.locale(options.locale);

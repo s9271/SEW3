@@ -14,6 +14,9 @@
         // Lokalizacja Misji
         public $location;
         
+        // Opis
+        public $description;
+        
         // Użytkownik
         public $id_user;
         
@@ -37,11 +40,12 @@
                 'id_mission_type' =>    array('required' => true, 'validate' => array('isInt'), 'name' => 'Rodzaj misji'),
                 'name' =>               array('required' => true, 'name' => 'Kryptonim Misji'),
                 'location' =>           array('required' => true, 'name' => 'Lokalizacja Misji'),
+                'description' =>        array('name' => 'Opis'),
                 'id_user' =>            array('required' => true, 'validate' => array('isInt'), 'name' => 'Użytkownik'),
-                'date_update' =>        array('required' => true, 'validate' => array('isDate'), 'name' => 'Data aktualizacji'),
-                'date_start' =>         array('required' => true, 'validate' => array('isDate'), 'name' => 'Data rozpoczęcia'),
-                'date_end' =>           array('required' => true, 'validate' => array('isDate'), 'name' => 'Data zakończenia'),
-                'active' =>             array('required' => true, 'validate' => array('isBool'), 'name' => 'Aktywny'),
+                'date_update' =>        array('required' => true, 'validate' => array('isDateTime'), 'name' => 'Data aktualizacji'),
+                'date_start' =>         array('required' => true, 'validate' => array('isDateTime'), 'name' => 'Data rozpoczęcia'),
+                'date_end' =>           array('validate' => array('isDateTime'), 'name' => 'Data zakończenia'),
+                'active' =>             array('validate' => array('isBool'), 'name' => 'Aktywny'),
             ),
         );
         
