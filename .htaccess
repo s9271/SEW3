@@ -2,7 +2,7 @@ RewriteEngine on
 RewriteRule ^([_A-Za-z0-9\-]+)/?$ index\.php?controller=$1 [L]
 RewriteRule ^([_A-Za-z\-]+)/([0-9]+)/?$ index\.php?controller=$1&page=$2 [L]
 RewriteRule ^([_A-Za-z\-]+)/(dodaj)/?$ index\.php?controller=$1&page_action=$2 [L]
-RewriteRule ^([_A-Za-z\-]+)/(edytuj|podglad|usun)/([0-9]+)/?$ index\.php?controller=$1&page_action=$2&id=$3 [L]
+RewriteRule ^([_A-Za-z\-]+)/(edytuj|podglad|usun)/([0-9]+)/?$ index\.php?controller=$1&page_action=$2&id_item=$3 [L]
 #RewriteRule ^(sew)/([_A-Za-z\-]+)/([0-9]+)/?$ /sew/index\.php?page_name=$2&page=$3 [L]
 #RewriteRule ^(sew)/([_A-Za-z\-]+)/(usun)/([0-9]+)/?$ /sew/index\.php?page_name=$2&action=usun&id_item=$4 [L]
 #RewriteRule ^(sew)/([_A-Za-z\-]+)/([_A-Za-z\-]+)/?$ /sew/index\.php?page_name=$2&subpage=$3 [L]

@@ -1,6 +1,6 @@
 <div id="mission_form" class="container">
     <div class="jumbotron">
-        <h1 class="controller_title">Dodaj Misje</h1>
+        <h1 class="controller_title"><?php echo ((isset($this->tpl_values['sew_action']) && $this->tpl_values['sew_action'] == 'add') ? 'Dodaj misje' : 'Edytuj misje'); ?></h1>
         
         <?php $this->getAlerts(true); ?>
     

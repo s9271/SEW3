@@ -119,13 +119,13 @@
                 $this->date_update = date('Y-m-d H:i:s');
             }
             
-            $values = getFieldsValidate();
+            $values = $this->getFieldsValidate();
             
             if($this->errors && count($this->errors) > 0){
                 return false;
             }
             
-            if ($this->sqlUpdate(static::$definition['table'], $values, static::$definition['primary'].' = '.$this->id)){
+            if (!$this->sqlUpdate(static::$definition['table'], $values, static::$definition['primary'].' = '.$this->id)){
                 $this->errors[] = "Błąd aktualizacji rekordu w bazie.";
                 return false;
             }
@@ -153,10 +153,10 @@
                 // return false;
             // }
             
-            // unset($this->id);
-            // if($this->load_class){
-                // $this->load_class = false;
-            // }
+            unset($this->id);
+            if($this->load_class){
+                $this->load_class = false;
+            }
             return true;
         }
         
@@ -339,6 +339,16 @@
             $this->load_class = true;
         }
         
+        // konwersja daty ang na polska
+        public static function getPlDate($date, $format_return = 'd.m.Y H:i', $format_get = 'Y-m-d H:i:s'){
+            if($date == NULL || $date == '0000-00-00 00:00:00'){
+                return '';
+            }
+            
+            $datetime = DateTime::createFromFormat($format_get, $date);
+            return $datetime->format($format_return);
+        }
+        
         /* **************** SQL *************** */
         /* ************************************ */
         
@@ -353,6 +363,21 @@
         protected function sqlUpdate($table, $data, $where){
             global $DB;
             $table_name = (static::$use_prefix ? static::$prefix : '').$table;
+            
+            if(static::$is_log){
+                $table_name_log = static::$prefix_log.$table;
+                
+                if(!$item_to_log = $this->sqlGetItem($this->id)){
+                    $this->errors[] = "LOG: Błąd podczas pobierania rekordu z bazy.";
+                    return false;
+                }
+                
+                if(!$DB->insert($table_name_log, $item_to_log)){
+                    $this->errors[] = "LOG: Błąd podczas zapisywania rekordu w tabeli z logami.";
+                    return false;
+                }
+            }
+            
             return $DB->update($table_name, $data, $where);
         }
         
