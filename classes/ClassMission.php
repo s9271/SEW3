@@ -213,8 +213,8 @@
         }
         
         // pobieranie wszystkich rekordow
-        public static function sqlGetAllItems(){
-            if($sql = parent::sqlGetAllItems()){
+        public static function sqlGetAllItems($using_pages = false, $current_page = '1', $items_on_page = '5'){
+            if($sql = parent::sqlGetAllItems($using_pages, $current_page, $items_on_page)){
                 foreach($sql as $key => $val){
                     $sql[$key]['mission_type_name'] = self::sqlGetTypeNameId($val['id_mission_type']);
                     $sql[$key]['date_end_name'] = self::getDateEndNameByDateEnd($val['date_end']);

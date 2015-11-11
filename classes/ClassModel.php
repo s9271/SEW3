@@ -435,7 +435,34 @@
         }
         
         // pobieranie wszystkich rekordow
-        public static function sqlGetAllItems(){
+        public static function sqlGetAllItems($using_pages = false, $current_page = '1', $items_on_page = '5'){
+            global $DB;
+            $table_name = (static::$use_prefix ? static::$prefix : '').static::$definition['table'];
+            $where = '';
+            $limit = '';
+            
+            if(static::$has_deleted_column){
+                $where = " WHERE `deleted` = '0'";
+            }
+            
+            if($using_pages){
+                $limit_start = ($current_page-1)*$items_on_page;
+                $limit = " LIMIT {$limit_start}, {$items_on_page}";
+            }
+            
+            $zapytanie = "SELECT * FROM {$table_name}{$where} ORDER BY `".static::$definition['primary']."`{$limit}";
+            // print_r($zapytanie);
+            $sql = $DB->pdo_fetch_all($zapytanie);
+            
+            if(!$sql || !is_array($sql) || count($sql) < 1){
+                return false;
+            }
+            
+            return $sql;
+        }
+        
+        // pobieranie liczby wszystkich rekordow
+        public static function sqlGetCountItems(){
             global $DB;
             $table_name = (static::$use_prefix ? static::$prefix : '').static::$definition['table'];
             $where = '';
@@ -444,14 +471,14 @@
                 $where = " WHERE `deleted` = '0'";
             }
             
-            $zapytanie = "SELECT * FROM {$table_name}{$where} ORDER BY `".static::$definition['primary']."`";
-            $sql = $DB->pdo_fetch_all($zapytanie);
+            $zapytanie = "SELECT COUNT(*) as count_items FROM {$table_name}{$where}";
+            $sql = $DB->pdo_fetch($zapytanie);
             
             if(!$sql || !is_array($sql) || count($sql) < 1){
                 return false;
             }
             
-            return $sql;
+            return $sql['count_items'];
         }
         
     }

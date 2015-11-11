@@ -26,10 +26,20 @@
         protected function getPageList(){
             $this->actions();
             
+            // strony
+            $this->controller_name = 'misje';
+            $this->using_pages = true;
+            $this->count_items = ClassMission::sqlGetCountItems();
+            $this->current_page = ClassTools::getValue('page') ? ClassTools::getValue('page') : '1';
+            
+            // tytul strony
             $this->tpl_title = 'Misja: Lista';
+            
+            // ladowanie funkcji
             $this->load_js_functions = true;
-            $this->tpl_values = ClassMission::sqlGetAllItems();
-            // print_r($this->tpl_values);
+            
+            // pobieranie wszystkich rekordow
+            $this->tpl_values = ClassMission::sqlGetAllItems($this->using_pages, $this->current_page, $this->items_on_page);
             
             return $this->loadTemplate('/mission/list');
         }

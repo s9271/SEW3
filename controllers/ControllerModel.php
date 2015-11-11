@@ -1,5 +1,8 @@
 <?php
     class ControllerModel{
+        // nazwa kontrolera dla linkow do stron
+        protected $controller_name = '';
+        
         // alerty, dostepne: success, info, warning, danger
         protected $alerts = array();
         
@@ -26,6 +29,18 @@
         
         // tytul strony
         protected $tpl_title = false;
+        
+        // opcja, czy kontroler ma uzywac strony
+        protected $using_pages = false;
+        
+        // ilosc rekordow
+        protected $count_items = '0';
+        
+        // ilosc rekordow na strone
+        protected $items_on_page = '5';
+        
+        // aktualna strona
+        protected $current_page = '1';
         
         // ladowanie template
         protected function loadTemplate($page_name){
@@ -104,6 +119,23 @@
                 
                 echo '<div class="sew-alert clearfix"><div class="alert alert-'.$key.($small ? ' col-sm-offset-2 col-sm-8 sew_alert_small' : '').'" role="alert">'.$o.'</div></div>';
             }
+            
+            return;
+        }
+        
+        // wyswietlanie stron
+        private function getPages(){
+            if(!$this->using_pages || $this->count_items <= $this->items_on_page){
+                return;
+            }
+                
+            echo '<div class="sew-pages clearfix"><ul class="clearfix">';
+            
+            for($i = 1; $i <= ceil($this->count_items/$this->items_on_page); $i++){
+                echo '<li><a href="/'.$this->controller_name.'/strona/'.$i.'" class="btn btn-'.(($this->current_page == $i) ? 'default" disabled="disabled"' : 'default"').'>'.$i.'</a></li>';
+            }
+            
+            echo '</ul></div>';
             
             return;
         }

@@ -52,6 +52,8 @@
             </tbody>
         </table>
         
+        <?php $this->getPages(); ?>
+        
         <a href="/misje/dodaj" class="btn btn-info mar_button">Dodaj Misje</a>
     </div>
 </div>

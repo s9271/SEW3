@@ -144,6 +144,29 @@ button.btn.mar_button .glyphicon{
     color: #800080;
 }
 
+.sew-pages{
+    margin-bottom: 10px;
+}
+
+.sew-pages ul{
+    list-style: outside none none;
+    padding: 0;
+    text-align: left;
+}
+
+.sew-pages ul > li{
+    float: left;
+    margin: 0 2px;
+}
+
+.sew-pages ul > li:first-child{
+    margin-left: 2px;
+}
+
+.sew-pages ul > li:last-child{
+    margin-right: 2px;
+}
+
 #mission_form .alert,
 #mission_form form{
     text-align: left;
@@ -151,4 +174,8 @@ button.btn.mar_button .glyphicon{
 
 #mission_form form label{
     width: auto;
+}
+
+#mission_form form .col-sm-8 > .select2{
+    width: 100% !important;
 }
