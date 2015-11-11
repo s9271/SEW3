@@ -61,7 +61,7 @@
                     <label for="form_description" class="control-label">Opis:</label>
                 </div>
                 <div class="col-sm-8">
-                    <textarea id="form_description" class="form-control input-sm" placeholder="Opis" name="form_description"><?php echo ((isset($this->tpl_values['form_description']) && $this->tpl_values['form_description'] != '') ? $this->tpl_values['form_description'] : ''); ?></textarea>
+                    <textarea id="form_description" class="form-control input-sm jstextareaautoheight" placeholder="Opis" name="form_description"><?php echo ((isset($this->tpl_values['form_description']) && $this->tpl_values['form_description'] != '') ? $this->tpl_values['form_description'] : ''); ?></textarea>
                 </div>
             </div>
 

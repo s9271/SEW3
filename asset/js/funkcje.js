@@ -46,6 +46,16 @@ if (typeof jQuery === 'undefined') {
             }
         });
     };
+    
+    $.fn.sewJsTextareaAutoHeight = function(){
+        // $(this).height( 0 );
+        // $(this).height( this.scrollHeight );
+        
+        $(this).on('keyup cut cut change drop keydown', function(e){
+            $(this).height( 0 );
+            $(this).height( this.scrollHeight );
+        });
+    };
 })(jQuery);
 
 jQuery(document).ready(function($){
@@ -67,5 +77,10 @@ jQuery(document).ready(function($){
     // Potwierdzenie (wyskakujace okienko)
     if ($('.jsconfirm').length > 0){
         $('.jsconfirm').sewJsConfirm();
+    }
+    
+    // Potwierdzenie (wyskakujace okienko)
+    if ($('textarea.jstextareaautoheight').length > 0){
+        $('textarea.jstextareaautoheight').sewJsTextareaAutoHeight();
     }
 });
