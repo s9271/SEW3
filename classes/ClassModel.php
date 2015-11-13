@@ -133,7 +133,7 @@
             return true;
         }
         
-        // aktualizacja
+        // usuwanie
         public function delete($auto_date = true){
             if(!isset($this->id)){
                 $this->errors[] = "Brak podanego id.";
@@ -158,6 +158,50 @@
                 $this->load_class = false;
             }
             return true;
+        }
+        
+        // pobieranie nazwy daty po dacie zakonczenia
+        public static function getDateEndNameByDateEnd($date_end){
+            if($date_end == NULL || $date_end == '0000-00-00 00:00:00'){
+                return 'Niezdefiniowano';
+            }
+            
+            return $date_end;
+        }
+        
+        // pobieranie nazwy daty po dacie zakonczenia
+        public static function getStatusName($date_end, $active, $deleted = false, $color = true){
+            switch(self::getStatus($date_end, $active, $deleted, $color)){
+                case '0':
+                    return $color ? '<span class="sew_red">Usunięta</span>' : 'Usunięta';
+                break;
+                case '1':
+                    return $color ? '<span class="sew_green">Aktywna</span>' : 'Aktywna';
+                break;
+                case '2':
+                    return $color ? '<span class="sew_orange">Nieaktywna</span>' : 'Nieaktywna';
+                break;
+                case '3':
+                    return $color ? '<span class="sew_purple">Zakończona</span>' : 'Zakończona';
+                break;
+            }
+        }
+        
+        // pobieranie nazwy daty po dacie zakonczenia
+        public static function getStatus($date_end, $active, $deleted = false, $color = true){
+            if($deleted && $deleted == '1'){
+                return '0';
+            }
+            
+            if(($date_end != NULL && $date_end != '0000-00-00 00:00:00') && (strtotime($date_end) < strtotime("now"))){
+                return '3';
+            }
+            
+            if($active == '1'){
+                return '1';
+            }
+            
+            return '2';
         }
         
         /* ************* WALIDACJA ************ */

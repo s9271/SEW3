@@ -5,7 +5,7 @@
     $controllers['zolnierze'] = 'ControllerSoldiers';
     $controllers['wyposazenie'] = 'ControllerEquipments';
     $controllers['misje'] = 'ControllerMissions';
-    $controllers['szkolenia'] = 'ControllerTranings';
+    $controllers['szkolenia'] = 'ControllerTrainings';
     $controllers['odznaczenia'] = 'ControllerOrders';
     $controllers['404'] = 'Controller404';
 ?>

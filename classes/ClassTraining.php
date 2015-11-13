@@ -1,5 +1,5 @@
 <?php
-    class ClassMission extends ClassModel{
+    class ClassTraining extends ClassModel{
         protected static $use_prefix = true;
         protected static $has_deleted_column = true;
         protected static $is_log = true;
@@ -7,14 +7,11 @@
         // id
         public $id = false;
         
-        // Rodzaj misji
-        public $id_mission_type;
+        // osrodek szkolenia
+        public $id_traning_centre;
         
-        // Kryptonim Misji
+        // Nazwa szkolenia
         public $name;
-        
-        // Lokalizacja Misji
-        public $location;
         
         // Opis
         public $description;
@@ -37,8 +34,8 @@
         // Usunięty
         public $deleted = '0';
         
-        // Rodzaj misji nazwa
-        public $mission_type_name;
+        // osrodek szkolenia nazwa
+        public $traning_centre_name;
         
         // Data zakończenia nazwa
         public $date_end_name;
@@ -48,12 +45,11 @@
         
         // walidacja, primary id, tabela i kolumny
         public static $definition = array(
-            'table' => 'missions',
-            'primary' => 'id_mission',
+            'table' => 'trainings',
+            'primary' => 'id_training',
             'fields' => array(
-                'id_mission_type' =>    array('required' => true, 'validate' => array('isInt'), 'name' => 'Rodzaj misji'),
-                'name' =>               array('required' => true, 'name' => 'Kryptonim Misji'),
-                'location' =>           array('required' => true, 'name' => 'Lokalizacja Misji'),
+                'id_traning_centre' =>    array('required' => true, 'validate' => array('isInt'), 'name' => 'Ośrodek szkolenia'),
+                'name' =>               array('required' => true, 'name' => 'Nazwa szkolenia'),
                 'description' =>        array('name' => 'Opis'),
                 'id_user' =>            array('required' => true, 'validate' => array('isInt'), 'name' => 'Użytkownik'),
                 'date_update' =>        array('required' => true, 'validate' => array('isDateTime'), 'name' => 'Data aktualizacji'),
@@ -69,14 +65,14 @@
             parent::load();
             
             if($this->load_class){
-                $this->mission_type_name = self::sqlGetTypeNameId($this->id_mission_type);
+                // $this->traning_centre_name = self::sqlGetTypeNameId($this->id_traning_centre);
                 $this->date_end_name = self::getDateEndNameByDateEnd($this->date_end);
                 $this->status = self::getStatusName($this->date_end, $this->active);
             }
         }
         
         // pobieranie rodzajow misji
-        public static function getTypes($id_current_type = false){
+        /* public static function getTypes($id_current_type = false){
             if(!$groups = self::sqlGetGroups()){
                 return false;
             }
@@ -99,11 +95,11 @@
             }
             
             return $array;
-        }
+        } */
         
         /* **************** SQL *************** */
         /* ************************************ */
-        
+        /* 
         // pobieranie wszystkich grup
         public static function sqlGetGroups(){
             global $DB;
@@ -166,13 +162,13 @@
             }
             
             return $sql['name'];
-        }
+        } */
         
         // pobieranie wszystkich rekordow
         public static function sqlGetAllItems($using_pages = false, $current_page = '1', $items_on_page = '5'){
             if($sql = parent::sqlGetAllItems($using_pages, $current_page, $items_on_page)){
                 foreach($sql as $key => $val){
-                    $sql[$key]['mission_type_name'] = self::sqlGetTypeNameId($val['id_mission_type']);
+                    // $sql[$key]['mission_type_name'] = self::sqlGetTypeNameId($val['id_mission_type']);
                     $sql[$key]['date_end_name'] = self::getDateEndNameByDateEnd($val['date_end']);
                     $sql[$key]['status'] = self::getStatusName($val['date_end'], $val['active']);
                 }

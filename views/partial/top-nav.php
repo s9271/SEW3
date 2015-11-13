@@ -94,6 +94,17 @@
                     <li><a href="training.php?action=list"><span class="glyphicon glyphicon-list-alt"></span>&emsp;&emsp;Pokaż Szkolenia</a></li>
                   </ul>
               </li>
+              
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="/szkolenia">
+                        <span class="glyphicon glyphicon-check"></span>&emsp;&emsp;Szkolenia 2<span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu sidebar-nav">
+                        <li><a href="/szkolenia/dodaj"><span class="glyphicon glyphicon-plus"></span>&emsp;&emsp;Dodaj Szkolenie</a></li>
+                        <li><a href="/szkolenia"><span class="glyphicon glyphicon-list-alt"></span>&emsp;&emsp;Pokaż Szkolenia</a></li>
+                    </ul>
+                </li>
+                
               <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="training.php"><span class="glyphicon glyphicon-tags"></span>&emsp;&emsp;Odznaczenia<span class="caret"></span></a>
                 <ul class="dropdown-menu sidebar-nav">

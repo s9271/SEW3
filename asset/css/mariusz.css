@@ -53,6 +53,7 @@
 }
 
 /* LISTA MISJI */
+#training_list table,
 #mission_list table{
     text-align: left;
     width: 100%;
@@ -101,6 +102,7 @@ button.btn.mar_button .glyphicon{
     font-size: 36px;
     line-height: normal;
     margin: 0 0 30px;
+    text-align: center;
 }
 
 .container .sew-row > .controller_title{
