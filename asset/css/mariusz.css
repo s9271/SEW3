@@ -103,6 +103,10 @@ button.btn.mar_button .glyphicon{
     margin: 0 0 30px;
 }
 
+.container .sew-row > .controller_title{
+    margin-left: 16.6667%;
+}
+
 .sew_hint{
     color: #737373;
     display: block;
@@ -114,6 +118,14 @@ button.btn.mar_button .glyphicon{
 
 .sew-alert{
     margin: 0 10px;
+}
+
+.no_margin{
+    margin: 0 !important;
+}
+
+.sew-row{
+    margin: 0 10px 10px 10px;
 }
 
 .sew-alert .sew_alert_small{
@@ -178,4 +190,52 @@ button.btn.mar_button .glyphicon{
 
 #mission_form form .col-sm-8 > .select2{
     width: 100% !important;
+}
+
+/* PODGLAD MISJI */
+#mission_view{
+    text-align: left;
+}
+
+.sew-row > .row_title{
+    font-weight: bold;
+    line-height: normal;
+    margin-top: 10px;
+}
+
+.sew-row > .row_content{
+    background-color: #fefefe;
+    line-height: normal;
+    padding: 10px;
+}
+
+#mission_view .sew-row > .row_content .sew_green,
+#mission_view .sew-row > .row_content .sew_purple,
+#mission_view .sew-row > .row_content .sew_orange{
+    font-weight: bold;
+}
+
+.sew-row.sew-buttons > div{
+    padding-right: 0;
+}
+
+.no_padding{
+    padding: 0 !important;
+}
+
+#log_table{
+    margin-top: 50px;
+}
+
+#log_table table{
+    width: 100%;
+}
+
+.clear{
+    clear: both;
+}
+
+#mission_view .sew_hint{
+    margin-left: 16.6667%;
+    padding: 0;
 }

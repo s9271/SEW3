@@ -481,5 +481,35 @@
             return $sql['count_items'];
         }
         
+        // pobieranie ostatnich zmian
+        public function sqlGetLogItem($limit = '5'){
+            if(!static::$is_log || !$this->load_class){
+                return false;
+            }
+            
+            global $DB;
+            $table_name_log = static::$prefix_log.static::$definition['table'];
+            
+            // zmiana id_mission na id_log_mission
+            $id_log = substr_replace(static::$definition['primary'],'log_',3,0);
+            
+            $zapytanie = "
+                SELECT log_table.`{$id_log}` as id_log, log_table.`date_update`, users.`first_name`, users.`second_name`
+                FROM `{$table_name_log}` as log_table, users
+                WHERE log_table.`".static::$definition['primary']."` = {$this->id}
+                    AND log_table.`id_user` = users.`user_id`
+                ORDER BY log_table.`date_update` DESC
+                LIMIT {$limit}
+            ";
+            
+            $sql = $DB->pdo_fetch_all($zapytanie);
+            
+            if(!$sql || !is_array($sql) || count($sql) < 1){
+                return false;
+            }
+            
+            return $sql;
+        }
+        
     }
 ?>

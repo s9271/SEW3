@@ -97,18 +97,19 @@
                 </div>
                 <div class="col-sm-8">
                     <label class="checkbox-inline">
-                        <input type="checkbox" id="form_active" name="form_active" value="1"<?php echo ((isset($this->tpl_values['form_active']) && $this->tpl_values['form_active'] == '1') ? ' checked="checked"' : ''); ?> /> Gdy misja jest aktywna, można na nią wysyłać żołnierzy
+                        <input type="checkbox" id="form_active" name="form_active" value="1"<?php echo ((isset($this->tpl_values['form_active']) && $this->tpl_values['form_active'] == '1') ? ' checked="checked"' : ''); ?> /> Gdy misja jest aktywna, można do niej dodać żołnierzy.
                     </label>
                 </div>
             </div>
 
             <div class="form-group">
                 <div class="col-sm-offset-2 control-label col-sm-8">
-                    <a href="/misje" class="btn btn-info mar_button"><span class="glyphicon glyphicon-chevron-left"></span>Wstecz</a>
+                    <a href="/misje" class="btn btn-info mar_button"><span class="glyphicon glyphicon-chevron-left"></span>Lista</a>
                     <?php if($this->tpl_values['sew_action'] == 'add'){ ?>
                         <button class="btn btn-success mar_button" type="submit" name="form_action" value="mission_add"><span class="glyphicon glyphicon-plus"></span>Dodaj</button>
                     <?php }elseif($this->tpl_values['sew_action'] == 'edit'){ ?>
                         <input type="hidden" name="id_mission" value="<?php echo $this->tpl_values['id_mission']; ?>" />
+                        <a class="btn btn-primary" title="Podgląd" href="/misje/podglad/<?php echo $this->tpl_values['id_mission']; ?>">Podgląd</a>
                         <button class="btn btn-success mar_button" type="submit" name="form_action" value="mission_save"><span class="glyphicon glyphicon-floppy-disk"></span>Zapisz</button>
                     <?php } ?>
                 </div>

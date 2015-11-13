@@ -35,7 +35,7 @@
             exit;
         }
         
-        // ladowanie podstawowego template
+        // ladowanie podstawowego template - do usuniecia
         public static function loadTemplate($page_name, $values = false){
             if($page_name && file_exists($_SERVER['DOCUMENT_ROOT'].'/views/'.$page_name.'.tpl')){
                 ob_start();
@@ -49,6 +49,11 @@
             }
             
             return false;
+        }
+        
+        // zmiana \n, \r\n i \r na <br />
+        public static function nl2br($str){
+            return str_replace(array("\r\n", "\r", "\n"), '<br />', $str);
         }
     }
 ?>

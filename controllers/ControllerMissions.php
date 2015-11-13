@@ -21,6 +21,10 @@
                         // ladowanie strony z formularzem
                         return $this->getPageEdit();
                     break;
+                    case 'podglad':
+                        // ladowanie strony z podgladem misji
+                        return $this->getPageView();
+                    break;
                 }
             }
             
@@ -131,6 +135,62 @@
             
             // ladowanie strony z formularzem
             return $this->loadTemplate('/mission/form');
+        }
+        
+        // strona podgladu
+        protected function getPageView(){
+            // zmienne wyswietlania na wypadek gdy strona z misja nie istnieje
+            $this->tpl_values['wstecz'] = '/misje';
+            $this->tpl_values['title'] = 'Podgląd misji';
+            
+            // sprawdzanie czy id istnieje w linku
+            if(!$id_item = ClassTools::getValue('id_item')){
+                $this->alerts['danger'] = 'Brak podanego id';
+                
+                // ladowanie strony do wyswietlania bledow
+                // zmienne ktore mozna uzyc: wstecz, title oraz alertow
+                return $this->loadTemplate('alert');
+            }
+            
+            $this->actions();
+            
+            // ladowanie klasy i misji
+            $mission = new ClassMission($id_item);
+            
+            // sprawdzanie czy misja zostala poprawnie zaladowana
+            if(!$mission->load_class){
+                $this->alerts['danger'] = 'Misja nie istnieje';
+                
+                // ladowanie strony do wyswietlania bledow
+                // zmienne ktore mozna uzyc: wstecz, title oraz alertow
+                return $this->loadTemplate('alert');
+            }
+            
+            // tytul
+            $this->tpl_title = 'Misja: Podgląd';
+            
+            // skrypty
+            $this->load_js_functions = true;
+            
+            // print_r($mission);
+            
+            // values
+            $this->tpl_values['id_mission'] = $mission->id;
+            $this->tpl_values['form_name'] = $mission->name;
+            $this->tpl_values['form_location'] = $mission->location;
+            $this->tpl_values['form_description'] = ClassTools::nl2br($mission->description);
+            $this->tpl_values['form_date_start'] = ClassMission::getPlDate($mission->date_start);
+            $this->tpl_values['form_date_end'] = ClassMission::getPlDate($mission->date_end);
+            $this->tpl_values['form_active'] = $mission->active;
+            $this->tpl_values['status'] = $mission->status;
+            $this->tpl_values['type'] = $mission->mission_type_name;
+            
+            $this->tpl_values['log'] = $mission->sqlGetLogItem();
+            
+            // print_r($this->tpl_values['log']);
+            
+            // ladowanie strony z formularzem
+            return $this->loadTemplate('/mission/view');
         }
         
         /* *************** AKCJE ************** */

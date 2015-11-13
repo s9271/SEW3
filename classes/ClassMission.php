@@ -123,7 +123,7 @@
                     return $color ? '<span class="sew_orange">Nieaktywna</span>' : 'Nieaktywna';
                 break;
                 case '3':
-                    return $color ? '<span class="sew_purple">Zakoczońe</span>' : 'Zakoczońe';
+                    return $color ? '<span class="sew_purple">Zakończona</span>' : 'Zakończona';
                 break;
             }
         }
