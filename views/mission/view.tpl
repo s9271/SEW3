@@ -57,7 +57,7 @@
             </div>
         </div>
         
-        <?php if(isset($this->tpl_values['log'])): ?>
+        <?php if(isset($this->tpl_values['log']) && $this->tpl_values['log']): ?>
         <div id="log_table" class="sew-row clearfix">
             <div class="clearfix col-sm-offset-2 col-sm-8 no_padding">
                 <h1 class="controller_title">Ostatnie zmiany:</h1>
@@ -70,6 +70,10 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <tr>
+                            <td><?php echo $this->tpl_values['date_update']; ?></td>
+                            <td>DO ZMIANY (czeka na klase AUTH)</td>
+                        </tr>
                     <?php foreach($this->tpl_values['log'] as $item_log): ?>
                         <tr>
                             <td><?php echo $item_log['date_update']; ?></td>

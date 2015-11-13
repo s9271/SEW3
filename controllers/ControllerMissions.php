@@ -184,6 +184,7 @@
             $this->tpl_values['form_active'] = $mission->active;
             $this->tpl_values['status'] = $mission->status;
             $this->tpl_values['type'] = $mission->mission_type_name;
+            $this->tpl_values['date_update'] = $mission->date_update;
             
             $this->tpl_values['log'] = $mission->sqlGetLogItem();
             
