@@ -51,7 +51,7 @@ if (typeof jQuery === 'undefined') {
         // $(this).height( 0 );
         // $(this).height( this.scrollHeight );
         
-        $(this).on('keyup cut cut change drop keydown', function(e){
+        $(this).on('click keyup cut cut change drop keydown', function(e){
             $(this).height( 0 );
             $(this).height( this.scrollHeight );
         });
