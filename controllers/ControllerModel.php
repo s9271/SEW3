@@ -88,6 +88,7 @@
                 $this->scripts[] = '<!-- Select2 4.0.1 -->';
                 $this->scripts[] = '<link href="/asset/select2/4.0.1/css/select2.min.css" rel="stylesheet" />';
                 $this->scripts[] = '<script src="/asset/select2/4.0.1/js/select2.min.js"></script>';
+                $this->scripts[] = '<script src="/asset/select2/4.0.1/js/i18n/pl.js"></script>';
                 $this->scripts[] = '';
             }
             

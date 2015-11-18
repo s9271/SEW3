@@ -241,3 +241,25 @@ button.btn.mar_button .glyphicon{
     margin-left: 16.6667%;
     padding: 0;
 }
+
+/* PODSTRONY ZOLNIERZA */
+.soldier_option_page{
+    text-align: left;
+}
+
+.soldier_option_page #add_form table .add_select{
+    width: 500px;
+}
+
+.soldier_option_page #add_form table td{
+    vertical-align: middle;
+}
+
+.soldier_option_page #table_list{
+    margin-top: 100px;
+    width: 100%;
+}
+
+.soldier_option_page.container .controller_title{
+    text-align: left;
+}

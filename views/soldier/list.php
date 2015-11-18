@@ -71,7 +71,7 @@
                             <span class="glyphicon glyphicon-screenshot"></span>
                         </a>
                         
-                        <a href="#" class="soldier_missions" title="Misje">
+                        <a href="/zolnierze/<?php echo $key; ?>/misje/" class="soldier_missions" title="Misje">
                             <span class="glyphicon glyphicon-move"></span>
                         </a>
                         
