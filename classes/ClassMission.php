@@ -101,6 +101,11 @@
             return $array;
         }
         
+        // sprawdzanie czy misja istnieje
+        public static function isMission($id_mission){
+            return self::sqlMissionExist($id_mission);
+        }
+        
         /* **************** SQL *************** */
         /* ************************************ */
         
@@ -179,6 +184,21 @@
             }
             
             return $sql;
+        }
+        
+        // sprawdzanie czy misja istnieje
+        public static function sqlMissionExist($id_mission){
+            global $DB;
+            $table_name = (self::$use_prefix ? self::$prefix : '').self::$definition['table'];
+            
+            $zapytanie = "SELECT ".self::$definition['primary']." FROM `{$table_name}` WHERE `".self::$definition['primary']."` = '{$id_mission}' AND `deleted` = '0'";
+            $sql = $DB->pdo_fetch($zapytanie);
+            
+            if(!$sql || !is_array($sql) || count($sql) < 1){
+                return false;
+            }
+            
+            return true;
         }
     }
 ?>

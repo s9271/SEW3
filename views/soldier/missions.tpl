@@ -29,6 +29,11 @@
                             <button class="btn btn-primary" type="submit" name="form_action" value="add_mission">Przydziel do misji</button>
                         </td>
                     </tr>
+                    <tr>
+                        <td class="add_description" colspan="2">
+                            <textarea name="add_form_description" class="form-control input-sm" placeholder="Dodatkowe informacje (opcjonalnie)"><?php echo ((isset($this->tpl_values['add_form_description']) && $this->tpl_values['add_form_description'] != '') ? $this->tpl_values['add_form_description'] : ''); ?></textarea>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </form>

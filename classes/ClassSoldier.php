@@ -73,6 +73,16 @@
             return true;
         }
         
+        // sprawdzanie czy zolnierz istnieje
+        public static function isSoldier($id_soldier){
+            return self::sqlSoldierExist($id_soldier);
+        }
+        
+        // sprawdzanie czy zolnierz posiada dana misje
+        public static function soldierHasMission($id_soldier, $id_mission){
+            return self::sqlSoldierHasMission($id_soldier, $id_mission);
+        }
+        
         /* **************** SQL *************** */
         /* ************************************ */
         
@@ -101,6 +111,51 @@
             return $sql;
         }
         
+        // sprawdzanie czy zolnierz istnieje
+        public static function sqlSoldierExist($id_soldier){
+            global $DB;
+            $zapytanie = "SELECT id FROM soldiers WHERE `id` = {$id_soldier}";
+            $sql = $DB->pdo_fetch($zapytanie);
+            
+            if(!$sql || !is_array($sql) || count($sql) < 1){
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // pobieranie misji z ktorymi zolnierz juz jest powiazany
+        public static function sqlGetSoldier2Missions($id_soldier){
+            global $DB;
+            $zapytanie = "SELECT `id_mission`, `id_soldier2missions`, `id_soldier` FROM `sew_soldier2missions` WHERE `id_soldier` = '{$id_soldier}' AND `deleted` = '0'";
+            $sql = $DB->pdo_fetch_all_group($zapytanie);
+            
+            if(!$sql || !is_array($sql) || count($sql) < 1){
+                return false;
+            }
+            
+            return $sql;
+        }
+        
+        // sprawdzanie czy zolnierz posiada dana misje
+        public static function sqlSoldierHasMission($id_soldier, $id_mission){
+            global $DB;
+            $zapytanie = "SELECT `id_soldier`
+                FROM `sew_soldier2missions`
+                WHERE `id_soldier` = '{$id_soldier}'
+                    AND `id_mission` = '{$id_mission}'
+                    AND `deleted` = '0'
+            ;";
+                
+            $sql = $DB->pdo_fetch($zapytanie);
+            
+            if(!$sql || !is_array($sql) || count($sql) < 1){
+                return false;
+            }
+            
+            return true;
+        }
+        
         /* *************** AJAX ************** */
         /* *********************************** */
         
@@ -114,9 +169,9 @@
             $array['items'] = array();
             
             // sprawdzanie czy zolnierz istnieje
-            // if(!ClassSoldier::isSoldier($ajax_get['id_soldier'])){
-                // return array('error' => 'Żołnierz nie istnieje.');
-            // }
+            if(!self::isSoldier($ajax_get['id_soldier'])){
+                return array('error' => 'Żołnierz nie istnieje.');
+            }
             
             // wyszukiwanie misji
             $table_mission = 'sew_missions';
@@ -128,7 +183,7 @@
             }
             
             // pobieranie misji z ktorymi zolnierz juz jest powiazany
-            // $soldier_missions = ClassSoldier::sqlGetSoldier2Missions($ajax_get['id_soldier']);
+            $soldier_missions = self::sqlGetSoldier2Missions($ajax_get['id_soldier']);
             
             if(!$soldier_missions){
                 foreach($sql_search as $mission){

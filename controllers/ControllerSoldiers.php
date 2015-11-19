@@ -265,6 +265,9 @@
                 case 'mission_save':
                     return $this->edit(); // edycja
                 break;
+                case 'add_mission':
+                    return $this->addMissionToSoldier(); // powiazanie zolnierza z misja
+                break;
             }
             
             return;
@@ -382,6 +385,90 @@
             $_POST = array();
             
             return;
+        }
+        
+        // powiazanie zolnierza z misja
+        protected function addMissionToSoldier(){
+            $id_soldier = ClassTools::getValue('id_soldier');
+            $id_mission = ClassTools::getValue('add_form_list_id');
+            
+            // sprawdzanie czy zolnierz istnieje
+            if(!ClassSoldier::isSoldier($id_soldier)){
+                $this->alerts['danger'] = "Żołnierz nie istnieje.";
+                return;
+            }
+            
+            // sprawdzanie czy misja istnieje
+            if(!ClassMission::isMission($id_mission)){
+                $this->alerts['danger'] = "Misja nie istnieje.";
+                return;
+            }
+        
+            // sprawdzanie czy zolnierz posiada dana misje
+            if(ClassSoldier::soldierHasMission($id_soldier, $id_mission)){
+                $this->alerts['danger'] = "Żołnierz posiada już tą misję.";
+                return;
+            }
+            
+            // sprawdzenie czy misja nie koliduje ze szkoleniem
+            
+            // ladowanie zolnierza przez klase
+            $soldier = new ClassSoldier($id_soldier);
+            
+            // sprawdzanie czy poprawnie klasa zaladowala zolnierza
+            if(!$soldier->load_class){
+                $this->alerts['danger'] = "Klasa nie mogła załadować żołnierza.";
+                return;
+            }
+            
+            
+            /* 
+            
+            // ladowanie klasy i misji
+            $mission = new ClassMission($_POST['id_mission']);
+            
+            // sprawdza czy klasa zostala poprawnie zaladowana
+            if(!$mission->load_class){
+                $this->alerts['danger'] = "Misja nie istnieje.";
+            }
+            
+            // przypisanie zmiennych wyslanych z formularza do danych w klasie
+            $mission->id_mission_type = $_POST['form_type'];
+            $mission->name = $_POST['form_name'];
+            $mission->location = $_POST['form_location'];
+            $mission->description = $_POST['form_description'];
+            // $mission->id_user = ClassAuth::getCurrentUserId();
+            $mission->id_user = '999';
+            $mission->date_start = $_POST['form_date_start'];
+            $mission->date_end = $_POST['form_date_end'] != '' ? $_POST['form_date_end'] : NULL;
+            $mission->active = (isset($_POST['form_active']) && $_POST['form_active'] == '1') ? '1' : '0';
+            $mission->deleted = '0';
+            
+            // custom - dodatkowy warunek odnosnie dat
+            // sprawdza, czy data rozpoczecia nie jest mniejsza niz data zakonczenia
+            if($mission->date_end != NULL && ClassMission::validIsDateTime($mission->date_start) && ClassMission::validIsDateTime($mission->date_end)){
+                $date_start = date('Y-m-d H:i:s', strtotime($mission->date_start));
+                $date_end = date('Y-m-d H:i:s', strtotime($mission->date_end));
+                
+                if($date_start > $date_end){
+                    $mission->errors[] = "Data rozpoczęcia misji jest większa od daty końca misji.";
+                }
+            }
+            
+            // komunikaty
+            if(!$mission->update()){
+                $this->alerts['danger'] = $mission->errors;
+                return;
+            }
+            
+            // komunikat
+            $this->alerts['success'] = "Poprawnie zaktualizowano misję: <b>{$mission->name}</b>";
+            
+            // czyszczeie zmiennych wyswietlania
+            $this->tpl_values = '';
+            $_POST = array();
+            
+            return; */
         }
     }
 ?>

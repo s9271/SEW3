@@ -263,3 +263,11 @@ button.btn.mar_button .glyphicon{
 .soldier_option_page.container .controller_title{
     text-align: left;
 }
+
+.soldier_option_page.container .sew-alert{
+    margin: 0;
+}
+
+.soldier_option_page.container .sew-alert .alert{
+    margin-bottom: 30px;
+}
