@@ -100,5 +100,60 @@
             
             return $sql;
         }
+        
+        /* *************** AJAX ************** */
+        /* *********************************** */
+        
+        // wyszukiwanie misji dla zolnierzy
+        public static function sqlSearchMissionForSoldier($ajax_get){
+            if(!isset($ajax_get['id_soldier']) || $ajax_get['id_soldier'] == ''){
+                return array('error' => 'Nie podano identyfikatora żołnierza.');
+            }
+            
+            global $DB;
+            $array['items'] = array();
+            
+            // sprawdzanie czy zolnierz istnieje
+            // if(!ClassSoldier::isSoldier($ajax_get['id_soldier'])){
+                // return array('error' => 'Żołnierz nie istnieje.');
+            // }
+            
+            // wyszukiwanie misji
+            $table_mission = 'sew_missions';
+            $sql_search = $DB->search($table_mission, array('name' => "%{$ajax_get['search']}%"), '`id_mission`, `name`', "`deleted` = '0'");
+            
+            // gdy nie ma misji wyswietli brak
+            if(!$sql_search){
+                return $array;
+            }
+            
+            // pobieranie misji z ktorymi zolnierz juz jest powiazany
+            // $soldier_missions = ClassSoldier::sqlGetSoldier2Missions($ajax_get['id_soldier']);
+            
+            if(!$soldier_missions){
+                foreach($sql_search as $mission){
+                    $array['items'][] = array('id' => $mission['id_mission'], 'text' => $mission['name']);
+                }
+            }else{
+                $i = 0;
+                
+                foreach($sql_search as $mission){
+                    $array['items'][$i] = array('id' => $mission['id_mission'], 'text' => $mission['name']);
+                    
+                    if(isset($soldier_missions[$mission['id_mission']])){
+                        $array['items'][$i]['disabled'] = true;
+                    }
+                    $i++;
+                }
+            }
+            // $array['items'] = array(
+                // array('id' => '1', 'text' => 'teeeest'),
+                // array('id' => '2', 'text' => 'teeeest2'),
+                // array('id' => '3', 'text' => 'teeeest3'),
+                // array('id' => '4', 'text' => 'teeeest4', 'disabled' => true),
+            // );
+            
+            return $array;
+        }
     }
 ?>

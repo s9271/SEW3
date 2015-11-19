@@ -68,7 +68,11 @@ if (typeof jQuery === 'undefined') {
                     return query;
                 },
                 processResults: function (data, params){
-                    if(typeof data.error != 'undefined'){
+                    if(!data){
+                        console.error('Błąd pobierania danych.');
+                        data = ['items'];
+                        data.items = [];
+                    }else if(typeof data.error != 'undefined'){
                         console.error(data.error);
                         data.items = [];
                     }

@@ -1,7 +1,7 @@
 <?php
     /*
         Klasa: ClassSQL
-        Wersja: 1.5
+        Wersja: 1.6
         Opis: Obsluga baz danych
         
         Brak praw do kopiowania klasy!!!
@@ -243,6 +243,59 @@
                 
                 $sql = "DELETE FROM `{$table}` WHERE {$where}";
                 return $this->pdo_query($sql);
+            }
+        
+            public function search($table, $like, $select = '*', $where = false){
+                if(!is_array($like)){
+                    $this->errors[] = "</b>SQL wyszukiwanie<b>: Zły typ wartości LIKE.";
+                    return false;
+                }
+                
+                if(!$select || $select == null || $select == ''){
+                    $select = '*';
+                }
+                
+                $first = true;
+                
+                $sql = "SELECT {$select} FROM `{$table}` WHERE ";
+                
+                foreach($like as $key => $search){
+                    if(!$first){
+                        $sql .= " AND ";
+                    }
+                    
+                    // $sql .= "`{$key}` LIKE '%:{$key}%'";
+                    $sql .= "`{$key}` LIKE :{$key}";
+                    
+                    if($first){
+                        $first = false;
+                    }
+                }
+                
+                if($where){
+                    $sql .= " AND {$where}";
+                }
+                
+                $statement = $this->pdo->prepare($sql);
+                
+                foreach($like as $key => $search){
+                    $statement->bindValue(':'.$key, $search, PDO::PARAM_STR);  
+                }
+                
+                if (!$statement->execute()) {
+                    $error = $statement->errorInfo();
+                    die("Problem z wyszukaniem rekordu: ".utf8_encode($error['2']));
+                    return false;
+                }
+                
+                $results = $statement->fetchAll(PDO::FETCH_ASSOC);
+                
+                if(!$results || !is_array($results) || count($results) < 1){
+                    $this->errors[] = "</b>SQL wyszukiwanie<b>: Brak rekordu w bazie.";
+                    return false;
+                }
+                
+                return $results;
             }
     }
 ?>

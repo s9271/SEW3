@@ -15,7 +15,7 @@
                 <tbody>
                     <tr>
                         <td class="add_select">
-                            <select class="form-control input-sm jsselectajax" data-ajax-class="<?php echo $this->tpl_values['ajax_class']; ?>" data-ajax-function="<?php echo $this->tpl_values['ajax_function']; ?>" data-id-soldier="<?php echo $this->tpl_values['id_soldier']; ?>" id="add_form_list" name="add_form_list" required="required">
+                            <select class="form-control input-sm jsselectajax" data-ajax-class="<?php echo $this->tpl_values['ajax_class']; ?>" data-ajax-function="<?php echo $this->tpl_values['ajax_function']; ?>" data-id-soldier="<?php echo $this->tpl_values['id_soldier']; ?>" id="add_form_list_id" name="add_form_list_id" required="required">
                             </select>
                             
                             <?php if(isset($this->tpl_values['add_hint']) && $this->tpl_values['add_hint'] != ''): ?>

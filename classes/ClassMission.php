@@ -180,31 +180,5 @@
             
             return $sql;
         }
-        
-        /* *************** AJAX ************** */
-        /* *********************************** */
-        
-        // wyszukiwanie misji dla zolnierzy
-        public static function sqlSearchMissionForSoldier($ajax_get){
-            if(!isset($ajax_get['id_soldier']) || $ajax_get['id_soldier'] == ''){
-                return array('error' => 'Nie podano identyfikatora żołnierza.');
-            }
-            // if($sql = parent::sqlGetAllItems($using_pages, $current_page, $items_on_page)){
-                // foreach($sql as $key => $val){
-                    // $sql[$key]['mission_type_name'] = self::sqlGetTypeNameId($val['id_mission_type']);
-                    // $sql[$key]['date_end_name'] = self::getDateEndNameByDateEnd($val['date_end']);
-                    // $sql[$key]['status'] = self::getStatusName($val['date_end'], $val['active']);
-                // }
-            // }
-        $array['items'] = array(
-            array('id' => '1', 'text' => 'teeeest'),
-            array('id' => '2', 'text' => 'teeeest2'),
-            array('id' => '3', 'text' => 'teeeest3'),
-            array('id' => '4', 'text' => 'teeeest4', 'disabled' => true),
-        );
-            
-            return $array;
-            // return $sql;
-        }
     }
 ?>

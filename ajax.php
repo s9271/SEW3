@@ -73,6 +73,12 @@
         echo json_encode($array);
         exit;
     }
+
+    // pobieranie danych do bazy
+    require_once("config/db.php");
+
+    // globalna zmienna do operacji na bazie danych
+    $DB = new ClassSQL(DB_HOST, DB_USER, DB_PASS, DB_NAME);
     
     // wykonywanie funkcji i przeslanie jej do ajaxa
     echo json_encode($class_name::$function_name($_GET));

@@ -67,7 +67,7 @@
             // $this->tpl_values = ClassTraining::sqlGetAllItems($this->using_pages, $this->current_page, $this->items_on_page);
             
             // nazwa klasy i funkcji z ktorej bedzie pobierac opcje do selekta (w klasie musi istniec statyczna funkcja do obslugi tego ajaxa)
-            $this->tpl_values['ajax_class'] = 'mission';
+            $this->tpl_values['ajax_class'] = 'soldier';
             $this->tpl_values['ajax_function'] = 'sqlSearchMissionForSoldier';
             
             // test
