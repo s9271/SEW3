@@ -1,7 +1,7 @@
 <?php
     /*
         Klasa: ClassSQL
-        Wersja: 1.6
+        Wersja: 1.6.2
         Opis: Obsluga baz danych
         
         Brak praw do kopiowania klasy!!!
@@ -107,12 +107,16 @@
             // pobiera pierwsza kolumne jako klucz arraya
             // zwracanie: array([pierwsza_kolumna_value] => array('name' => 'value', ...), [pierwsza_kolumna_value] => array('name' => 'value', ...), ...)
             public function pdo_fetch_all_group($sql, $reset = true){
-                $statement = $this->pdo->query($sql);
+                if(!$statement = $this->pdoSelect($sql)){
+                    return false;
+                }
+                
                 $row = $statement->fetchAll(PDO::FETCH_ASSOC|PDO::FETCH_GROUP);
                 
                 if($reset){
                     $row = array_map('reset', $row);
                 }
+                
                 return $row;
             }
             
@@ -140,6 +144,19 @@
                     return $id;
                 }
                 return false;
+            }
+            
+            // pobieranie sql-a oraz wyswietleniu bledu przy blednej probie poobierania rekordow
+            protected function pdoSelect($sql){
+                $statement = $this->pdo->prepare($sql);
+                
+                if (!$statement->execute()) {
+                    $error = $statement->errorInfo();
+                    die("Problem z zapytaniem do bazy: ".utf8_encode($error['2']));
+                    return false;
+                }
+                
+                return $statement;
             }
         
         /* ************* DODATKOWE ************ */

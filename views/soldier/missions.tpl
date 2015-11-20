@@ -31,6 +31,7 @@
                     </tr>
                     <tr>
                         <td class="add_description" colspan="2">
+                            <!-- <label for="add_form_description" class="control-label">Dodatkowe informacje (opcjonalnie):</label> -->
                             <textarea name="add_form_description" class="form-control input-sm" placeholder="Dodatkowe informacje (opcjonalnie)"><?php echo ((isset($this->tpl_values['add_form_description']) && $this->tpl_values['add_form_description'] != '') ? $this->tpl_values['add_form_description'] : ''); ?></textarea>
                         </td>
                     </tr>

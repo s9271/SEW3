@@ -411,6 +411,18 @@
             }
             
             // sprawdzenie czy misja nie koliduje ze szkoleniem
+            if($training = ClassSoldier::checkSoldierMissionConflictWithTraining($id_soldier, $id_mission)){
+                $this->alerts['warning'] = "Czas misji koliduje się ze szkoleniem <b>{$training['name']}</b>, które odbywa się w tym samym czasie. Czy mimo tego chcesz przydzielić żołnierza do misji?";
+                $this->alerts['warning'] .= '
+                    <form method="post" action="" class="clearfix">
+                        <input type="hidden" name="id_soldier" value="'.$id_soldier.'" />
+                        <input type="hidden" name="id_mission" value="'.$id_mission.'" />
+                        <button class="btn btn-primary" type="submit" name="form_action" value="add_mission_important">Przydziel mimo to</button>
+                        <a href="/zolnierze/'.$id_soldier.'/misje/" class="btn btn-danger" title="Nie przydzielaj">Nie przydzielaj</a>
+                    </form>
+                ';
+                return;
+            }
             
             // ladowanie zolnierza przez klase
             $soldier = new ClassSoldier($id_soldier);

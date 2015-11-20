@@ -83,6 +83,17 @@
             return self::sqlSoldierHasMission($id_soldier, $id_mission);
         }
         
+        // sprawdzenie czy misja nie koliduje ze szkoleniem
+        public static function checkSoldierMissionConflictWithTraining($id_soldier, $id_mission){
+            // pobieranie szkolen zolnierza
+            if(!self::sqlGetSoldier2Trainings($id_soldier)){
+                return false;
+            }
+            
+            
+            // return self::sqlGetSoldier2Trainings($id_soldier);
+        }
+        
         /* **************** SQL *************** */
         /* ************************************ */
         
@@ -128,6 +139,19 @@
         public static function sqlGetSoldier2Missions($id_soldier){
             global $DB;
             $zapytanie = "SELECT `id_mission`, `id_soldier2missions`, `id_soldier` FROM `sew_soldier2missions` WHERE `id_soldier` = '{$id_soldier}' AND `deleted` = '0'";
+            $sql = $DB->pdo_fetch_all_group($zapytanie);
+            
+            if(!$sql || !is_array($sql) || count($sql) < 1){
+                return false;
+            }
+            
+            return $sql;
+        }
+        
+        // pobieranie szkolen z ktorymi zolnierz juz jest powiazany
+        public static function sqlGetSoldier2Trainings($id_soldier){
+            global $DB;
+            $zapytanie = "SELECT `id_training`, `id_soldier2trainings`, `id_soldier` FROM `sew_soldier2trainings` WHERE `id_soldier` = '{$id_soldier}' AND `deleted` = '0'";
             $sql = $DB->pdo_fetch_all_group($zapytanie);
             
             if(!$sql || !is_array($sql) || count($sql) < 1){
