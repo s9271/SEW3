@@ -60,6 +60,7 @@
     
     // #4 warunek sprawdza czy klasa istnieje
     $class_name = 'Class'.ucfirst($_GET['ajax_module']);
+    
     if (!class_exists($class_name)){
         $array['error'] = 'Klasa nie istnieje';
         echo json_encode($array);

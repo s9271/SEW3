@@ -39,7 +39,7 @@
             </table>
         </form>
         
-        <a href="#" class="btn btn-info mar_button"><span class="glyphicon glyphicon-chevron-left"></span>Powrót do listy żołnierzy</a>
+        <a href="/soldier.php?action=list" class="btn btn-info mar_button"><span class="glyphicon glyphicon-chevron-left"></span>Powrót do listy żołnierzy</a>
         
         <table class="table table-striped table-bordered table-hover" id="table_list">
             <thead>

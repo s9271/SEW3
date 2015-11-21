@@ -364,7 +364,7 @@
         
         // pobieranie rekordu
         public function getItem($id){
-            if(!$values = $this->sqlGetItem($id)){
+            if(!$values = self::sqlGetItem($id)){
                 $this->errors[] = "Brak rekordu w bazie.";
                 return false;
             }
@@ -411,7 +411,7 @@
             if(static::$is_log){
                 $table_name_log = static::$prefix_log.$table;
                 
-                if(!$item_to_log = $this->sqlGetItem($this->id)){
+                if(!$item_to_log = self::sqlGetItem($this->id)){
                     $this->errors[] = "LOG: Błąd podczas pobierania rekordu z bazy.";
                     return false;
                 }
@@ -434,7 +434,7 @@
             if(static::$is_log){
                 $table_name_log = static::$prefix_log.$table;
                 
-                if(!$item_to_log = $this->sqlGetItem($id_item)){
+                if(!$item_to_log = self::sqlGetItem($id_item)){
                     $this->errors[] = "LOG: Błąd podczas pobierania rekordu z bazy.";
                     return false;
                 }
@@ -458,7 +458,7 @@
         }
         
         // pobieranie rekordu
-        protected function sqlGetItem($id){
+        public static function sqlGetItem($id){
             global $DB;
             $table_name = (static::$use_prefix ? static::$prefix : '').static::$definition['table'];
             $where = '';

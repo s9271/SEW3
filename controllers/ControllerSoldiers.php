@@ -52,32 +52,6 @@
             return $this->getPageList();
         }
         
-        // strona z lista misjii zolnierza
-        protected function getPageMissions(){
-            $this->actions();
-            
-            // tytul strony
-            $this->tpl_title = 'Misje żołnierza';
-            
-            // ladowanie funkcji
-            $this->load_select2 = true;
-            $this->load_js_functions = true;
-            
-            // pobieranie wszystkich rekordow
-            // $this->tpl_values = ClassTraining::sqlGetAllItems($this->using_pages, $this->current_page, $this->items_on_page);
-            
-            // nazwa klasy i funkcji z ktorej bedzie pobierac opcje do selekta (w klasie musi istniec statyczna funkcja do obslugi tego ajaxa)
-            $this->tpl_values['ajax_class'] = 'soldier';
-            $this->tpl_values['ajax_function'] = 'sqlSearchMissionForSoldier';
-            
-            // test
-            $this->tpl_values['name'] = 'Imie Nazwisko';
-            $this->tpl_values['id_soldier'] = '1';
-            
-            // ladowanie strony z lista misji
-            return $this->loadTemplate('/soldier/missions');
-        }
-        
         // strona lista misjii
         protected function getPageList(){
             $this->actions();
@@ -241,6 +215,63 @@
             return $this->loadTemplate('/mission/view');
         }
         
+        /* *** MISJE *** */
+        /* ************* */
+        
+        // strona z lista misjii zolnierza
+        protected function getPageMissions(){
+            
+            // zmienne wyswietlania na wypadek gdy strona z misja nie istnieje
+            $this->tpl_values['wstecz'] = '/soldier.php?action=list';
+            $this->tpl_values['title'] = 'Misje żołnierza';
+            
+            // sprawdzanie czy id istnieje w linku
+            if(!$id_soldier = ClassTools::getValue('id_soldier')){
+                $this->alerts['danger'] = 'Brak podanego id';
+                
+                // ladowanie strony do wyswietlania bledow
+                // zmienne ktore mozna uzyc: wstecz, title oraz alertow
+                return $this->loadTemplate('alert');
+            }
+            
+            // ladowanie klasy i misji
+            $soldier = new ClassSoldier($id_soldier);
+            
+            // sprawdzanie czy misja zostala poprawnie zaladowana
+            if(!$soldier->load_class){
+                $this->alerts['danger'] = 'Żołnierz nie istnieje';
+                
+                // ladowanie strony do wyswietlania bledow
+                // zmienne ktore mozna uzyc: wstecz, title oraz alertow
+                return $this->loadTemplate('alert');
+            }
+            
+            $this->actions();
+            
+            // tytul strony
+            $this->tpl_title = 'Misje żołnierza';
+            
+            // ladowanie funkcji
+            $this->load_select2 = true;
+            $this->load_js_functions = true;
+            
+            // pobieranie wszystkich rekordow
+            // $this->tpl_values = ClassTraining::sqlGetAllItems($this->using_pages, $this->current_page, $this->items_on_page);
+            
+            // nazwa klasy i funkcji z ktorej bedzie pobierac opcje do selekta (w klasie musi istniec statyczna funkcja do obslugi tego ajaxa)
+            $this->tpl_values['ajax_class'] = 'Soldier2Missions';
+            $this->tpl_values['ajax_function'] = 'sqlSearchMissionForSoldier';
+            
+            // imie i nazwisko
+            $this->tpl_values['name'] = $soldier->soldierName.' '.$soldier->soldierSurname;
+            
+            // id zolnierza
+            $this->tpl_values['id_soldier'] = $soldier->id;
+            
+            // ladowanie strony z lista misji
+            return $this->loadTemplate('/soldier/missions');
+        }
+        
         /* *************** AKCJE ************** */
         /* ************************************ */
         
@@ -387,6 +418,10 @@
             return;
         }
         
+        
+        /* *** MISJE *** */
+        /* ************* */
+        
         // powiazanie zolnierza z misja
         protected function addMissionToSoldier(){
             $id_soldier = ClassTools::getValue('id_soldier');
@@ -405,25 +440,26 @@
             }
         
             // sprawdzanie czy zolnierz posiada dana misje
-            if(ClassSoldier::soldierHasMission($id_soldier, $id_mission)){
+            if(ClassSoldier2Missions::soldierHasMission($id_soldier, $id_mission)){
                 $this->alerts['danger'] = "Żołnierz posiada już tą misję.";
                 return;
             }
             
             // sprawdzenie czy misja nie koliduje ze szkoleniem
-            if($training = ClassSoldier::checkSoldierMissionConflictWithTraining($id_soldier, $id_mission)){
+            if($training = ClassSoldier2Missions::checkSoldierMissionConflictWithTraining($id_soldier, $id_mission)){
                 $this->alerts['warning'] = "Czas misji koliduje się ze szkoleniem <b>{$training['name']}</b>, które odbywa się w tym samym czasie. Czy mimo tego chcesz przydzielić żołnierza do misji?";
                 $this->alerts['warning'] .= '
                     <form method="post" action="" class="clearfix">
                         <input type="hidden" name="id_soldier" value="'.$id_soldier.'" />
                         <input type="hidden" name="id_mission" value="'.$id_mission.'" />
+                        <input type="hidden" name="description_add" value="'.ClassTools::getValue('add_form_description').'" />
                         <button class="btn btn-primary" type="submit" name="form_action" value="add_mission_important">Przydziel mimo to</button>
                         <a href="/zolnierze/'.$id_soldier.'/misje/" class="btn btn-danger" title="Nie przydzielaj">Nie przydzielaj</a>
                     </form>
                 ';
                 return;
             }
-            
+            /* 
             // ladowanie zolnierza przez klase
             $soldier = new ClassSoldier($id_soldier);
             
@@ -431,56 +467,29 @@
             if(!$soldier->load_class){
                 $this->alerts['danger'] = "Klasa nie mogła załadować żołnierza.";
                 return;
-            }
+            } */
             
+            $soldier2mission = new ClassSoldier2Missions();
+            $soldier2mission->id_soldier = $id_soldier;
+            $soldier2mission->id_mission = $id_mission;
+            $soldier2mission->id_user_add = '2';
+            // $soldier2mission->id_user_add = ClassAuth::getCurrentUserId();
+            $soldier2mission->description_add = ClassTools::getValue('add_form_description');
             
-            /* 
-            
-            // ladowanie klasy i misji
-            $mission = new ClassMission($_POST['id_mission']);
-            
-            // sprawdza czy klasa zostala poprawnie zaladowana
-            if(!$mission->load_class){
-                $this->alerts['danger'] = "Misja nie istnieje.";
-            }
-            
-            // przypisanie zmiennych wyslanych z formularza do danych w klasie
-            $mission->id_mission_type = $_POST['form_type'];
-            $mission->name = $_POST['form_name'];
-            $mission->location = $_POST['form_location'];
-            $mission->description = $_POST['form_description'];
-            // $mission->id_user = ClassAuth::getCurrentUserId();
-            $mission->id_user = '999';
-            $mission->date_start = $_POST['form_date_start'];
-            $mission->date_end = $_POST['form_date_end'] != '' ? $_POST['form_date_end'] : NULL;
-            $mission->active = (isset($_POST['form_active']) && $_POST['form_active'] == '1') ? '1' : '0';
-            $mission->deleted = '0';
-            
-            // custom - dodatkowy warunek odnosnie dat
-            // sprawdza, czy data rozpoczecia nie jest mniejsza niz data zakonczenia
-            if($mission->date_end != NULL && ClassMission::validIsDateTime($mission->date_start) && ClassMission::validIsDateTime($mission->date_end)){
-                $date_start = date('Y-m-d H:i:s', strtotime($mission->date_start));
-                $date_end = date('Y-m-d H:i:s', strtotime($mission->date_end));
-                
-                if($date_start > $date_end){
-                    $mission->errors[] = "Data rozpoczęcia misji jest większa od daty końca misji.";
-                }
-            }
-            
-            // komunikaty
-            if(!$mission->update()){
-                $this->alerts['danger'] = $mission->errors;
+            // komunikaty bledu
+            if(!$soldier2mission->add()){
+                $this->alerts['danger'] = $soldier2mission->errors;
                 return;
             }
             
-            // komunikat
-            $this->alerts['success'] = "Poprawnie zaktualizowano misję: <b>{$mission->name}</b>";
+            // komunikat sukcesu
+            $this->alerts['success'] = "Poprawnie przydzielono żołnierza <b>{$soldier2mission->soldier_name}</b> do misji <b>{$soldier2mission->mission_name}</b>.";
             
             // czyszczeie zmiennych wyswietlania
             $this->tpl_values = '';
             $_POST = array();
             
-            return; */
+            return;
         }
     }
 ?>
