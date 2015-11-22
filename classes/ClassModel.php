@@ -1,9 +1,9 @@
 <?php
     class ClassModel{
         // prefix uzywany do nazw tabel w bazach
-        protected static $prefix = 'sew_';
-        protected static $prefix_log = 'log_';
-        protected static $use_prefix = false;
+        public static $prefix = 'sew_';
+        public static $prefix_log = 'log_';
+        public static $use_prefix = false;
         
         // przypisuje sie na tru, gdy modul ma tabele z logami
         protected static $is_log = false;

@@ -8,24 +8,19 @@
     }
     
     // #1 warunek sprawdza czy istnieje sesja uzytkownika
-    if(
-        !$_SESSION ||
-        !isset($_SESSION['user_name']) ||
-        !isset($_SESSION['user_email']) ||
-        !isset($_SESSION['user_login_status']) ||
-        $_SESSION['user_name'] == '' ||
-        $_SESSION['user_email'] == '' ||
-        $_SESSION['user_login_status'] == ''
-    ){
-        $array['error'] = 'Użytkownik nie jest zalogowany.';
-        // $array['items'] = array(
-            // array('id' => '1', 'text' => 'teeeest'),
-            // array('id' => '2', 'text' => 'teeeest2'),
-            // array('id' => '3', 'text' => 'teeeest3'),
-        // );
-        echo json_encode($array);
-        exit;
-    }
+    // if(
+        // !$_SESSION ||
+        // !isset($_SESSION['user_name']) ||
+        // !isset($_SESSION['user_email']) ||
+        // !isset($_SESSION['user_login_status']) ||
+        // $_SESSION['user_name'] == '' ||
+        // $_SESSION['user_email'] == '' ||
+        // $_SESSION['user_login_status'] == ''
+    // ){
+        // $array['error'] = 'Użytkownik nie jest zalogowany.';
+        // echo json_encode($array);
+        // exit;
+    // }
     
     // #2 warunek sprawdza czy wszystkie zmienne w linku sa
     if(

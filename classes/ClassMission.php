@@ -1,6 +1,6 @@
 <?php
     class ClassMission extends ClassModel{
-        protected static $use_prefix = true;
+        public static $use_prefix = true;
         protected static $has_deleted_column = true;
         protected static $is_log = true;
         

@@ -218,9 +218,8 @@
         /* *** MISJE *** */
         /* ************* */
         
-        // strona z lista misjii zolnierza
+        // pobieranie strony misji
         protected function getPageMissions(){
-            
             // zmienne wyswietlania na wypadek gdy strona z misja nie istnieje
             $this->tpl_values['wstecz'] = '/soldier.php?action=list';
             $this->tpl_values['title'] = 'Misje żołnierza';
@@ -246,6 +245,60 @@
                 return $this->loadTemplate('alert');
             }
             
+            // print_r($_GET);
+            // sprawdzanie czy jest sie na podstronie
+            if($page_action_option = ClassTools::getValue('page_action_option')){
+                // zmienne wyswietlania na wypadek gdy strona z misja nie istnieje
+                $this->tpl_values['wstecz'] = "/zolnierze/{$id_soldier}/misje";
+                $this->tpl_values['title'] = 'Misjia żołnierza';
+                
+                // sprawdzanie czy id misji istnieje w linku
+                if(!$id_mission = ClassTools::getValue('page_action_id')){
+                    $this->alerts['danger'] = 'Brak podanego id';
+                    
+                    // ladowanie strony do wyswietlania bledow
+                    // zmienne ktore mozna uzyc: wstecz, title oraz alertow
+                    return $this->loadTemplate('alert');
+                }
+                
+                // ladowanie klasy i misji
+                $mission = new ClassMission($id_mission);
+                
+                // sprawdzanie czy misja zostala poprawnie zaladowana
+                if(!$mission->load_class){
+                    $this->alerts['danger'] = 'Misja nie istnieje';
+                    
+                    // ladowanie strony do wyswietlania bledow
+                    // zmienne ktore mozna uzyc: wstecz, title oraz alertow
+                    return $this->loadTemplate('alert');
+                }
+                
+                // sprawdzanie czy misja jest powiazana z zolnierzem
+                if(!ClassSoldier2Missions::sqlCheckSoldierToMission($soldier->id, $mission->id, ClassTools::getValue('page_action_option_id'))){
+                    $this->alerts['danger'] = 'Misja nie jest powiązana z tym żołnierzem';
+                    
+                    // ladowanie strony do wyswietlania bledow
+                    // zmienne ktore mozna uzyc: wstecz, title oraz alertow
+                    return $this->loadTemplate('alert');
+                }
+                
+                switch($page_action_option){
+                    case 'podglad':
+                        // ladowanie strony z podgladem misji
+                        return $this->getPageMissionsView($soldier, $mission);
+                    break;
+                    case 'oddeleguj':
+                        // ladowanie strony do odlegowania zolnierza
+                        return $this->getPageMissionsSeconded($soldier, $mission);
+                    break;
+                }
+            }
+            
+            return $this->getPageMissionsList($soldier);
+        }
+        
+        // strona z lista misjii zolnierza
+        protected function getPageMissionsList($soldier){
             $this->actions();
             
             // tytul strony
@@ -256,7 +309,7 @@
             $this->load_js_functions = true;
             
             // pobieranie wszystkich rekordow
-            // $this->tpl_values = ClassTraining::sqlGetAllItems($this->using_pages, $this->current_page, $this->items_on_page);
+            $this->tpl_values['table_list'] = ClassSoldier2Missions::getSoldierMissions($soldier->id, $this->using_pages, $this->current_page, $this->items_on_page);
             
             // nazwa klasy i funkcji z ktorej bedzie pobierac opcje do selekta (w klasie musi istniec statyczna funkcja do obslugi tego ajaxa)
             $this->tpl_values['ajax_class'] = 'Soldier2Missions';
@@ -270,6 +323,94 @@
             
             // ladowanie strony z lista misji
             return $this->loadTemplate('/soldier/missions');
+        }
+        
+        // strona z podgladem misji zolnierza
+        protected function getPageMissionsView($soldier, $mission){
+            $this->actions();
+            // page_action_option_id
+            // tytul strony
+            $this->tpl_title = 'Podgląd misji żołnierza';
+            
+            // ladowanie funkcji
+            $this->load_js_functions = true;
+            
+            // pobieranie misji
+            if(!$soldier_mission = ClassSoldier2Missions::getSoldierMission(ClassTools::getValue('page_action_option_id'), $soldier->id, $mission->id, $mission->date_end, $mission->active)){
+                $this->alerts['danger'] = 'Problem pobierania misji powiazanej do zolnierza';
+                return $this->loadTemplate('alert');
+            }
+            
+            // zmienne przydzialu
+            $this->tpl_values['s2m_date_add'] = $soldier_mission['date_add'];
+            $this->tpl_values['s2m_user_add'] = $soldier_mission['user_name'];
+            $this->tpl_values['s2m_description_add'] = ClassTools::nl2br($soldier_mission['description_add']);
+            $this->tpl_values['s2m_status'] = $soldier_mission['status'];
+            $this->tpl_values['s2m_deleted'] = $soldier_mission['deleted'];
+            $this->tpl_values['id_soldier2missions'] = $soldier_mission['id_soldier2missions'];
+            
+            if($soldier_mission['deleted'] == '1'){
+                $this->tpl_values['s2m_date_delete'] = $soldier_mission['date_delete'];
+                $this->tpl_values['s2m_user_delete'] = $soldier_mission['user_name_delete'];
+                $this->tpl_values['s2m_description_delete'] = ClassTools::nl2br($soldier_mission['description_delete']);
+            }
+            
+            // imie i nazwisko
+            $this->tpl_values['name'] = "Podgląd misji <b>{$mission->name}</b> żołnierza <b>{$soldier->soldierName} {$soldier->soldierSurname}</b>";
+            
+            // id zolnierza
+            $this->tpl_values['id_soldier'] = $soldier->id;
+            $this->tpl_values['id_mission'] = $mission->id;
+            
+            // misja
+            $this->tpl_values['id_mission'] = $mission->id;
+            $this->tpl_values['form_name'] = $mission->name;
+            $this->tpl_values['form_location'] = $mission->location;
+            $this->tpl_values['form_description'] = ClassTools::nl2br($mission->description);
+            $this->tpl_values['form_date_start'] = ClassMission::getPlDate($mission->date_start);
+            $this->tpl_values['form_date_end'] = ClassMission::getPlDate($mission->date_end);
+            $this->tpl_values['form_active'] = $mission->active;
+            $this->tpl_values['type'] = $mission->mission_type_name;
+            $this->tpl_values['date_update'] = $mission->date_update;
+            
+            // ladowanie strony z lista misji
+            return $this->loadTemplate('/soldier/missionView');
+        }
+        
+        // ladowanie strony do odlegowania zolnierza
+        protected function getPageMissionsSeconded($soldier, $mission){
+            $this->actions();
+            
+            // tytul strony
+            $this->tpl_title = 'Oddelegowanie żołnierza';
+            
+            // ladowanie funkcji
+            $this->load_js_functions = true;
+            
+            // pobieranie misji
+            if(!$soldier_mission = ClassSoldier2Missions::getSoldierMission(ClassTools::getValue('page_action_option_id'), $soldier->id, $mission->id, $mission->date_end, $mission->active)){
+                $this->alerts['danger'] = 'Problem pobierania misji powiazanej do zolnierza';
+                return $this->loadTemplate('alert');
+            }
+            
+            // print_r($soldier_mission);
+            
+            $this->tpl_values['s2m_deleted'] = $soldier_mission['deleted'];
+            
+            if($soldier_mission['deleted'] == '1'){
+                $this->alerts['danger'] = 'Zołnierz jest już oddelegowany od tej misji.';
+            }
+            
+            // imie i nazwisko
+            $this->tpl_values['name'] = "Oddelegowanie żołnierza <b>{$soldier->soldierName} {$soldier->soldierSurname}</b> z misji <b>{$mission->name}</b>";
+            
+            // id zolnierza
+            $this->tpl_values['id_soldier'] = $soldier->id;
+            $this->tpl_values['id_mission'] = $mission->id;
+            $this->tpl_values['id_soldier2missions'] = ClassTools::getValue('page_action_option_id');
+            
+            // ladowanie strony z lista misji
+            return $this->loadTemplate('/soldier/missionSeconded');
         }
         
         /* *************** AKCJE ************** */
@@ -298,6 +439,12 @@
                 break;
                 case 'add_mission':
                     return $this->addMissionToSoldier(); // powiazanie zolnierza z misja
+                break;
+                case 'soldier_mission_delete':
+                    return $this->deleteMissionFromSoldier(); // usuwanie misji z zolnierza
+                break;
+                case 'soldier_mission_seconded':
+                    return $this->secondedMissionFromSoldier(); // oddelegowywanie zolnierza od misji
                 break;
             }
             
@@ -472,7 +619,7 @@
             $soldier2mission = new ClassSoldier2Missions();
             $soldier2mission->id_soldier = $id_soldier;
             $soldier2mission->id_mission = $id_mission;
-            $soldier2mission->id_user_add = '2';
+            $soldier2mission->id_user_add = '4';
             // $soldier2mission->id_user_add = ClassAuth::getCurrentUserId();
             $soldier2mission->description_add = ClassTools::getValue('add_form_description');
             
@@ -487,6 +634,70 @@
             
             // czyszczeie zmiennych wyswietlania
             $this->tpl_values = '';
+            $_POST = array();
+            
+            return;
+        }
+        
+        // usuwanie powiazania zolnierza z misja
+        protected function deleteMissionFromSoldier(){
+            $id_soldier2missions = ClassTools::getValue('id_soldier2missions');
+            
+            // sprawdzanie czy misja istnieje w zolnierzu
+            if(!ClassSoldier2Missions::checkMissionInSoldier($id_soldier2missions)){
+                $this->alerts['danger'] = 'Misja nie jest powiązana z żołnierzem.';
+                return;
+            }
+            
+            $soldier2mission = new ClassSoldier2Missions($id_soldier2missions);
+            // $soldier2mission->id_user_delete = ClassAuth::getCurrentUserId();;
+            $soldier2mission->id_user_delete = '2';
+            
+            // usuwanie misji z zolnierza
+            if($soldier2mission->delete()){
+                // komunikat
+                $this->alerts['success'] = "Poprawnie usunięto misję powiązaną z żołnierzem";
+            }else{
+                // bledy w przypadku problemow z usunieciem misji
+                $this->alerts['danger'] = $soldier2mission->errors;
+            }
+            
+            $_POST = array();
+            
+            return;
+        }
+        
+        // oddelegowywanie zolnierza od misji
+        protected function secondedMissionFromSoldier(){
+            $id_soldier2missions = ClassTools::getValue('id_soldier2missions');
+            $description_delete = ClassTools::getValue('description_delete');
+            
+            // sprawdzanie czy misja istnieje w zolnierzu
+            if(!ClassSoldier2Missions::checkMissionInSoldier($id_soldier2missions)){
+                $this->alerts['danger'] = 'Misja nie jest powiązana z żołnierzem.';
+                return;
+            }
+            
+            // sprawdzanie czy misja istnieje w zolnierzu
+            if(!ClassSoldier2Missions::checkMissionInSoldier2($id_soldier2missions)){
+                $this->alerts['danger'] = 'Żołnierz jest już oddelegowany od tej misji.';
+                return;
+            }
+            
+            $soldier2mission = new ClassSoldier2Missions($id_soldier2missions);
+            // $soldier2mission->id_user_delete = ClassAuth::getCurrentUserId();;
+            $soldier2mission->id_user_delete = '2';
+            $soldier2mission->description_delete = $description_delete;
+            
+            // oddelegowywanie zolnierza z misji
+            if($soldier2mission->seconded()){
+                // komunikat
+                $this->alerts['success'] = "Poprawnie oddelegowano żołnierza z misji";
+            }else{
+                // bledy w przypadku problemow z usunieciem misji
+                $this->alerts['danger'] = $soldier2mission->errors;
+            }
+            
             $_POST = array();
             
             return;

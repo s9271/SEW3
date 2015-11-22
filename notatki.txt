@@ -1,0 +1,5 @@
+zolnierz - misje
+    dodanie aktywnej misji do zolnierza -> zmiana misji na nieaktywna i dac zapytanie co zrobic z zolnierzami ktorzy sa juz przypisani do niej (nic, oddelegowanie czy usuniecie)
+    sprawdzenie przy przydzielaniu misji kolidacji z inna misja lub szkoleniem
+    zrobienie warunku ze gdy misja jest aktywna nie mozna zmienic nazwy ani dat
+    potrzebne stronnicowanie do listy

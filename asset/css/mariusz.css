@@ -208,6 +208,7 @@ button.btn.mar_button .glyphicon{
 .sew-row > .row_content{
     background-color: #fefefe;
     line-height: normal;
+    min-height: 37px;
     padding: 10px;
 }
 
@@ -264,10 +265,28 @@ button.btn.mar_button .glyphicon{
     text-align: left;
 }
 
+.soldier_option_page.container .controller_title_option{
+    font-size: 28px;
+}
+
+.soldier_option_page.container  .sew_hint{
+    margin-left: 16.6667%;
+    padding: 0;
+}
+
+.soldier_option_page.container .title_margin_top{
+    margin-top: 90px !important;
+}
+
 .soldier_option_page.container .sew-alert{
     margin: 0;
 }
 
 .soldier_option_page.container .sew-alert .alert{
     margin-bottom: 30px;
+}
+
+.jumbotron {
+    height: auto;
+    min-width: 830px;
 }

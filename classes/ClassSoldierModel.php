@@ -1,6 +1,6 @@
 <?php
     class ClassSoldierModel extends ClassModel{
-        protected static $use_prefix = true;
+        public static $use_prefix = true;
         protected static $has_deleted_column = true;
         
         // id zolnierza
@@ -8,6 +8,9 @@
         
         // usuniete
         public $deleted = 0;
+        
+        // usuniete pernamentne, nie bedzie pokazywane w panelu
+        public $deleted_pernament = 0;
         
         // id uzytkownika ktory dodal
         public $id_user_add = 0;

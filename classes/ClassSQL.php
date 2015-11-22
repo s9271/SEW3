@@ -78,7 +78,10 @@
             // $sql -> zapytanie SQL
             // zwracanie: array('name' => 'value', ...)
             public function pdo_fetch($sql){
-                $statement = $this->pdo->query($sql);
+                // $statement = $this->pdo->query($sql);
+                if(!$statement = $this->pdoSelect($sql)){
+                    return false;
+                }
                 $row = $statement->fetch(PDO::FETCH_ASSOC);
                 return $row;
             }
@@ -87,7 +90,10 @@
             // $sql -> zapytanie SQL
             // zwracanie: array([0] => array('name' => 'value', ...), [1] => array('name' => 'value', ...), ...)
             public function pdo_fetch_all($sql){
-                $statement = $this->pdo->query($sql);
+                // $statement = $this->pdo->query($sql);
+                if(!$statement = $this->pdoSelect($sql)){
+                    return false;
+                }
                 $row = $statement->fetchAll(PDO::FETCH_ASSOC);
                 return $row;
             }

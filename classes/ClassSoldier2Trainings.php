@@ -32,6 +32,17 @@
             // return self::sqlGetSoldier2Trainings($id_soldier);
         }
         
+        // sprawdzenie czy misja nie koliduje z inna misja
+        public static function checkSoldierMissionConflictWithOtherMission($id_soldier, $id_training){
+            // pobieranie szkolen zolnierza
+            if(!$missions = ClassSoldier2Missions::sqlGetSoldier2Missions($id_soldier)){
+                return false;
+            }
+            
+            
+            // return self::sqlGetSoldier2Trainings($id_soldier);
+        }
+        
         /* **************** SQL *************** */
         /* ************************************ */
         

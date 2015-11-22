@@ -55,19 +55,35 @@
             </thead>
             <tbody>
                 <?php 
-                    if($this->tpl_values && isset($this->tpl_values['table_list'])):
+                    if($this->tpl_values && isset($this->tpl_values['table_list']) && $this->tpl_values['table_list']):
                     foreach ($this->tpl_values['table_list'] as $key => $item):
                 ?>
                 
                 <tr>
                     <td class="table_name"><?php echo $item['name']; ?></td>
                     <td class="table_date_start"><?php echo $item['date_start']; ?></td>
-                    <td class="table_date_end"><?php echo $item['date_end_name']; ?></td>
+                    <td class="table_date_end"><?php echo $item['date_end']; ?></td>
                     <td class="table_status"><?php echo $item['status']; ?></td>
                     <td class="table_date_add"><?php echo $item['date_add']; ?></td>
-                    <td class="table_account"><?php echo $item['account']; ?></td>
+                    <td class="table_account"><?php echo $item['user_name']; ?></td>
                     <td class="table_akcje">
-                        <a href="/zolnierze/<?php echo $item['id_soldier']; ?>/misje/<?php echo $item['id_mission']; ?>" class="btn btn-danger jsconfirm" data-confirm="<?php echo $item['name']; ?>: Czy na pewno chcesz usunąć misję?" title="Usuń">Usuń</a>
+                        <form method="post" action="">
+                            <a href="/zolnierze/<?php echo $item['id_soldier']; ?>/misje/<?php echo $item['id_mission']; ?>/podglad/<?php echo $item['id_soldier2missions']; ?>" class="btn btn-primary" title="Podgląd">Podgląd</a>
+                            
+                            <?php if($item['mission_deleted'] == '1' || $item['deleted'] == '1'): ?>
+                            
+                            <span class="btn btn-default disabled">Oddeleguj</span>
+                            <span class="btn btn-default disabled">Usuń</span>
+                            
+                            <?php else: ?>
+                            
+                            <a href="/zolnierze/<?php echo $item['id_soldier']; ?>/misje/<?php echo $item['id_mission']; ?>/oddeleguj/<?php echo $item['id_soldier2missions']; ?>" class="btn btn-warning" title="Oddeleguj">Oddeleguj</a>
+                            <input type="hidden" name="id_soldier2missions" value="<?php echo $item['id_soldier2missions']; ?>" />
+                            <button class="btn btn-danger jsconfirm" data-confirm="Czy na pewno chcesz usunąć powiązanie żołnierza z misją?" type="submit" name="form_action" value="soldier_mission_delete">Usuń</button>
+                            
+                            <?php endif; ?>
+                            
+                        </form>
                     </td>
                 </tr>
                 <?php
