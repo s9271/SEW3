@@ -13,7 +13,7 @@
                 // require_once("config/db.php");
                 // require_once("classes/ClassSQL.php");
                 // require_once("classes/ClassModel.php");
-                // require_once("classes/ClassSoldier.php");
+                require_once("classes/ClassTools.php");
                 
                 // $DB = new ClassSQL(DB_HOST, DB_USER, DB_PASS, DB_NAME);
                 // $zapytanie = "SELECT * FROM soldiers";
@@ -42,7 +42,22 @@
                 // var_dump($ClassSoldier->id);
                 // var_dump($ClassSoldier->load_class);
                 
-                echo substr_replace('id_mission','log_',3,0); //xabcd 
+                // echo substr_replace('id_mission','log_',3,0); //xabcd 
+                
+                // require_once("libraries/password_compatibility_library.php");
+                // print_r(phpinfo());
+                // $options = array(
+                    // 'cost' => 12,
+                    // 'salt' => 'tesasd123lkasd1231245fgkfnkn!@#!@#@sdfst',
+                // );
+                // print_r($options);
+                // $p1 = password_hash("rasmuslerdorf", PASSWORD_BCRYPT, $options);
+                // $p2 = password_hash("rasmuslerdorf", PASSWORD_BCRYPT);
+                // echo $p1."<br />";
+                // echo $p2."<br />";
+                // var_dump(password_verify('rasmuslerdorf', $p1));
+                // var_dump(password_verify('rasmuslerdorf', $p2));
+                // echo ClassTools::generateRandomString(12);
             ?>
             
         </body>

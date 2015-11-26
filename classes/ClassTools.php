@@ -55,5 +55,34 @@
         public static function nl2br($str){
             return str_replace(array("\r\n", "\r", "\n"), '<br />', $str);
         }
+        
+        // ganarowanie random znakow
+        public static function generateRandomPasswd($length = 15, array $types = array()){
+            if(count($types) < 1){
+                $types = array('1', '2', '3', '4');
+            }
+            
+            $str = '';
+            
+            foreach($types as $type){
+                switch($type){
+                    case '1':
+                        $str .= '0123456789';
+                    break;
+                    case '2':
+                        $str .= 'abcdefghijklmnopqrstuvwxyz';
+                    break;
+                    case '3':
+                        $str .= 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                    break;
+                    case '4':
+                        $str .= '!@#$%^&*()[]{}\\|/,.<>?;:\'"';
+                    break;
+                }
+            }
+            
+            
+			return substr(str_shuffle($str), 0, $length);
+		}
     }
 ?>

@@ -3,3 +3,6 @@ zolnierz - misje
     sprawdzenie przy przydzielaniu misji kolidacji z inna misja lub szkoleniem
     zrobienie warunku ze gdy misja jest aktywna nie mozna zmienic nazwy ani dat
     potrzebne stronnicowanie do listy
+    
+haslo w sesji
+    przy kazdym poprawnym logowaniu bedzie generowac random ciag znakow przypisany do uzytkowanika i ip i bedzie podmieniany w sesji aby nikt z zewnatrz nie mogl podejrzec hasla.

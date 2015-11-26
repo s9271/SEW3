@@ -1,5 +1,6 @@
 <?php
 
+require_once("./libraries/password_compatibility_library.php");
 class Login
 {
     /**

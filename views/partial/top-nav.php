@@ -47,6 +47,17 @@
                     <li><a href="/user.php?action=list" class="btn disabled"><span class="glyphicon glyphicon-list-alt"></span>&emsp;&emsp;Pokaż Użytkowników</a></li>
                   </ul>
               </li>
+              
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="/misje">
+                        <span class="glyphicon glyphicon-edit"></span>&emsp;&emsp;Użytkownicy 2<span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu sidebar-nav">
+                        <li><a href="/uzytkownicy/dodaj"><span class="glyphicon glyphicon-plus"></span>&emsp;&emsp;Dodaj Użytkownika</a></li>
+                        <li><a href="/uzytkownicy"><span class="glyphicon glyphicon-list-alt"></span>&emsp;&emsp;Pokaż Użytkowników</a></li>
+                    </ul>
+                </li>
+                
               <li class="dropdown">
                   <a class="dropdown-toggle" data-toggle="dropdown" href="/military.php"><span class="glyphicon glyphicon-star-empty"></span>&emsp;&emsp;Jednostki Wojskowe<span class="caret"></span></a>
                   <ul class="dropdown-menu sidebar-nav">
