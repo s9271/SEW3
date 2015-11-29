@@ -27,10 +27,8 @@
         !$_GET ||
         !isset($_GET['ajax_function']) ||
         !isset($_GET['ajax_module']) ||
-        !isset($_GET['search']) ||
         $_GET['ajax_function'] == '' ||
-        $_GET['ajax_module'] == '' ||
-        $_GET['search'] == ''
+        $_GET['ajax_module'] == ''
     ){
         $array['error'] = 'Błąd polecenia.';
         echo json_encode($array);

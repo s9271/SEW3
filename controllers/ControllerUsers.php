@@ -74,11 +74,11 @@
             // ladowanie rodzajow misjii
             // $this->tpl_values['form_type'] = ClassMission::getTypes($id_current_type);
             
-            // zmienna ktora decyduje co formularz ma robic
-            $this->tpl_values['sew_action'] = 'add';
+            // ladowanie profili (uprawnien)
+            $this->tpl_values['form_permissions'] = ClassUser::getPermissions();
             
             // ladowanie strony z formularzem
-            return $this->loadTemplate('/user/form');
+            return $this->loadTemplate('/user/formAdd');
         }
         
         // strona edycji
@@ -205,10 +205,10 @@
             print_r($_POST);
             
             // przypisanie zmiennych posta do zmiennych template
-            $this->tpl_values = $_POST;
+            $this->tpl_values = $this->setValuesTemplateByPost();
             
             switch($_POST['form_action']){
-                case 'mission_add':
+                case 'user_add':
                     return $this->add(); // dodawanie
                 break;
                 case 'mission_delete':
@@ -224,37 +224,59 @@
         
         // dodawanie
         protected function add(){
-            $mission = new ClassMission();
-            $mission->id_mission_type = $_POST['form_type'];
-            $mission->name = $_POST['form_name'];
-            $mission->location = $_POST['form_location'];
-            $mission->description = $_POST['form_description'];
-            // $mission->id_user = ClassAuth::getCurrentUserId();
-            $mission->id_user = '1';
-            $mission->date_start = $_POST['form_date_start'];
-            $mission->date_end = $_POST['form_date_end'] != '' ? $_POST['form_date_end'] : NULL;
-            $mission->active = (isset($_POST['form_active']) && $_POST['form_active'] == '1') ? '1' : '0';
-            $mission->deleted = '0';
+            $active = ClassTools::getValue('form_active');
+            $military = ClassTools::getValue('form_military');
             
-            // custom - dodatkowy warunek odnosnie dat
-            // sprawdza, czy data rozpoczecia nie jest mniejsza niz data zakonczenia
-            if($mission->date_end != NULL && ClassMission::validIsDateTime($mission->date_start) && ClassMission::validIsDateTime($mission->date_end)){
-                $date_start = date('Y-m-d H:i:s', strtotime($mission->date_start));
-                $date_end = date('Y-m-d H:i:s', strtotime($mission->date_end));
-                
-                if($date_start > $date_end){
-                    $mission->errors[] = "Data rozpoczęcia misji jest większa od daty końca misji.";
-                }
-            }
+            $user = new ClassUser();
+            $user->login = ClassTools::getValue('form_login');
+            $user->mail = ClassTools::getValue('form_mail');
+            $user->password = ClassTools::getValue('form_password');
+            $user->id_permission = ClassTools::getValue('form_permission');
+            $user->id_military = $military == '0' ? null : $military;
+            $user->active = ($active && $active == '1') ? '1' : '0';
+            
+            $user->name = ClassTools::getValue('form_name');
+            $user->surname = ClassTools::getValue('form_surname');
+            $user->phone = ClassTools::getValue('form_phone');
+            // $user->id_user_add = ClassAuth::getCurrentUserId();
+            $user->id_user_add = '123';
             
             // komunikaty bledu
-            if(!$mission->add()){
-                $this->alerts['danger'] = $mission->errors;
+            if(!$user->add()){
+                $this->alerts['danger'] = $user->errors;
                 return;
             }
             
+            // $mission->id_mission_type = $_POST['form_type'];
+            // $mission->name = $_POST['form_name'];
+            // $mission->location = $_POST['form_location'];
+            // $mission->description = $_POST['form_description'];
+            // $mission->id_user = ClassAuth::getCurrentUserId();
+            // $mission->id_user = '1';
+            // $mission->date_start = $_POST['form_date_start'];
+            // $mission->date_end = $_POST['form_date_end'] != '' ? $_POST['form_date_end'] : NULL;
+            // $mission->active = (isset($_POST['form_active']) && $_POST['form_active'] == '1') ? '1' : '0';
+            // $mission->deleted = '0';
+            
+            // custom - dodatkowy warunek odnosnie dat
+            // sprawdza, czy data rozpoczecia nie jest mniejsza niz data zakonczenia
+            // if($mission->date_end != NULL && ClassMission::validIsDateTime($mission->date_start) && ClassMission::validIsDateTime($mission->date_end)){
+                // $date_start = date('Y-m-d H:i:s', strtotime($mission->date_start));
+                // $date_end = date('Y-m-d H:i:s', strtotime($mission->date_end));
+                
+                // if($date_start > $date_end){
+                    // $mission->errors[] = "Data rozpoczęcia misji jest większa od daty końca misji.";
+                // }
+            // }
+            
+            // komunikaty bledu
+            // if(!$mission->add()){
+                // $this->alerts['danger'] = $mission->errors;
+                // return;
+            // }
+            
             // komunikat sukcesu
-            $this->alerts['success'] = "Poprawnie dodano nową misję: <b>{$mission->name}</b>";
+            $this->alerts['success'] = "Poprawnie dodano nowego użytkownika: <b>{$user->name} {$user->surname}</b>";
             
             // czyszczeie zmiennych wyswietlania
             $this->tpl_values = '';

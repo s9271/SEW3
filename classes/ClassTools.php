@@ -2,12 +2,18 @@
     class ClassTools{
         
         // pobieranie wartosci z post i get
-        public static function getValue($key){
-            if (!isset($key) || empty($key) || !is_string($key)){
-                return false;
+        public static function getValue($key, $bool = true){
+            $return = false;
+            
+            if(!$bool){
+                $return = '';
             }
             
-            $ret = (isset($_POST[$key]) ? $_POST[$key] : (isset($_GET[$key]) ? $_GET[$key] : false));
+            if (!isset($key) || empty($key) || !is_string($key)){
+                return $return;
+            }
+            
+            $ret = (isset($_POST[$key]) ? $_POST[$key] : (isset($_GET[$key]) ? $_GET[$key] : $return));
 
             if (is_string($ret) === true)
                 $ret = urldecode(preg_replace('/((\%5C0+)|(\%00+))/i', '', urlencode($ret)));
@@ -63,26 +69,37 @@
             }
             
             $str = '';
+            $add = '';
             
             foreach($types as $type){
                 switch($type){
                     case '1':
-                        $str .= '0123456789';
+                        $val = '0123456789';
+                        $str .= $val;
+                        $add .= substr(str_shuffle($val), 0, 1);
                     break;
                     case '2':
-                        $str .= 'abcdefghijklmnopqrstuvwxyz';
+                        $val = 'abcdefghijklmnopqrstuvwxyz';
+                        $str .= $val;
+                        $add .= substr(str_shuffle($val), 0, 1);
                     break;
                     case '3':
-                        $str .= 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                        $val = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                        $str .= $val;
+                        $add .= substr(str_shuffle($val), 0, 1);
                     break;
                     case '4':
-                        $str .= '!@#$%^&*()[]{}\\|/,.<>?;:\'"';
+                        $val = '!@#$%^&*()[]{}\\|/,.<>?;:\'"';
+                        $str .= $val;
+                        $add .= substr(str_shuffle($val), 0, 1);
                     break;
                 }
             }
             
+            $str = substr(str_shuffle($str), 0, $length - count($types));
+            return str_shuffle($str.$add);
             
-			return substr(str_shuffle($str), 0, $length);
+			// return substr(str_shuffle($str), 0, $length);
 		}
     }
 ?>

@@ -53,12 +53,13 @@
                     continue;
                 }
                 
-                $values[$key] = trim($this->$key);
+                $values[$key] = $this->$key !== null ? trim($this->$key) : $this->$key;
                 
-                if((isset($valid['required']) && $valid['required']) && $values[$key] == ''){
+                if((isset($valid['required']) && $valid['required']) && $values[$key] == '' && $values[$key] !== null){
                     $this->errors[] = "<b>{$valid['name']}</b>: Proszę uzupełnić pole.";
                     continue;
                 }
+                // print_r($values);
                 
                 if(isset($valid['validate']) && is_array($valid['validate']) && count($valid['validate']) > 0){
                     foreach($valid['validate'] as $valid_key){
@@ -66,7 +67,7 @@
                     }
                 }
             }
-            // print_r($values);
+            
             return $values;
         }
         
@@ -162,7 +163,7 @@
         
         // pobieranie nazwy daty po dacie zakonczenia
         public static function getDateEndNameByDateEnd($date_end){
-            if($date_end == NULL || $date_end == '0000-00-00 00:00:00'){
+            if($date_end === NULL || $date_end == '0000-00-00 00:00:00'){
                 return 'Niezdefiniowano';
             }
             
@@ -193,7 +194,7 @@
                 return '0';
             }
             
-            if(($date_end != NULL && $date_end != '0000-00-00 00:00:00') && (strtotime($date_end) < strtotime("now"))){
+            if(($date_end !== NULL && $date_end != '0000-00-00 00:00:00') && (strtotime($date_end) < strtotime("now"))){
                 return '3';
             }
             
@@ -228,7 +229,7 @@
                     }
                 break;
                 case 'isInt':
-                    if(!$value_new = self::validIsInt($value)){
+                    if(!$value_new = static::validIsInt($value)){
                         $this->errors[] = "<b>{$name}</b>: Pole nie jest liczbą.";
                     }
                 break;
@@ -244,6 +245,10 @@
                 break;
                 case 'isBool':
                     if(!$value_new = self::validIsBool($value)){
+                        $this->errors[] = "<b>{$name}</b>: Niepoprawny format.";
+                    }
+                case 'isNormalChars':
+                    if(!$value_new = self::validIsNormalChars($value)){
                         $this->errors[] = "<b>{$name}</b>: Niepoprawny format.";
                     }
                 break;
@@ -266,9 +271,19 @@
             return false;
         }
         
+        // sprawdzanie czy wartosc sklada sie tylko z liter bez polskich znakow i liczb
+        public static function validIsNormalChars($value){
+            // asasdasd213ad
+            if (preg_match('/^[a-zA-Z0-9]+$/', $value)) {
+                return true;
+            }
+            
+            return false;
+        }
+        
         // sprawdzanie czy wartosc jest data
         public static function validIsDate($value){
-            if($value == NULL){
+            if($value === NULL){
                 return true;
             }
             
@@ -287,7 +302,7 @@
         
         // sprawdzanie czy wartosc jest datetime
         public static function validIsDateTime($value){
-            if($value == NULL){
+            if($value === NULL){
                 return true;
             }
             
@@ -385,7 +400,7 @@
         
         // konwersja daty ang na polska
         public static function getPlDate($date, $format_return = 'd.m.Y H:i', $format_get = 'Y-m-d H:i:s'){
-            if($date == NULL || $date == '0000-00-00 00:00:00'){
+            if($date === NULL || $date == '0000-00-00 00:00:00'){
                 return '';
             }
             

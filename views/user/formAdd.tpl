@@ -1,6 +1,6 @@
 <div id="user_form" class="container">
     <div class="jumbotron text-left">
-        <h1 class="controller_title"><?php echo ((isset($this->tpl_values['sew_action']) && $this->tpl_values['sew_action'] == 'add') ? 'Dodaj użytkownika' : 'Edytuj użytkownika'); ?></h1>
+        <h1 class="controller_title">Dodaj użytkownika</h1>
         
         <?php $this->getAlerts(true); ?>
     
@@ -65,7 +65,7 @@
 
             <div class="form-group">
                 <div class="col-sm-2 text-right">
-                    <label for="form_name" class="control-label">Telefon:</label>
+                    <label for="form_phone" class="control-label">Telefon:</label>
                 </div>
                 <div class="col-sm-8">
                     <input id="form_phone" class="form-control input-sm" type="text" placeholder="Telefon" name="form_phone" value="<?php echo ((isset($this->tpl_values['form_phone']) && $this->tpl_values['form_phone'] != '') ? $this->tpl_values['form_phone'] : ''); ?>" />
@@ -80,19 +80,11 @@
                     <select class="form-control input-sm jsselect" id="form_permission" name="form_permission" required="required">
                         <option value="">Wybierz</option>
                         <?php
-                           /* if (isset($this->tpl_values['form_permission'])){
-                                foreach ($this->tpl_values['form_type'] as $group) {
-                                    echo '<optgroup label="'.$group['name'].'">';
-                                    
-                                    if (isset($group['childs']) && is_array($group['childs']) && count($group['childs']) > 0){
-                                        foreach ($group['childs'] as $key_type => $type) {
-                                            echo '<option value="'.$key_type.'"'.((isset($type['current']) && $type['current'] === true) ? ' selected="selected"' : '').'>'.$type['name'].'</option>';
-                                        }
-                                    }
-                                    
-                                    echo '</optgroup>';
+                           if (isset($this->tpl_values['form_permissions'])){
+                                foreach ($this->tpl_values['form_permissions'] as $permission) {
+                                    echo '<option value="'.$permission['id_permission'].'"'.((isset($this->tpl_values['form_permission']) && $this->tpl_values['form_permission'] === $permission['id_permission']) ? ' selected="selected"' : '').'>'.$permission['name'].'</option>';
                                 }
-                            } */
+                            }
                         ?>
                     </select>
                 </div>
@@ -103,7 +95,7 @@
                     <label for="form_military" class="control-label">Jednostka:</label>
                 </div>
                 <div class="col-sm-8">
-                    <select class="form-control input-sm jsselect" id="form_military" name="form_military">
+                    <select class="form-control input-sm jsselectajax" data-ajax-class="user" data-ajax-function="searchMilitaries" id="form_military" name="form_military">
                         <option value="0">Wybierz</option>
                         <?php
                            /* if (isset($this->tpl_values['form_military'])){
@@ -127,15 +119,6 @@
 
             <div class="form-group">
                 <div class="col-sm-2 text-right">
-                    <label for="form_avatar" class="control-label">Avatar:</label>
-                </div>
-                <div class="col-sm-8">
-                    <input id="form_avatar" type="file" name="form_avatar" value="" />
-                </div>
-            </div>
-
-            <div class="form-group">
-                <div class="col-sm-2 text-right">
                     <label for="form_active" class="control-label">Włączony:</label>
                 </div>
                 <div class="col-sm-8">
@@ -146,13 +129,7 @@
             <div class="form-group">
                 <div class="col-sm-offset-2 control-label col-sm-8">
                     <a href="/uzytkownicy" class="btn btn-info mar_button"><span class="glyphicon glyphicon-chevron-left"></span>Lista</a>
-                    <?php if($this->tpl_values['sew_action'] == 'add'){ ?>
-                        <button class="btn btn-success mar_button" type="submit" name="form_action" value="mission_add"><span class="glyphicon glyphicon-plus"></span>Dodaj</button>
-                    <?php }elseif($this->tpl_values['sew_action'] == 'edit'){ ?>
-                        <input type="hidden" name="id_training" value="<?php echo $this->tpl_values['id_training']; ?>" />
-                        <a class="btn btn-primary" title="Podgląd" href="/szkolenia/podglad/<?php echo $this->tpl_values['id_training']; ?>">Podgląd</a>
-                        <button class="btn btn-success mar_button" type="submit" name="form_action" value="mission_save"><span class="glyphicon glyphicon-floppy-disk"></span>Zapisz</button>
-                    <?php } ?>
+                    <button class="btn btn-success mar_button" type="submit" name="form_action" value="user_add"><span class="glyphicon glyphicon-plus"></span>Dodaj</button>
                 </div>
             </div>
         </form>

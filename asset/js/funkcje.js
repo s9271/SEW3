@@ -96,6 +96,36 @@ if (typeof jQuery === 'undefined') {
         return;
     };
     
+    $.fn.sewJsPasswordAjax = function() {
+        $(this).on( "click", function(){
+            if (!$(this).attr('data-input')) {
+                sew_error = 'Nie podano atrybutu "data-input".';
+                console.error(sew_error);
+                return;
+            }
+        
+            var this_click = $(this);
+            var id_input = $(this).data('input');
+            
+            $.ajax({
+                // method: "POST",
+                url: '/ajax',
+                delay: 250,
+                dataType: "json",
+                data: { ajax_module: "user", ajax_function: "generateNewPassword" }
+            }).done(function( data_ajax ) {
+                if(!data_ajax){
+                    console.error('Błąd pobierania danych.');
+                }else if(typeof data_ajax.error != 'undefined'){
+                    console.error(data_ajax.error);
+                }
+                
+                $('input#' + id_input).val(data_ajax);
+                this_click.parent().parent().parent().find('.sew_hint').text('Wygenerowane hasło: ' + data_ajax);
+            });
+        });
+    };
+    
     $.fn.sewJsConfirm = function(){
         $(this).on( "click", function(){
             var show_text = 'Czy na pewno chcesz usunąć rekord?';
@@ -143,6 +173,11 @@ jQuery(document).ready(function($){
     // Select ajax
     if ($('.jsselectajax').length > 0){
         $('.jsselectajax').sewJsSelectAjax();
+    }
+    
+    // Password Ajax (uzytkownicy form)
+    if ($('.jspasswordajax').length > 0){
+        $('.jspasswordajax').sewJsPasswordAjax();
     }
     
     // Potwierdzenie (wyskakujace okienko)

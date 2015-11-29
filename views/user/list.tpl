@@ -12,6 +12,7 @@
                     <th class="table_surname">Nazwisko</th>
                     <th class="table_mail">Adres e-mail</th>
                     <th class="table_permission">Profil</th>
+                    <th class="table_status">Status</th>
                     <th class="table_akcje">Akcje</th>
                 </tr>
             </thead>
@@ -26,6 +27,7 @@
                     <td class="table_surname"><?php echo $item['surname']; ?></td>
                     <td class="table_mail"><?php echo $item['mail']; ?></td>
                     <td class="table_permission"><?php echo $item['name_permission']; ?></td>
+                    <td class="table_status"><?php echo $item['name_status']; ?></td>
                     <td class="table_akcje">
                         <form method="post" action="">
                             <a href="/uzytkownicy/edytuj/<?php echo $item['id_user']; ?>" class="btn btn-warning" title="Edytuj">Edytuj</a>

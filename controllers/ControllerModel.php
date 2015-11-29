@@ -140,5 +140,19 @@
             
             return;
         }
+        
+        protected function setValuesTemplateByPost(){
+            if(!$_POST || !is_array($_POST) || count($_POST) < 1){
+                return '';
+            }
+            
+            $values = array();
+            
+            foreach($_POST as $key => $val){
+                $values[$key] = ClassTools::getValue($key, false);
+            }
+            
+            return $values;
+        }
     }
 ?>
