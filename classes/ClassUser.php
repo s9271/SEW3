@@ -2,6 +2,9 @@
     class ClassUser extends ClassModel{
         public static $use_prefix = true;
         
+        // podczas pobierania rekordow, wywoluje sprawdzenie, ktore sa usuniete
+        protected static $has_deleted_column = true;
+        
         // min dlugosc hasla
         protected $min_length_password = 8;
         
@@ -197,6 +200,50 @@
             return self::sqlCheckMailExists($mail);
         }
         
+        // pobieranie listy uzytkownikow
+        public static function getAllItemsList($using_pages = false, $current_page = '1', $items_on_page = '5'){
+            if(!$users = self::sqlGetAllItemsList($using_pages, $current_page, $items_on_page)){
+                return false;
+            }
+            
+            foreach($users as $key => $user){
+                $users[$key]['name_status'] = self::getNameStatus($user['active']);
+                $users[$key]['name_guard'] = self::getNameGuard($user['guard']);
+            }
+            
+            return $users;
+        }
+        
+        // nazwa statusu (active)
+        public static function getNameStatus($status, $color = true){
+            switch($status){
+                case '0':
+                    return $color ? '<span class="sew_red">Wyłączony</span>' : 'Wyłączony';
+                break;
+                case '1':
+                    return $color ? '<span class="sew_green">Włączony</span>' : 'Włączony';
+                break;
+            }
+            
+            return false;
+        }
+        
+        // snazwa guard
+        public static function getNameGuard($guard, $color = true){
+            switch($guard){
+                case '0':
+                    return $color ? '<span class="sew_red">Nieaktywny</span>' : 'Nieaktywny';
+                break;
+                case '1':
+                    return $color ? '<span class="sew_green">Aktywny</span>' : 'Aktywny';
+                break;
+            }
+            
+            return false;
+        }
+        
+        
+        
         /* **************** SQL *************** */
         /* ************************************ */
         
@@ -306,6 +353,37 @@
                 return false;
             }
             
+            return $sql;
+        }
+        
+        // pobieranie wszystkich rekordow
+        public static function sqlGetAllItemsList($using_pages = false, $current_page = '1', $items_on_page = '5'){
+            global $DB;
+            
+            $where = '';
+            $limit = '';
+            
+            if(static::$has_deleted_column){
+                $where = " AND `deleted` = '0'";
+            }
+            
+            if($using_pages){
+                $limit_start = ($current_page-1)*$items_on_page;
+                $limit = " LIMIT {$limit_start}, {$items_on_page}";
+            }
+            
+            $zapytanie = "SELECT su.`id_user`, su.`mail`, su.`active`, su.`guard`, suo.`name`, suo.`surname`, sp.`name` as name_permission
+                FROM `sew_users` as su, `sew_user_options` as suo, `sew_permissions` as sp
+                WHERE su.`id_user` = suo.`id_user` AND sp.`id_permission` = su.`id_permission`{$where}
+                ORDER BY `".static::$definition['primary']."`
+                {$limit}
+            ;";
+            
+            $sql = $DB->pdo_fetch_all($zapytanie);
+            
+            if(!$sql || !is_array($sql) || count($sql) < 1){
+                return false;
+            }
             return $sql;
         }
         

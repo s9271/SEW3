@@ -302,6 +302,31 @@ button.btn.mar_button .glyphicon{
 }
 
 /* UZYTKOWNICY */
+#user_list table{
+    text-align: left;
+}
+
+#user_list table tr .table_id{
+    text-align: center;
+    width: 40px;
+}
+
+#user_list table tr .table_permission{
+    width: 170px;
+}
+
+#user_list table tr .table_status{
+    width: 100px;
+}
+
+#user_list table tr .table_guard{
+    width: 100px;
+}
+
+#user_list table tr .table_akcje{
+    width: 155px;
+}
+
 #user_form{
     text-align: left;
 }

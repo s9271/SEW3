@@ -38,19 +38,20 @@
             // strony
             $this->controller_name = 'uzytkownicy';
             $this->using_pages = true;
+            $this->items_on_page = 20;
             $this->count_items = ClassUser::sqlGetCountItems();
             $this->current_page = ClassTools::getValue('page') ? ClassTools::getValue('page') : '1';
-            // print_r($this->count_items);
+            
             // tytul strony
             $this->tpl_title = 'Użytkownicy: Lista';
             
             // ladowanie funkcji
-            // $this->load_js_functions = true;
+            $this->load_js_functions = true;
             
-            // pobieranie wszystkich rekordow
-            // $this->tpl_values = ClassTraining::sqlGetAllItems($this->using_pages, $this->current_page, $this->items_on_page);
+            // pobieranie wszystkich uzytkownikow
+            $this->tpl_values['users'] = ClassUser::getAllItemsList($this->using_pages, $this->current_page, $this->items_on_page);
             
-            // ladowanie strony z lista misji
+            // ladowanie strony z lista uzytkownikow
             return $this->loadTemplate('/user/list');
         }
         
