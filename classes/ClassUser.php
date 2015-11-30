@@ -23,6 +23,9 @@
         // aktywny
         public $active;
         
+        // guard
+        public $guard = 1;
+        
         // usuniety
         public $deleted = 0;
         
@@ -60,6 +63,7 @@
                 'id_permission' =>     array('required' => true, 'validate' => array('isInt'), 'name' => 'Profil uprawnień'),
                 'id_military' =>       array('required' => true, 'validate' => array('isInt'), 'name' => 'Jednostka wojskowa'),
                 'active' =>            array('required' => true, 'validate' => array('isBool'), 'name' => 'Aktywny'),
+                'guard' =>             array('validate' => array('isBool'), 'name' => 'Guard'),
                 'deleted' =>           array('validate' => array('isBool'), 'name' => 'Usunięty'),
                 'phone' =>             array('required' => true, 'validate' => array('isPhone'), 'name' => 'Telefon'),
                 'date_add' =>          array('required' => true, 'validate' => array('isDateTime'), 'name' => 'Data dodania'),
@@ -232,7 +236,8 @@
                 'password' => $data['password'],
                 'id_permission' => $data['id_permission'],
                 'id_military' => $data['id_military'],
-                'active' => $data['active']
+                'active' => $data['active'],
+                'guard' => $data['guard']
             );
             
             if(!$id = $DB->insert('sew_users', $data1)){

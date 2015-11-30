@@ -125,6 +125,17 @@
                     <input type="checkbox" class="input-sm" id="form_active" name="form_active" value="1"<?php echo ((isset($this->tpl_values['form_active']) && $this->tpl_values['form_active'] == '1') ? ' checked="checked"' : ''); ?> />
                 </div>
             </div>
+            
+            <div class="form-group">
+                <div class="col-sm-2 text-right">
+                    <label for="form_guard" class="control-label">Guard:</label>
+                </div>
+                <div class="col-sm-8">
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="form_guard" name="form_guard" value="1"<?php echo (isset($this->tpl_values['form_guard']) ? ($this->tpl_values['form_guard'] == '1' ? ' checked="checked"' : '') : ' checked="checked"'); ?> /> (Rekomendowane) Za każdym razem, gdy użytkownik będzie logować się z nieznanego komputera, będzie proszony o podanie kodu przesłanego na adres email.
+                    </label>
+                </div>
+            </div>
 
             <div class="form-group">
                 <div class="col-sm-offset-2 control-label col-sm-8">
