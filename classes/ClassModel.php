@@ -234,7 +234,7 @@
                     }
                 break;
                 case 'isPhone':
-                    if(!$value_new = self::validIsPhone($value)){
+                    if(!$value_new = self::validIsPhone($value, $key)){
                         $this->errors[] = "<b>{$name}</b>: Niepoprawny format telefonu.";
                     }
                 break;
@@ -337,7 +337,11 @@
         }
         
         // sprawdzanie czy wartosc sklada sie tylko z liczb
-        public static function validIsPhone($value){
+        public static function validIsPhone($value, $key){
+            if((!isset(static::$definition['fields'][$key]['required']) || (isset(static::$definition['fields'][$key]['required']) && static::$definition['fields'][$key]['required'] == false)) && $value == ''){
+                return true;
+            }
+            
             // +000000000
             // 0000000000
             // 000000000

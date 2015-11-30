@@ -219,7 +219,8 @@
                     $record = $this->pdo_fetch("SELECT * FROM `{$table}` WHERE {$where}");
                     
                     if(!$record || !is_array($record) || count($record) < 1){
-                        $this->errors[] = "</b>SQL Aktualizacja<b>: Brak rekordu w bazie.";
+                        die('<b>SQL Aktualizacja</b>: Brak rekordu w bazie.');
+                        // $this->errors[] = "<b>SQL Aktualizacja</b>: Brak rekordu w bazie.";
                         return false;
                     }
                 }
