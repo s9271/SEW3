@@ -164,7 +164,7 @@
             }
             
             foreach($array as $key => $valClass){
-                $this->tpl_values[$key] = (ClassTools::getValue($key) ? ClassTools::getValue($key) : $valClass);
+                $this->tpl_values[$key] = (ClassTools::getValue($key) ? ClassTools::getValue($key) : '');
             }
             
             return;

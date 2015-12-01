@@ -86,7 +86,7 @@
                 return $this->loadTemplate('alert');
             }
             
-            // ladowanie klasy i misji
+            // ladowanie klasy i uzytkownika
             $user = new ClassUser(ClassTools::getValue('id_item'));
             
             // sprawdza czy klasa zostala poprawnie zaladowana
@@ -156,7 +156,7 @@
                 case 'user_delete':
                     return $this->delete(); // usuwanie
                 break;
-                case 'mission_save':
+                case 'user_edit':
                     return $this->edit(); // edycja
                 break;
             }
@@ -225,47 +225,42 @@
             return;
         }
         
-        // usuwanie
+        // edycja
         protected function edit(){
-            // ladowanie klasy i misji
-            $mission = new ClassMission($_POST['id_mission']);
+            // ladowanie klasy i uzytkownika
+            $user = new ClassUser(ClassTools::getValue('id_user'));
             
             // sprawdza czy klasa zostala poprawnie zaladowana
-            if(!$mission->load_class){
-                $this->alerts['danger'] = "Misja nie istnieje.";
+            if(!$user->load_class){
+                $this->alerts['danger'] = $user->errors;
+                return;
             }
             
-            // przypisanie zmiennych wyslanych z formularza do danych w klasie
-            $mission->id_mission_type = $_POST['form_type'];
-            $mission->name = $_POST['form_name'];
-            $mission->location = $_POST['form_location'];
-            $mission->description = $_POST['form_description'];
-            // $mission->id_user = ClassAuth::getCurrentUserId();
-            $mission->id_user = '999';
-            $mission->date_start = $_POST['form_date_start'];
-            $mission->date_end = $_POST['form_date_end'] != '' ? $_POST['form_date_end'] : NULL;
-            $mission->active = (isset($_POST['form_active']) && $_POST['form_active'] == '1') ? '1' : '0';
-            $mission->deleted = '0';
+            $active = ClassTools::getValue('form_active');
+            $military = ClassTools::getValue('form_military');
+            $guard = ClassTools::getValue('form_guard');
             
-            // custom - dodatkowy warunek odnosnie dat
-            // sprawdza, czy data rozpoczecia nie jest mniejsza niz data zakonczenia
-            if($mission->date_end != NULL && ClassMission::validIsDateTime($mission->date_start) && ClassMission::validIsDateTime($mission->date_end)){
-                $date_start = date('Y-m-d H:i:s', strtotime($mission->date_start));
-                $date_end = date('Y-m-d H:i:s', strtotime($mission->date_end));
-                
-                if($date_start > $date_end){
-                    $mission->errors[] = "Data rozpoczęcia misji jest większa od daty końca misji.";
-                }
-            }
+            $user->login = ClassTools::getValue('form_login');
+            $user->mail = ClassTools::getValue('form_mail');
+            $user->id_permission = ClassTools::getValue('form_permission');
+            $user->id_military = $military == '0' ? null : $military;
+            $user->active = ($active && $active == '1') ? '1' : '0';
+            $user->guard = ($guard && $guard == '1') ? '1' : '0';
+            
+            $user->name = ClassTools::getValue('form_name');
+            $user->surname = ClassTools::getValue('form_surname');
+            $user->phone = ClassTools::getValue('form_phone');
+            // $user->id_user_edit = ClassAuth::getCurrentUserId();
+            $user->id_user_update = '1';
             
             // komunikaty
-            if(!$mission->update()){
-                $this->alerts['danger'] = $mission->errors;
+            if(!$user->update()){
+                $this->alerts['danger'] = $user->errors;
                 return;
             }
             
             // komunikat
-            $this->alerts['success'] = "Poprawnie zaktualizowano misję: <b>{$mission->name}</b>";
+            $this->alerts['success'] = "Poprawnie zaktualizowano użytkownika: <b>{$user->name} {$user->surname}</b>";
             
             // czyszczeie zmiennych wyswietlania
             $this->tpl_values = '';

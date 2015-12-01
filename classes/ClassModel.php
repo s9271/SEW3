@@ -112,7 +112,7 @@
         // aktualizacja
         public function update($auto_date = true){
             if(!isset($this->id)){
-                $this->errors[] = "Brak podanego id.";
+                $this->errors = "Brak podanego id.";
                 return false;
             }
             
@@ -302,7 +302,7 @@
         
         // sprawdzanie czy wartosc jest datetime
         public static function validIsDateTime($value){
-            if($value === NULL){
+            if($value === NULL || $value == '0000-00-00 00:00:00'){
                 return true;
             }
             

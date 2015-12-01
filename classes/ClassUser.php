@@ -53,6 +53,12 @@
         // uzytkownik usuniecia
         public $id_user_delete = null;
         
+        // data aktualizacji
+        public $date_update;
+        
+        // uzytkownik aktualizacji
+        public $id_user_update = null;
+        
         // nazwa profilu
         public $name_permission = '';
         
@@ -76,6 +82,8 @@
                 'id_user_add' =>       array('required' => true, 'validate' => array('isInt'), 'name' => 'Użytkownik dodania'),
                 'date_delete' =>       array('validate' => array('isDateTime'), 'name' => 'Data usunięcia'),
                 'id_user_delete' =>    array('validate' => array('isInt'), 'name' => 'Użytkownik usunięcia'),
+                'date_update' =>       array('validate' => array('isDateTime'), 'name' => 'Data aktualizacji'),
+                'id_user_update' =>    array('validate' => array('isInt'), 'name' => 'Użytkownik aktualizacji'),
             ),
         );
         
@@ -357,10 +365,70 @@
             return $DB->update('sew_user_options', $data2, $where);
         }
         
-        protected function sqlGetUser($id_user){
+        // aktualizacja w bazie
+        protected function sqlUpdate($table, $data, $where){
             global $DB;
             
-            $zapytanie = "SELECT su.`id_user`, su.`login`, su.`mail`, su.`active`, su.`id_military`, su.`id_permission`, su.`guard`, su.`deleted`, suo.`name`, suo.`surname`, suo.`phone`, suo.`date_add`, suo.`id_user_add`, suo.`date_delete`, suo.`id_user_delete`, sp.`name` as name_permission
+            // dodawanie logu
+            if(!$user = $this->sqlGetUser($this->id, true)){
+                $this->errors[] = "LOG: Błąd podczas pobierania rekordu z bazy.";
+                return false;
+            }
+            
+            $data_log = array(
+                'id_user'        => $user['id_user'],
+                'login'          => $user['login'],
+                'mail'           => $user['mail'],
+                'password'       => $user['password'],
+                'id_permission'  => $user['id_permission'],
+                'id_military'    => $user['id_military'],
+                'active'         => $user['active'],
+                'guard'          => $user['guard'],
+                'name'           => $user['name'],
+                'surname'        => $user['surname'],
+                'phone'          => $user['phone'],
+                'date_update'    => $data['date_update'],
+                'id_user_update' => $data['id_user_update']
+            );
+                
+            if(!$DB->insert('log_users', $data_log)){
+                $this->errors[] = "LOG: Błąd podczas zapisywania rekordu w tabeli z logami.";
+                return false;
+            }
+            
+            // zapis poprawny
+            $data1 = array(
+                'login'          => $data['login'],
+                'mail'           => $data['mail'],
+                'id_permission'  => $data['id_permission'],
+                'id_military'    => $data['id_military'],
+                'active'         => $data['active'],
+                'guard'          => $data['guard'],
+            );
+            
+            $data2 = array(
+                'name'           => $data['name'],
+                'surname'        => $data['surname'],
+                'phone'          => $data['phone'],
+            );
+            
+            if(!$DB->update('sew_users', $data1, $where)){
+                return false;
+            }
+            
+            return $DB->update('sew_user_options', $data2, $where);
+        }
+        
+        protected function sqlGetUser($id_user, $password = false){
+            global $DB;
+            
+            $select = '';
+            
+            if($password){
+                $select = ', su.`password`';
+            }
+            
+            $zapytanie = "SELECT su.`id_user`, su.`login`, su.`mail`, su.`active`, su.`id_military`, su.`id_permission`, su.`guard`, su.`deleted`, suo.`name`, suo.`surname`, suo.`phone`, suo.`date_add`, suo.`id_user_add`, suo.`date_delete`, suo.`id_user_delete`, sp.`name` as name_permission{$select}
                 FROM `sew_users` as su, `sew_user_options` as suo, `sew_permissions` as sp
                 WHERE su.`id_user` = '{$id_user}'
                     AND su.`id_user` = suo.`id_user`
