@@ -141,6 +141,7 @@
             return;
         }
         
+        // przypisanie zmiennych posta do zmiennych template
         protected function setValuesTemplateByPost(){
             if(!$_POST || !is_array($_POST) || count($_POST) < 1){
                 return '';
@@ -153,6 +154,20 @@
             }
             
             return $values;
+        }
+        
+        // przypisywanieszych zmiennych do zmiennych formularza
+        protected function setValuesTemplateByArrayPost(array $array){
+            if(!$_POST || !is_array($_POST) || count($_POST) < 1){
+                $this->tpl_values = array_merge($array, $this->tpl_values);
+                return;
+            }
+            
+            foreach($array as $key => $valClass){
+                $this->tpl_values[$key] = (ClassTools::getValue($key) ? ClassTools::getValue($key) : $valClass);
+            }
+            
+            return;
         }
     }
 ?>

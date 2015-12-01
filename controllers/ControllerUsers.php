@@ -19,11 +19,7 @@
                     break;
                     case 'edytuj':
                         // ladowanie strony z formularzem
-                        // return $this->getPageEdit();
-                    break;
-                    case 'podglad':
-                        // ladowanie strony z podgladem misji
-                        // return $this->getPageView();
+                        return $this->getPageEdit();
                     break;
                 }
             }
@@ -77,9 +73,9 @@
         
         // strona edycji
         protected function getPageEdit(){
-            // zmienne wyswietlania na wypadek gdy strona z misja nie istnieje
-            $this->tpl_values['wstecz'] = '/misje';
-            $this->tpl_values['title'] = 'Edycja misji';
+            // zmienne wyswietlania na wypadek gdy strona z uzytkownikiem nie istnieje
+            $this->tpl_values['wstecz'] = '/uzytkownicy';
+            $this->tpl_values['title'] = 'Edycja użytkownika';
             
             // sprawdzanie czy id istnieje w linku
             if(!$id_item = ClassTools::getValue('id_item')){
@@ -90,44 +86,53 @@
                 return $this->loadTemplate('alert');
             }
             
-            $this->actions();
-            
             // ladowanie klasy i misji
-            $mission = new ClassMission($id_item);
+            $user = new ClassUser(ClassTools::getValue('id_item'));
             
-            // sprawdzanie czy misja zostala poprawnie zaladowana
-            if(!$mission->load_class){
-                $this->alerts['danger'] = 'Misja nie istnieje';
+            // sprawdza czy klasa zostala poprawnie zaladowana
+            if(!$user->load_class){
+                $this->alerts['danger'] = $user->errors;
                 
                 // ladowanie strony do wyswietlania bledow
                 // zmienne ktore mozna uzyc: wstecz, title oraz alertow
                 return $this->loadTemplate('alert');
             }
             
+            $this->actions();
+            
             // tytul
-            $this->tpl_title = 'Misja: Edycja';
+            $this->tpl_title = 'Użytkownicy: Edycja';
             
             // skrypty
-            $this->load_datetimepicker = true;
             $this->load_select2 = true;
             $this->load_js_functions = true;
             
-            // rodzaje misji
-            $this->tpl_values['form_type'] = ClassMission::getTypes((isset($_POST['form_type']) ? $_POST['form_type'] : $mission->id_mission_type));
-            $this->tpl_values['sew_action'] = 'edit';
-            
             // values
             // prypisanie zmiennych z wyslanego formularza, a jezeli nie istnieja przypisze pobrane z klasy
-            $this->tpl_values['id_mission'] = $mission->id;
-            $this->tpl_values['form_name'] = (isset($_POST['form_name']) ? $_POST['form_name'] : $mission->name);
-            $this->tpl_values['form_location'] = (isset($_POST['form_location']) ? $_POST['form_location'] : $mission->location);
-            $this->tpl_values['form_description'] = (isset($_POST['form_description']) ? $_POST['form_description'] : $mission->description);
-            $this->tpl_values['form_date_start'] = (isset($_POST['form_date_start']) ? $_POST['form_date_start'] : ClassMission::getPlDate($mission->date_start));
-            $this->tpl_values['form_date_end'] = (isset($_POST['form_date_end']) ? $_POST['form_date_end'] : ClassMission::getPlDate($mission->date_end));
-            $this->tpl_values['form_active'] = (isset($_POST['form_active']) ? $_POST['form_active'] : $mission->active);
+            // print_r($user);
+            $this->tpl_values['id_user'] = $user->id;
+            
+            // przypisanie zmiennych formularza do zmiennych klasy
+            $array_form_class = array(
+                'form_login' => $user->login,
+                'form_name' => $user->name,
+                'form_surname' => $user->surname,
+                'form_mail' => $user->mail,
+                'form_phone' => $user->phone,
+                'form_permission' => $user->id_permission,
+                'form_military' => ($user->id_military !== null ? $user->id_military : '0'),
+                'form_active' => $user->active,
+                'form_guard' => $user->guard
+            );
+            
+            // przypisywanieszych zmiennych do zmiennych formularza
+            $this->setValuesTemplateByArrayPost($array_form_class);
+            
+            // ladowanie profili (uprawnien)
+            $this->tpl_values['form_permissions'] = ClassUser::getPermissions();
             
             // ladowanie strony z formularzem
-            return $this->loadTemplate('/mission/form');
+            return $this->loadTemplate('/user/formEdit');
         }
         
         /* *************** AKCJE ************** */
@@ -198,7 +203,7 @@
         
         // usuwanie
         protected function delete(){
-            // ladowanie klasy i misji
+            // ladowanie klasy i uzytkownika
             $user = new ClassUser(ClassTools::getValue('id_user'));
             
             // sprawdza czy klasa zostala poprawnie zaladowana
