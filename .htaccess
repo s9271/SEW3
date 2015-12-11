@@ -1,4 +1,5 @@
 RewriteEngine on
+RewriteRule ^(login|haslo|guard)/?$ index\.php?controller=login&page_action=$1 [L]
 RewriteRule ^(ajax)/?$ ajax\.php [L]
 RewriteRule ^([_A-Za-z0-9\-]+)/?$ index\.php?controller=$1 [L]
 RewriteRule ^([_A-Za-z\-]+)/([0-9]+)/?$ index\.php?controller=$1&page=$2 [L]

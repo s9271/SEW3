@@ -1,0 +1,38 @@
+body#login{
+    background: #6B8EC4 url("../images/login/9.jpg") no-repeat scroll 50% 0 / cover ;
+}
+
+body #center_block{
+    margin: 0 auto;
+    max-width: 600px;
+}
+
+body #center_block h1{
+    color: #368736;
+    font-family: serif;
+    font-size: 30px;
+    font-weight: bold;
+    line-height: normal;
+    margin: 25px 0;
+    text-align: center;
+}
+
+body #center_block > .block{
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    padding: 20px;
+}
+
+body #center_block > .block h2{
+    color: #e28a1e;
+    font-family: Helvetica;
+    font-size: 25px;
+    font-weight: bold;
+    line-height: normal;
+    margin: 0 0 20px;
+    text-align: center;
+}
+
+body #center_block > .block .buttons{
+    margin-bottom: 0;
+}
