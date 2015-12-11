@@ -42,11 +42,45 @@ ClassLogin
             }
             
             // sprawdzanie czy uzytkownik istnieje
-            // if(Auth::checkUserExists($this->login)){
-                // $this->errors[] = "Użytkownik nie istnieje.";
+            if(!$user = $this->sqlGetUserAndPassword($this->login)){
+                $this->errors[] = "Użytkownik nie istnieje.";
+                return false;
+            }
+            
+            // sprawdzanie czy uzytkownik jest aktywny
+            if($user['active'] != '1'){
+                $this->errors[] = "Użytkownik nie jest aktywny.";
+                return false;
+            }
+            
+            // sprawdzanie czy haslo sie zgadza
+            // if(!Auth::checkUserPassword($user['password'], $this->password)){
+                // $this->errors[] = "Niepoprawne hasło.";
                 // return false;
             // }
+            
             return true;
+        }
+        
+        
+        
+        // pobieranie profili (uprawnien)
+        protected function sqlGetUserAndPassword($login){
+            global $DB;
+            
+            $zapytanie = "SELECT `id_user`, `login`, `password`, `active`, `guard`
+                FROM `sew_users`
+                WHERE `login` = '{$login}'
+                    AND `deleted` = '0'
+            ;";
+            
+            $sql = $DB->pdo_fetch($zapytanie);
+            
+            if(!$sql || !is_array($sql) || count($sql) < 1){
+                return false;
+            }
+            
+            return $sql;
         }
     }
 ?>

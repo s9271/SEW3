@@ -282,6 +282,43 @@
             return true;
         }
         
+        // aktualizacja
+        public function update($auto_date = true){
+            if(!isset($this->id)){
+                $this->errors = "Brak podanego id.";
+                return false;
+            }
+            
+            if ($auto_date && property_exists($this, 'date_update')) {
+                $this->date_update = date('Y-m-d H:i:s');
+            }
+            
+            $values = $this->getFieldsValidate();
+            
+            if($this->errors && count($this->errors) > 0){
+                return false;
+            }
+            
+            // sprawdzanie czy uzytkownik z takim loginem juz istnieje
+            if($this->sqlCheckUserLoginExists($this->login)){
+                $this->errors = "Użytkownik o takim loginie już istnieje.";
+                return false;
+            }
+            
+            // sprawdzanie czy uzytkownik z takim mailem juz istnieje
+            if($this->sqlCheckUserMailExists($this->mail)){
+                $this->errors = "Użytkownik o takim adresie e-mail już istnieje.";
+                return false;
+            }
+            
+            if (!$this->sqlUpdate(static::$definition['table'], $values, static::$definition['primary'].' = '.$this->id)){
+                $this->errors[] = "Błąd aktualizacji rekordu w bazie.";
+                return false;
+            }
+            
+            return true;
+        }
+        
         /* **************** SQL *************** */
         /* ************************************ */
         
@@ -289,6 +326,44 @@
         protected function sqlCheckLoginExists($login){
             global $DB;
             $zapytanie = "SELECT * FROM `sew_users` WHERE `login` = '{$login}' AND `deleted` = '0'";
+            $sql = $DB->pdo_fetch($zapytanie);
+            
+            if(!$sql || !is_array($sql) || count($sql) < 1){
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // sprawdzanie czy login istnieje
+        protected function sqlCheckUserLoginExists($login){
+            global $DB;
+            $zapytanie = "SELECT `login`
+                FROM `sew_users`
+                WHERE `login` = '{$login}'
+                    AND `deleted` = '0'
+                    AND `id_user` != '{$this->id}'
+            ;";
+            
+            $sql = $DB->pdo_fetch($zapytanie);
+            
+            if(!$sql || !is_array($sql) || count($sql) < 1){
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // sprawdzanie czy mail istnieje
+        protected function sqlCheckUserMailExists($mail){
+            global $DB;
+            $zapytanie = "SELECT `mail`
+                FROM `sew_users`
+                WHERE `mail` LIKE '{$mail}'
+                    AND `deleted` = '0'
+                    AND `id_user` != '{$this->id}'
+            ;";
+            
             $sql = $DB->pdo_fetch($zapytanie);
             
             if(!$sql || !is_array($sql) || count($sql) < 1){

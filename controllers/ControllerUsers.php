@@ -98,8 +98,6 @@
                 return $this->loadTemplate('alert');
             }
             
-            $this->actions();
-            
             // tytul
             $this->tpl_title = 'Użytkownicy: Edycja';
             
@@ -127,6 +125,8 @@
             
             // przypisywanieszych zmiennych do zmiennych formularza
             $this->setValuesTemplateByArrayPost($array_form_class);
+            
+            $this->actions();
             
             // ladowanie profili (uprawnien)
             $this->tpl_values['form_permissions'] = ClassUser::getPermissions();
@@ -263,7 +263,7 @@
             $this->alerts['success'] = "Poprawnie zaktualizowano użytkownika: <b>{$user->name} {$user->surname}</b>";
             
             // czyszczeie zmiennych wyswietlania
-            $this->tpl_values = '';
+            // $this->tpl_values = '';
             $_POST = array();
             
             return;

@@ -36,3 +36,8 @@ body #center_block > .block h2{
 body #center_block > .block .buttons{
     margin-bottom: 0;
 }
+
+.sew-alert .alert{
+    margin-left: 0;
+    width: 100%;
+}
