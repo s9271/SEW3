@@ -37,34 +37,35 @@ ClassLogin
             
             // sprawdzanie czy login sie waliduje
             if(!ClassModel::validIsNormalChars($this->login)){
-                $this->errors[] = "<b>Login</b>: Niepoprawny format.";
+                $this->errors = "<b>Login</b>: Niepoprawny format.";
                 return false;
             }
             
             // sprawdzanie czy uzytkownik istnieje
             if(!$user = $this->sqlGetUserAndPassword($this->login)){
-                $this->errors[] = "Użytkownik nie istnieje.";
+                $this->errors = "Użytkownik nie istnieje.";
                 return false;
             }
             
             // sprawdzanie czy uzytkownik jest aktywny
             if($user['active'] != '1'){
-                $this->errors[] = "Użytkownik nie jest aktywny.";
+                $this->errors = "Użytkownik nie jest aktywny.";
                 return false;
             }
             
             // sprawdzanie czy haslo sie zgadza
-            // if(!Auth::checkUserPassword($user['password'], $this->password)){
-                // $this->errors[] = "Niepoprawne hasło.";
-                // return false;
-            // }
+            if(!ClassAuth::checkPassword($this->password, $user['password'])){
+                $this->errors = "Niepoprawne hasło.";
+                return false;
+            }
             
             return true;
         }
         
+        /* **************** SQL *************** */
+        /* ************************************ */
         
-        
-        // pobieranie profili (uprawnien)
+        // pobieranie usera
         protected function sqlGetUserAndPassword($login){
             global $DB;
             

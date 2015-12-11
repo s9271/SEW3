@@ -393,7 +393,8 @@
             $data1 = array(
                 'login' => $data['login'],
                 'mail' => $data['mail'],
-                'password' => $data['password'],
+                // 'password' => $data['password'],
+                'password' => ClassAuth::generatePassword($data['password']), // [hEf&ReI?d1:Em(
                 'id_permission' => $data['id_permission'],
                 'id_military' => $data['id_military'],
                 'active' => $data['active'],
