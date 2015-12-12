@@ -98,16 +98,61 @@
             
             // przypisanie klucza logowania do sesji
             $_SESSION['user']['auth_key'] = $auth['auth_key'];
-            print_r($_SESSION);
             
-            // komunikat sukcesu
-            // $this->alerts['success'] = "Poprawnie dodano nowego użytkownika: <b>{$user->name} {$user->surname}</b>";
+            if($auth['guard_key']){
+                // wysylanie maila z kluczem do guarda
+                // $this->sendMailGuardKey($user['mail'], $auth['guard_key'], $_SERVER['REMOTE_ADDR']);
+                
+                // przejscie na strone z formularzem do wpisania klucza
+                ClassTools::redirect('guard');
+                exit;
+            }
             
-            // czyszczeie zmiennych wyswietlania
-            // $this->tpl_values = '';
-            // $_POST = array();
+            // przejscie na strone glowna po poprawnym logowaniu
+            ClassTools::redirect('');
+            exit;
             
             return;
+        }
+        
+        /* *************** MAILS ************** */
+        /* ************************************ */
+        
+        // wysylanie maila z kluczem do guarda
+        protected function sendMailGuardKey($adres, $guard_key, $ip){
+            // mail
+            $adres = "mariusz@nephax.com";
+            
+            // od kogo
+            $from = "System Ewidencji Wojskowej <system@sew.org.pl>";
+            
+            // temat
+            $temat = "Zabezpieczenie guard";
+            
+            // wysylka
+            $boundary = "-->===_54654747_===<---->>4255==_";
+            
+            $head = 'From: '.$from."\n";
+            $head .= "MIME-version: 1.0\n";
+            $head .= "Content-type: multipart/mixed; ";
+            $head .= "boundary=\"$boundary\"\n";
+            $head .= "Content-Transfer-Encoding: 8bit\n";
+            $head .= "charset=\"iso-8859-2\"\n";
+
+            $tresc_maila = "--" . $boundary . "\n";
+            $tresc_maila .= "Content-Type: text/plain; charset=\"iso-8859-2\"\n\n";
+            $tresc_maila .= "Witam, wykryliśmy logowanie do panelu SEW z nowego ip: {$ip}\n\n";
+            $tresc_maila .= "Proszę podać poniższy klucz aby dokończyć logowanie do systemu.\n\n";
+            $tresc_maila .= "KLUCZ GUARD: {$guard_key}\n\n\n\n";
+            $tresc_maila .= "Wiadomość została wygenerowana przez system, prosimy na niego nie odpowiadać.\n\n";
+            $tresc_maila .= "--" . $boundary . "-- \n\n";
+            
+            $temat_iso = iconv('UTF-8', 'ISO-8859-2//TRANSLIT', $temat);
+            $tresc_maila_iso = iconv('UTF-8', 'ISO-8859-2//TRANSLIT', $tresc_maila);
+            $head_iso = iconv('UTF-8', 'ISO-8859-2//TRANSLIT', $head);
+            
+            mail($adres, $temat_iso, $tresc_maila_iso, $head_iso);
+            // mail($adres, $temat, $tresc_maila, $head);
         }
         
         /* ************* OVERRIDE ************ */

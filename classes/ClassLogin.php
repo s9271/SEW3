@@ -69,7 +69,7 @@ ClassLogin
         protected function sqlGetUserAndPassword($login){
             global $DB;
             
-            $zapytanie = "SELECT `id_user`, `login`, `password`, `active`, `guard`
+            $zapytanie = "SELECT `id_user`, `login`, `mail`, `password`, `active`, `guard`
                 FROM `sew_users`
                 WHERE `login` = '{$login}'
                     AND `deleted` = '0'
