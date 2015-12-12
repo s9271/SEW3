@@ -59,7 +59,7 @@ ClassLogin
                 return false;
             }
             
-            return true;
+            return $user;
         }
         
         /* **************** SQL *************** */

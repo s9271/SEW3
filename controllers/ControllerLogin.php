@@ -84,17 +84,28 @@
             $login->password = ClassTools::getValue('form_password');
             
             // komunikaty bledu
-            if(!$login->login()){
+            if(!$user = $login->login()){
                 $this->alerts['danger'] = $login->errors;
                 return;
             }
             
+            $guard = ($user['guard'] == '1') ? true : false;
+            
+            if(!$auth = ClassAuth::userLogin($user['id_user'], $guard)){
+                $this->alerts['danger'] = 'Błąd podczas zapisu sesji logowania do bazy.';
+                return;
+            }
+            
+            // przypisanie klucza logowania do sesji
+            $_SESSION['user']['auth_key'] = $auth['auth_key'];
+            print_r($_SESSION);
+            
             // komunikat sukcesu
-            // $this->alerts['success'] = "Poprawnie dodano nowego u�ytkownika: <b>{$user->name} {$user->surname}</b>";
+            // $this->alerts['success'] = "Poprawnie dodano nowego użytkownika: <b>{$user->name} {$user->surname}</b>";
             
             // czyszczeie zmiennych wyswietlania
-            $this->tpl_values = '';
-            $_POST = array();
+            // $this->tpl_values = '';
+            // $_POST = array();
             
             return;
         }

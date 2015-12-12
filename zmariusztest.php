@@ -58,6 +58,7 @@
                 var_dump(password_verify('rasmuslerdorf', $p1));
                 // var_dump(password_verify('rasmuslerdorf', $p2));
                 // echo ClassTools::generateRandomString(12);
+                print_r($_SERVER);
             ?>
             
         </body>
