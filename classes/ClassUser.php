@@ -203,6 +203,11 @@
             return false;
         }
         
+        // pobieranie loginu usera przez klucz z sesji
+        public static function getUserByAuthKey($auth_key){
+            return self::sqlGetUserByAuthKey($auth_key);
+        }
+        
         /* *************** AKCJE ************** */
         /* ************************************ */
         
@@ -321,6 +326,28 @@
         
         /* **************** SQL *************** */
         /* ************************************ */
+        
+        // pobieranie loginu usera przez klucz z sesji
+        public static function sqlGetUserByAuthKey($auth_key){
+            global $DB;
+            
+            $zapytanie = "SELECT su.`id_user`, su.`login`,  sul.`id_users_login`,  sul.`auth_key`,  sul.`id_user_guard`,  sul.`is_logged`,  sul.`date_refresh`,  su.`mail`,  su.`guard`,  sug.`guard_key`,  sug.`guard_ip`, sug.`verified`, sug.`date_guard_send`
+                FROM `sew_users` as su, `sew_user_login` as sul, `sew_user_guard` as sug
+                WHERE sul.`auth_key` = '".ClassTools::pSQL($auth_key)."'
+                    AND su.`id_user` = sul.`id_user`
+                    AND sug.`id_user_guard` = sul.`id_user_guard`
+                    AND su.`deleted` = '0'
+                    AND su.`active` = '1'
+            ;";
+            // print_r($zapytanie);
+            $sql = $DB->pdo_fetch($zapytanie);
+            
+            if(!$sql || !is_array($sql) || count($sql) < 1){
+                return false;
+            }
+            
+            return $sql;
+        }
         
         // sprawdzanie czy login istnieje
         protected function sqlCheckLoginExists($login){

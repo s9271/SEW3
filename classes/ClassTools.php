@@ -62,6 +62,23 @@
             return str_replace(array("\r\n", "\r", "\n"), '<br />', $str);
         }
         
+        // zmiana ' na \' itp aby zapytanie sie nie sypalo, uzywane przy zapytaniach do sql-a
+        public static function pSQL($string, $htmlOK = false){
+            if (get_magic_quotes_gpc()){
+                $string = stripslashes($string);
+            }
+            
+            if (!is_numeric($string)){
+                $string = addslashes($string);
+                
+                if (!$htmlOK){
+                    $string = strip_tags(self::nl2br($string));
+                }
+            }
+
+            return $string;
+        }
+        
         // ganarowanie random znakow
         public static function generateRandomPasswd($length = 15, array $types = array()){
             if(count($types) < 1){

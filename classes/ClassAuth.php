@@ -3,6 +3,15 @@
     require_once("libraries/password_compatibility_library.php");
     
     class ClassAuth{
+        // ilosc godzin przez ktore ma trzymac sesje uzytkownika ktory jest nieaktywny
+        public static $session_time = '2H'; // dostepne 12H59M30S
+        
+        // ilosc minut przez ktore mozna wpisac guard key
+        public static $guard_time = '30';
+        
+        // ilosc minut co ile mozna wysylac nowy klucz
+        public static $guard_mail_time = '10';
+        
         private static $cost = '12';
         
         // generowanie hasla
@@ -40,11 +49,12 @@
             if(!$user_guard) // jezeli nie ma ip, doda go
             {
                 $data_guard = array(
-                    'id_user'    => $id_user,
-                    'guard_key'  => $guard ? ClassTools::generateRandomPasswd(6, array('1', '2', '3')) : null,
-                    'guard_ip'   => $_SERVER['REMOTE_ADDR'],
-                    'date_add'   => date('Y-m-d H:i:s'),
-                    'verified'   => $guard ? '0' : '1'
+                    'id_user'            => $id_user,
+                    'guard_key'          => $guard ? ClassTools::generateRandomPasswd(6, array('1', '2', '3')) : null,
+                    'guard_ip'           => $_SERVER['REMOTE_ADDR'],
+                    'date_add'           => date('Y-m-d H:i:s'),
+                    'date_guard_send'    => date('Y-m-d H:i:s'),
+                    'verified'           => $guard ? '0' : '1'
                 );
                 
                 $user_guard = $data_guard;
@@ -62,7 +72,7 @@
                 $where = "`id_user_guard` = '{$user_guard['id_user_guard']}'";
                 $guard_key = ClassTools::generateRandomPasswd(6, array('1', '2', '3'));
                 
-                $DB->update('sew_user_guard', array('guard_key' => $guard_key), $where);
+                $DB->update('sew_user_guard', array('guard_key' => $guard_key, 'date_guard_send' => date('Y-m-d H:i:s')), $where);
             }
             elseif($user_guard && !$guard && $user_guard['verified'] == '0') // jezeli jest ale nie zatwierdzony ale guard zostal wylaczony to ip zostanie aktywowane
             {
@@ -72,9 +82,10 @@
             
             $data = array(
                 'id_user'          => $id_user,
-                'auth_key'         => ClassTools::generateRandomPasswd(40),
+                'auth_key'         => ClassTools::generateRandomPasswd(40, array('1', '2', '3')),
                 'id_user_guard'    => $user_guard['id_user_guard'],
-                'date_add'         => date('Y-m-d H:i:s')
+                'date_add'         => date('Y-m-d H:i:s'),
+                'date_refresh'     => date('Y-m-d H:i:s')
             );
             
             if(!$id = $DB->insert('sew_user_login', $data)){
