@@ -30,21 +30,14 @@
             
             // sprawdzanie czy jest sie na podstronie
             if($page_action = ClassTools::getValue('page_action')){
-                
-                
-                
                 switch($page_action){
                     case 'guard':
                         // ladowanie strony z formularzem do podania klucza
                         return $this->getPageGuard();
                     break;
-                    case 'edytuj':
-                        // ladowanie strony z formularzem
-                        return $this->getPageEdit();
-                    break;
-                    case 'podglad':
-                        // ladowanie strony z podgladem misji
-                        return $this->getPageView();
+                    case 'haslo':
+                        // ladowanie strony z formularzem do zmiany hasla
+                        return $this->getPagePassword();
                     break;
                 }
             }
@@ -59,7 +52,7 @@
             // tytul strony
             $this->tpl_title = 'Panel logowania';
             
-            // ladowanie strony z lista misji
+            // ladowanie strony z formularzem logowania
             return $this->loadTemplate('/login/view');
         }
         
@@ -75,8 +68,33 @@
             // login zalogowanego uzytkownika
             $this->tpl_values['login_name'] = $this->login->auth_user['login'];
             
-            // ladowanie strony z lista misji
+            // ladowanie strony z formularzem na kod guard
             return $this->loadTemplate('/login/guard');
+        }
+        
+        // strona z formularzem na nowe haslo
+        protected function getPagePassword(){
+            $this->actions();
+            
+            // tytul strony
+            $this->tpl_title = 'Panel logowania - Przywracanie hasła';
+            
+            if(!$password_key = ClassTools::getValue('password_key'))
+            {
+                // ladowanie strony z formularzem na nowe haslo
+                return $this->loadTemplate('/login/password');
+            }
+            
+            // komunikaty bledu
+            if(!$new_password = $this->login->sendNewPassword($password_key)){
+                $this->alerts['danger'] = $this->login->errors;
+            }else{
+                $this->alerts['success'] = "Nowe hasło zostało wysłane na adres e-mail.";
+                $this->sendMailNewPassword($this->login->auth_user->mail, $new_password);
+            }
+            
+            // ladowanie strony z wysylka nowego hasla
+            return $this->loadTemplate('/login/password_noticed');
         }
         
         /* *************** AKCJE ************** */
@@ -105,6 +123,9 @@
                 break;
                 case 'guard_resend':
                     return $this->guardResend(); // wygenerowanie i wyslanie nowego klucza
+                break;
+                case 'new_password':
+                    return $this->sendNewPasswordLink(); // wysylanie linka do generowania nowego hasla
                 break;
             }
             
@@ -179,8 +200,25 @@
             }
             
             // wysylanie maila z nowym kluczem do guarda
-            // $this->sendMailGuardKey($this->login->auth_user['mail'], $new_key, $this->login->auth_user['guard_ip']);
+            $this->sendMailGuardKey($this->login->auth_user['mail'], $new_key, $this->login->auth_user['guard_ip']);
             $this->alerts['success'] = "Wysłano nowy klucz guard na e-mail.";
+            
+            return;
+        }
+        
+        // wysylanie linka do generowania nowego hasla
+        protected function sendNewPasswordLink(){
+            $this->login->login = ClassTools::getValue('form_login');
+            
+            // komunikaty bledu
+            if(!$password_key = $this->login->sendNewPasswordLink()){
+                $this->alerts['danger'] = $this->login->errors;
+                return;
+            }
+            
+            // wysylanie maila z linkiem do zmiany hasla
+            $this->sendMailNewPasswordLink($this->login->auth_user['mail'], $password_key);
+            $this->alerts['success'] = "Wysłano na adres e-mail instrukcje do zmiany hasła.";
             
             return;
         }
@@ -191,7 +229,7 @@
         // wysylanie maila z kluczem do guarda
         protected function sendMailGuardKey($adres, $guard_key, $ip){
             // mail
-            $adres = "mariusz@nephax.com";
+            // $adres = "mariusz@nephax.com";
             
             // od kogo
             $from = "System Ewidencji Wojskowej <system@sew.org.pl>";
@@ -226,10 +264,10 @@
             // mail($adres, $temat, $tresc_maila, $head);
         }
         
-        // wysylanie maila z kluczem do guarda
+        // wysylanie maila z linkiem do zmiany hasla
         protected function sendMailNewPasswordLink($adres, $password_key){
             // mail
-            $adres = "mariusz@nephax.com";
+            // $adres = "mariusz@nephax.com";
             
             // od kogo
             $from = "System Ewidencji Wojskowej <system@sew.org.pl>";
@@ -252,10 +290,41 @@
 
             $tresc_maila = "--" . $boundary . "\n";
             $tresc_maila .= "Content-Type: text/plain; charset=\"iso-8859-2\"\n\n";
-            $tresc_maila .= "Aby zresetować hasło proszę wejścna na poniższy link:\n\n";
-            $tresc_maila .= "Proszę podać poniższy klucz aby dokończyć logowanie do systemu.\n\n";
-            $tresc_maila .= "<a href='{$link}'>{$link}</a>\n\n";
-            $tresc_maila .= "KLUCZ GUARD: {$guard_key}\n\n\n\n";
+            $tresc_maila .= "Aby zresetować hasło proszę wejść na na poniższy link:\n\n";
+            $tresc_maila .= '<a href="'.$link.'">'.$link.'</a>'."\n\n";
+            $tresc_maila .= "Link aktywny jest tylko przez ".ClassAuth::$password_link_time." godzin.\n\n";
+            $tresc_maila .= "Wiadomość została wygenerowana przez system, prosimy na niego nie odpowiadać.\n\n";
+            $tresc_maila .= "--" . $boundary . "-- \n\n";
+            
+            $temat_iso = iconv('UTF-8', 'ISO-8859-2//TRANSLIT', $temat);
+            $tresc_maila_iso = iconv('UTF-8', 'ISO-8859-2//TRANSLIT', $tresc_maila);
+            $head_iso = iconv('UTF-8', 'ISO-8859-2//TRANSLIT', $head);
+            
+            mail($adres, $temat_iso, $tresc_maila_iso, $head_iso);
+            // mail($adres, $temat, $tresc_maila, $head);
+        }
+        
+        // wysylanie maila z linkiem do zmiany hasla
+        protected function sendMailNewPassword($adres, $new_password){
+            // od kogo
+            $from = "System Ewidencji Wojskowej <system@sew.org.pl>";
+            
+            // temat
+            $temat = "Nowe hasło";
+            
+            // wysylka
+            $boundary = "-->===_54654747_===<---->>4255==_";
+            
+            $head = 'From: '.$from."\n";
+            $head .= "MIME-version: 1.0\n";
+            $head .= "Content-type: multipart/mixed; ";
+            $head .= "boundary=\"$boundary\"\n";
+            $head .= "Content-Transfer-Encoding: 8bit\n";
+            $head .= "charset=\"iso-8859-2\"\n";
+
+            $tresc_maila = "--" . $boundary . "\n";
+            $tresc_maila .= "Content-Type: text/plain; charset=\"iso-8859-2\"\n\n";
+            $tresc_maila .= "Nowe hasło do systemu: {$new_password}\n\n";
             $tresc_maila .= "Wiadomość została wygenerowana przez system, prosimy na niego nie odpowiadać.\n\n";
             $tresc_maila .= "--" . $boundary . "-- \n\n";
             

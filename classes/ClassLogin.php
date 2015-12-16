@@ -187,6 +187,94 @@
             return $new_key;
         }
         
+        // generowanie linka do zmiany hasla
+        public function sendNewPasswordLink(){
+            $empty = false;
+            $this->login = trim($this->login);
+            
+            // sprawdzanie czy login jest pusty
+            if($this->login == '' || empty($this->login)){
+                $this->errors[] = "<b>Użytkownik</b>: Pole jest puste.";
+                return false;
+            }
+            
+            // sprawdzanie czy login sie waliduje
+            if(!ClassModel::validIsNormalChars($this->login)){
+                $this->errors = "<b>Login</b>: Niepoprawny format.";
+                return false;
+            }
+            
+            // sprawdzanie czy uzytkownik istnieje
+            if(!$user = $this->sqlGetUserAndPassword($this->login)){
+                $this->errors = "Użytkownik nie istnieje.";
+                return false;
+            }
+            
+            // sprawdzanie czy uzytkownik jest aktywny
+            if($user['active'] != '1'){
+                $this->errors = "Użytkownik nie jest aktywny.";
+                return false;
+            }
+            
+            // sprawdzanie kiedy ostatnio zostal wyslany link do zmiany hasla
+            if($last_send = $this->sqlGetWhenPasswordSend($user['id_user'])){
+                $date_password_send = new DateTime($last_send['date_send']);
+                $date_now = new DateTime("now");
+                $date_now->sub(new DateInterval('PT'.ClassAuth::$password_mail_time.'M'));
+                
+                if($date_password_send > $date_now){
+                    $this->errors = "Nowe hasło można wysyłać raz na ".ClassAuth::$password_mail_time." minut.";
+                    return false;
+                }
+            }
+            
+            $password_key = ClassTools::generateRandomPasswd(60, array('1', '2', '3'));
+            
+            if($last_send){
+                $this->sqlUpdateNewPasswordRequest($password_key, $last_send['id_user_new_password']);
+            }else{
+                $this->sqlAddNewPasswordRequest($password_key, $user['id_user']);
+            }
+            
+            $this->auth_user = $user;
+            return $password_key;
+        }
+        
+        // generowanie nowego hasla
+        public function sendNewPassword($password_key){
+            
+            // sprawdzanie kiedy ostatnio zostal wyslany link do zmiany hasla
+            if(!$last_send = $this->sqlGetWhenPasswordSendByPasswordKey($password_key)){
+                $this->errors = "Niepoprawny link.";
+                return false;
+            }
+            
+            $date_password_send = new DateTime($last_send['date_send']);
+            $date_now = new DateTime("now");
+            $date_now->sub(new DateInterval('PT'.ClassAuth::$password_link_time.'H'));
+            // print_r($date_now);
+            if($date_password_send < $date_now){
+                $this->errors = "Link jest nieaktywny.";
+                return false;
+            }
+            
+            $new_password = "[hEf&R'eI?d1:Em(";
+            // $new_password = ClassTools::generateRandomPasswd();
+            
+            if(!$user = new ClassUser($last_send['id_user'])){
+                $this->errors = $user->errors;
+                return false;
+            }
+            
+            if(!$user->sqlUpdatePassword($new_password, $last_send['id_user_new_password'])){
+                $this->errors = $user->errors;
+                return false;
+            }
+            
+            $this->auth_user = $user;
+            return $new_password;
+        }
+        
         /* **************** SQL *************** */
         /* ************************************ */
         
@@ -198,6 +286,44 @@
                 FROM `sew_users`
                 WHERE `login` = '{$login}'
                     AND `deleted` = '0'
+            ;";
+            
+            $sql = $DB->pdo_fetch($zapytanie);
+            
+            if(!$sql || !is_array($sql) || count($sql) < 1){
+                return false;
+            }
+            
+            return $sql;
+        }
+        
+        // pobieranie daty ostatniego wyslania maila z linkiem
+        protected function sqlGetWhenPasswordSend($id_user){
+            global $DB;
+            
+            $zapytanie = "SELECT `id_user_new_password`, `date_send`
+                FROM `sew_user_new_password`
+                WHERE `id_user` = '{$id_user}'
+                    AND `generated` = '0'
+            ;";
+            
+            $sql = $DB->pdo_fetch($zapytanie);
+            
+            if(!$sql || !is_array($sql) || count($sql) < 1){
+                return false;
+            }
+            
+            return $sql;
+        }
+        
+        // pobieranie daty ostatniego wyslania maila z linkiem
+        protected function sqlGetWhenPasswordSendByPasswordKey($password_key){
+            global $DB;
+            
+            $zapytanie = "SELECT `id_user_new_password`, `date_send`, `id_user`
+                FROM `sew_user_new_password`
+                WHERE `password_key` = '".ClassTools::pSQL($password_key)."'
+                    AND `generated` = '0'
             ;";
             
             $sql = $DB->pdo_fetch($zapytanie);
@@ -231,6 +357,29 @@
             
             $where = "`id_user_guard` = '{$this->auth_user['id_user_guard']}'";
             $DB->update('sew_user_guard', array('guard_key' => $new_key, 'date_guard_send' => date('Y-m-d H:i:s')), $where);
+            return;
+        }
+        
+        // generowanie nowego linka do nowego hasla
+        protected function sqlAddNewPasswordRequest($password_key, $id_user){
+            global $DB;
+            
+            $data = array(
+                'id_user' => $id_user,
+                'password_key' => $password_key,
+                'date_send' => date('Y-m-d H:i:s')
+            );
+            
+            $DB->insert('sew_user_new_password', $data);
+            return;
+        }
+        
+        // generowanie nowego linka do nowego hasla
+        protected function sqlUpdateNewPasswordRequest($password_key, $id_user_new_password){
+            global $DB;
+            
+            $where = "`id_user_new_password` = '{$id_user_new_password}'";
+            $DB->update('sew_user_new_password', array('password_key' => $password_key, 'date_send' => date('Y-m-d H:i:s')), $where);
             return;
         }
     }

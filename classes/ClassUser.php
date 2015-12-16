@@ -610,6 +610,49 @@
             return $sql;
         }
         
+        // dodawanie do bazy
+        public function sqlUpdatePassword($new_password, $id_user_new_password = false){
+            global $DB;
+            
+            // dodawanie logu
+            if(!$user = $this->sqlGetUser($this->id, true)){
+                $this->errors[] = "LOG: Błąd podczas pobierania rekordu z bazy.";
+                return false;
+            }
+            
+            $data_log = array(
+                'id_user'        => $user['id_user'],
+                'login'          => $user['login'],
+                'mail'           => $user['mail'],
+                'password'       => $user['password'],
+                'id_permission'  => $user['id_permission'],
+                'id_military'    => $user['id_military'],
+                'active'         => $user['active'],
+                'guard'          => $user['guard'],
+                'name'           => $user['name'],
+                'surname'        => $user['surname'],
+                'phone'          => $user['phone'],
+                'date_update'    => date('Y-m-d H:i:s'),
+                'id_user_update' => '6'
+            );
+                
+            if(!$DB->insert('log_users', $data_log)){
+                $this->errors[] = "LOG: Błąd podczas zapisywania rekordu w tabeli z logami.";
+                return false;
+            }
+            
+            $where = "`id_user` = '{$this->id}'";
+            $DB->update('sew_users', array('password' => ClassAuth::generatePassword($new_password)), $where);
+            
+            if($id_user_new_password){
+                $where = "`id_user_new_password` = '{$id_user_new_password}'";
+                $DB->update('sew_user_new_password', array('generated' => '1'), $where);
+            }
+            
+            return true;
+        }
+            
+        
         /* *************** AJAX ************** */
         /* *********************************** */
         

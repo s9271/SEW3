@@ -9,8 +9,14 @@
         // ilosc minut przez ktore mozna wpisac guard key
         public static $guard_time = '30';
         
-        // ilosc minut co ile mozna wysylac nowy klucz
+        // ilosc minut co ile mozna wysylac nowy klucz guard
         public static $guard_mail_time = '10';
+        
+        // ilosc minut co ile mozna wysylac nowy link do generowania nowego hasla
+        public static $password_mail_time = '10';
+        
+        // ilosc godzin przez ktore mozna wejsc na link resetu hasla
+        public static $password_link_time = '1';
         
         private static $cost = '12';
         
