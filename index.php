@@ -7,8 +7,8 @@
     // start sesji
     if (version_compare(PHP_VERSION, '5.4.0', '<')) {
         if(session_id() == '') {session_start();}
-    } else  {
-       if (session_status() == PHP_SESSION_NONE) {session_start();}
+    } else {
+        if (session_status() == PHP_SESSION_NONE) {session_start();}
     }
     
     // automatyczne ladowanie plikow
@@ -38,24 +38,57 @@
     // globalna zmienna do operacji na bazie danych
     $DB = new ClassSQL(DB_HOST, DB_USER, DB_PASS, DB_NAME);
     
-    // sprawdzenie czy w linku jest controller
-    if($controller = ClassTools::getValue('controller')){
-        if(isset($controllers[$controller])){ // sprawdzenie czy jest zdefiniowany controller
-            $loadController = new $controllers[$controller];
+    // globalna zmienna do logowania
+    $login = new ClassLogin();
+    
+    $current_link = $_SERVER['REQUEST_URI'];
+    
+    // nazwa kontrolera
+    $controller = ClassTools::getValue('controller');
+    
+    // strony wyswietlane bez logowania
+    if(!$login->is_session_auth)
+    {
+        // sprawdzenie czy jest zdefiniowany controller
+        if($controller == 'login' || (!$controller && $current_link == '/'))
+        {
+            // ladowanie strony z logowaniem
+            $loadController = new ControllerLogin();
             print $loadController->getContent();
-        }else{ // jezeli nie jest zdefiniowany to zaladuje 404
+        }
+        elseif($controller != '404')
+        {
+            // jezeli nie jest zdefiniowany to zaladuje 404
             ClassTools::redirect('404');
         }
-    }else{
-        $login = new Login();
-
-        if ($login->isUserLoggedIn() == true) {
-
-            include("views/logged_in.php");
-
-        } else {
-
-            include("views/not_logged_in.php");
+        elseif($controller == '404')
+        {
+            // ladowanie strony z logowaniem
+            $loadController = new Controller404();
+            print $loadController->getContent(false);
+        }
+    }
+    else
+    {
+        // sprawdzenie czy w linku jest controller
+        if($controller){
+            if(isset($controllers[$controller])){ // sprawdzenie czy jest zdefiniowany controller
+                $loadController = new $controllers[$controller];
+                print $loadController->getContent();
+            }else{ // jezeli nie jest zdefiniowany to zaladuje 404
+                ClassTools::redirect('404');
+            }
+        }
+        elseif(!$controller && $current_link == '/')
+        {
+            // ladowanie strony start
+            $loadController = new ControllerIndex();
+            print $loadController->getContent();
+        }
+        else
+        {
+            // jezeli nie jest zdefiniowany to zaladuje 404
+            ClassTools::redirect('404');
         }
     }
 ?>

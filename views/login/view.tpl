@@ -7,7 +7,7 @@
             
             <?php $this->getAlerts(true); ?>
             
-            <form method="post" action="" class="form-horizontal">
+            <form method="post" class="form-horizontal">
 
                 <div class="form-group form-group-lg">
                     <div class="col-sm-3 text-right">

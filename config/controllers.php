@@ -8,4 +8,5 @@
     $controllers['szkolenia'] = 'ControllerTrainings';
     $controllers['odznaczenia'] = 'ControllerOrders';
     $controllers['404'] = 'Controller404';
+    $controllers['login'] = 'ControllerLogin';
 ?>

@@ -7,7 +7,7 @@
             
             <?php $this->getAlerts(true); ?>
             
-            <form method="post" action="" class="form-horizontal">
+            <form method="post" class="form-horizontal">
 
                 <div class="form-group form-group-lg">
                     <div class="col-sm-3 text-right">
@@ -20,7 +20,7 @@
                 
                 <div class="form-group buttons">
                     <div class="control-label col-sm-12">
-                        <a href="/login" class="btn btn-info btn-lg pull-left" title="Wróć">Wróć</a>
+                        <a href="/" class="btn btn-info btn-lg pull-left" title="Wróć">Wróć</a>
                         <button class="btn btn-primary btn-lg" type="submit" name="form_action" value="new_password">Wyślij nowe hasło</button>
                     </div>
                 </div>

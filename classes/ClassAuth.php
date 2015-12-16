@@ -56,7 +56,8 @@
             {
                 $data_guard = array(
                     'id_user'            => $id_user,
-                    'guard_key'          => $guard ? ClassTools::generateRandomPasswd(6, array('1', '2', '3')) : null,
+                    // 'guard_key'          => $guard ? ClassTools::generateRandomPasswd(6, array('1', '2', '3')) : null,
+                    'guard_key'          => $guard ? self::generateRandomGuardKey() : null,
                     'guard_ip'           => $_SERVER['REMOTE_ADDR'],
                     'date_add'           => date('Y-m-d H:i:s'),
                     'date_guard_send'    => date('Y-m-d H:i:s'),
@@ -75,10 +76,21 @@
             }
             elseif($user_guard && $guard && $user_guard['verified'] == '0') // jezeli jest ale nie zatwierdzony to wygeneruje nowy guard_key do wyslania przez mail
             {
-                $where = "`id_user_guard` = '{$user_guard['id_user_guard']}'";
-                $guard_key = ClassTools::generateRandomPasswd(6, array('1', '2', '3'));
+                // sprawdzanie kiedy ostatnio zostal wyslany klucz
+                $date_guard_send = new DateTime($user_guard['date_guard_send']);
+                $date_now = new DateTime("now");
+                $date_now->sub(new DateInterval('PT'.self::$guard_mail_time.'M'));
                 
-                $DB->update('sew_user_guard', array('guard_key' => $guard_key, 'date_guard_send' => date('Y-m-d H:i:s')), $where);
+                if($date_guard_send < $date_now)
+                {
+                    $where = "`id_user_guard` = '{$user_guard['id_user_guard']}'";
+                    $guard_key = self::generateRandomGuardKey();
+                    $DB->update('sew_user_guard', array('guard_key' => $guard_key, 'date_guard_send' => date('Y-m-d H:i:s')), $where);
+                }
+                else
+                {
+                    $guard_key = true;
+                }
             }
             elseif($user_guard && !$guard && $user_guard['verified'] == '0') // jezeli jest ale nie zatwierdzony ale guard zostal wylaczony to ip zostanie aktywowane
             {
@@ -88,7 +100,8 @@
             
             $data = array(
                 'id_user'          => $id_user,
-                'auth_key'         => ClassTools::generateRandomPasswd(40, array('1', '2', '3')),
+                // 'auth_key'         => ClassTools::generateRandomPasswd(40, array('1', '2', '3')),
+                'auth_key'         => self::generateRandomAuthKey(),
                 'id_user_guard'    => $user_guard['id_user_guard'],
                 'date_add'         => date('Y-m-d H:i:s'),
                 'date_refresh'     => date('Y-m-d H:i:s')
@@ -111,7 +124,7 @@
             
             $where = $guard ? 'AND `guard_key` IS NOT NULL' : '';
             
-            $zapytanie = "SELECT `id_user_guard`, `verified`
+            $zapytanie = "SELECT `id_user_guard`, `verified`, `date_guard_send`
                 FROM `sew_user_guard`
                 WHERE `id_user` = '{$id_user}'
                     AND `guard_ip` LIKE '{$ip}'
@@ -125,6 +138,32 @@
             }
             
             return $sql;
+        }
+        
+        // generowanie random klucza logowania
+        public static function generateRandomAuthKey(){
+            return ClassTools::generateRandomPasswd(40, array('1', '2', '3'));
+        }
+        
+        // generowanie random klucza guard
+        public static function generateRandomGuardKey(){
+            return ClassTools::generateRandomPasswd(6, array('1', '2', '3'));
+        }
+        
+        // generowanie random password link
+        public static function generateRandomPasswordLinkKey(){
+            return ClassTools::generateRandomPasswd(60, array('1', '2', '3'));
+        }
+        
+        // pobieranie id usera zalogowanego
+        public static function getCurrentUserId(){
+            global $login;
+            
+            if($login->auth_user){
+                return $login->auth_user['id_user'];
+            }else{
+                return null;
+            }
         }
     }
 ?>

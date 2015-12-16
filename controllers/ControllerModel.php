@@ -7,7 +7,7 @@
         protected $alerts = array();
         
         // zaladowane skrypty
-        private $scripts = false;
+        protected $scripts = false;
         
         // funkcje js
         protected $load_jquery = true;
@@ -61,7 +61,7 @@
         }
         
         // ladowanie skryptow
-        private function loadScripts(){
+        protected function loadScripts(){
             if($this->load_jquery){
                 $this->scripts[] = '<!-- jQuery 1.11.3 -->';
                 $this->scripts[] = '<script src="/asset/jquery/jquery-1.11.3.min.js"></script>';
@@ -102,7 +102,7 @@
         }
         
         // wyswietlanie alertow w template
-        private function getAlerts($small = false){
+        protected function getAlerts($small = false){
             if (!is_array($this->alerts) && count($this->alerts) < 1){
                 return;
             }

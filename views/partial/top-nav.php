@@ -28,7 +28,7 @@
             </div>
           </div>
         <!--<li><a href="#"><span class="glyphicon glyphicon-user"></span>&emsp;<?php echo $_SESSION['user_name'] ?></a></li>-->
-        <li><a href="/index.php?logout"><span class="glyphicon glyphicon-log-out"></span>&emsp;Wyloguj</a></li>
+        <li><a href="/index.php?sew_action=logout"><span class="glyphicon glyphicon-log-out"></span>&emsp;Wyloguj</a></li>
       </ul>
     </div>
   </div>

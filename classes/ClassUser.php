@@ -633,7 +633,7 @@
                 'surname'        => $user['surname'],
                 'phone'          => $user['phone'],
                 'date_update'    => date('Y-m-d H:i:s'),
-                'id_user_update' => '6'
+                'id_user_update' => ClassAuth::getCurrentUserId()
             );
                 
             if(!$DB->insert('log_users', $data_log)){

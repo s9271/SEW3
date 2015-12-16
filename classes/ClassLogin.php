@@ -12,6 +12,16 @@
         public function __construct(){
             // sprawdzanie czy istnieje sesja uzytkownika
             $this->is_session_auth = (isset($_SESSION['user']) && isset($_SESSION['user']['auth_key'])) ? $_SESSION['user']['auth_key'] : false;
+            
+            if($this->is_session_auth){
+                $this->getUserByAuthKey(false, true);
+            
+                $sew_action = ClassTools::getValue('sew_action');
+                
+                if($sew_action && $sew_action == 'logout'){
+                    $this->logout();
+                }
+            }
         }
         
         /* ************** REDIRECT ************* */
@@ -24,7 +34,8 @@
                 $this->auth_user = array();
                 unset($_SESSION['user']['auth_key']);
             }
-            ClassTools::redirect('login');
+            // ClassTools::redirect('login');
+            ClassTools::redirect('');
             exit;
         }
         
@@ -34,11 +45,17 @@
             exit;
         }
         
+        // kierowanie na strone guarda
+        protected function goToGuardPage(){
+            ClassTools::redirect('guard');
+            exit;
+        }
+        
         /* *************** OGOLNE ************** */
         /* ************************************* */
         
         // pobieranie info o zalogowanym uzytkowniku
-        public function getUserByAuthKey($go_home = false){
+        public function getUserByAuthKey($go_home = false, $go_guard = false){
             // sprawdzanie czy istnieje wgl sesja
             if(!$this->is_session_auth){
                 $this->goToLoginPage();
@@ -75,8 +92,22 @@
                 return;
             }
             
+            $page_action = ClassTools::getValue('page_action');
+            
             // sprawdzanie czy ip jest zweryfikowany
-            if($go_home && $user['verified'] == '1'){
+            if(($go_home || $page_action == 'guard') && $user['verified'] == '1'){
+                $this->goToHomePage();
+                return;
+            }
+            
+            // sprawdzanie czy ip jest zweryfikowany
+            if($go_guard && $user['verified'] == '0' && $page_action != 'guard'){
+                $this->goToGuardPage();
+                return;
+            }
+            
+            // sprawdzanie czy jest sie na stronie dla logowanych
+            if($page_action == 'login' || $page_action == 'haslo'){
                 $this->goToHomePage();
                 return;
             }
@@ -181,7 +212,9 @@
                 return false;
             }
             
-            $new_key = ClassTools::generateRandomPasswd(6, array('1', '2', '3'));
+            // generowanie nowego klucza guard
+            // $new_key = ClassTools::generateRandomPasswd(6, array('1', '2', '3'));
+            $new_key = ClassAuth::generateRandomGuardKey();
             $this->sqlGuardResend($new_key);
             
             return $new_key;
@@ -228,7 +261,9 @@
                 }
             }
             
-            $password_key = ClassTools::generateRandomPasswd(60, array('1', '2', '3'));
+            // generowanie klucza linka
+            // $password_key = ClassTools::generateRandomPasswd(60, array('1', '2', '3'));
+            $password_key = ClassAuth::generateRandomPasswordLinkKey();
             
             if($last_send){
                 $this->sqlUpdateNewPasswordRequest($password_key, $last_send['id_user_new_password']);
@@ -258,8 +293,8 @@
                 return false;
             }
             
-            $new_password = "[hEf&R'eI?d1:Em(";
-            // $new_password = ClassTools::generateRandomPasswd();
+            // generowanie nowego hasla
+            $new_password = ClassTools::generateRandomPasswd();
             
             if(!$user = new ClassUser($last_send['id_user'])){
                 $this->errors = $user->errors;

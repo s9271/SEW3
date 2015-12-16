@@ -3,16 +3,10 @@
         // trzymanie klasy login
         protected $login = false;
         
-        
-        // bedzie przechowywac dane na temat usera z sesji
-        // protected $auth_user = array();
-        
-        // zmienna bedzie trzymac czy jest sesja
-        // protected $is_session_auth = false;
-        
         public function __construct(){
-            $this->login = new ClassLogin();
-            // $this->is_session_auth = (isset($_SESSION['user']) && isset($_SESSION['user']['auth_key'])) ? $_SESSION['user']['auth_key'] : false;
+            global $login;
+            // $this->login = new ClassLogin();
+            $this->login = $login;
         }
         
         // funkcja ktora jest pobierana w indexie, jest wymagana w kazdym kontrolerze!!!!!
@@ -25,9 +19,6 @@
         
         // pobieranie strony
         protected function getPage(){
-            // print_r($_GET);
-            print_r($_SESSION);
-            
             // sprawdzanie czy jest sie na podstronie
             if($page_action = ClassTools::getValue('page_action')){
                 switch($page_action){
@@ -58,7 +49,7 @@
         
         // strona z formularzem na kod guard
         protected function getPageGuard(){
-            $this->login->getUserByAuthKey(true);
+            // $this->login->getUserByAuthKey(true);
                 
             $this->actions();
             
@@ -106,7 +97,7 @@
                 return;
             }
             
-            print_r($_POST);
+            // print_r($_POST);
             
             // przypisanie zmiennych posta do zmiennych template
             $this->tpl_values = $this->setValuesTemplateByPost();
@@ -155,8 +146,10 @@
             $_SESSION['user']['auth_key'] = $auth['auth_key'];
             
             if($auth['guard_key']){
-                // wysylanie maila z kluczem do guarda
-                // $this->sendMailGuardKey($user['mail'], $auth['guard_key'], $_SERVER['REMOTE_ADDR']);
+                if($auth['guard_key'] !== true){
+                    // wysylanie maila z kluczem do guarda
+                    $this->sendMailGuardKey($user['mail'], $auth['guard_key'], $_SERVER['REMOTE_ADDR']);
+                }
                 
                 // przejscie na strone z formularzem do wpisania klucza
                 ClassTools::redirect('guard');

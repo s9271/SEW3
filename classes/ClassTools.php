@@ -106,6 +106,11 @@
                         $add .= substr(str_shuffle($val), 0, 1);
                     break;
                     case '4':
+                        $val = '!@#$%^&*()[]{}\\|/,.<>?;:';
+                        $str .= $val;
+                        $add .= substr(str_shuffle($val), 0, 1);
+                    break;
+                    case '5':
                         $val = '!@#$%^&*()[]{}\\|/,.<>?;:\'"';
                         $str .= $val;
                         $add .= substr(str_shuffle($val), 0, 1);

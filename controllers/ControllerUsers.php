@@ -144,7 +144,7 @@
                 return;
             }
             
-            print_r($_POST);
+            // print_r($_POST);
             
             // przypisanie zmiennych posta do zmiennych template
             $this->tpl_values = $this->setValuesTemplateByPost();
@@ -182,8 +182,8 @@
             $user->name = ClassTools::getValue('form_name');
             $user->surname = ClassTools::getValue('form_surname');
             $user->phone = ClassTools::getValue('form_phone');
-            // $user->id_user_add = ClassAuth::getCurrentUserId();
-            $user->id_user_add = '123';
+            $user->id_user_add = ClassAuth::getCurrentUserId();
+            // $user->id_user_add = '123';
             
             // komunikaty bledu
             if(!$user->add()){
@@ -212,8 +212,8 @@
                 return;
             }
             
-            // $user->id_user_delete = ClassAuth::getCurrentUserId();
-            $user->id_user_delete = '321';
+            $user->id_user_delete = ClassAuth::getCurrentUserId();
+            // $user->id_user_delete = '321';
             
             // usuwanie
             if(!$user->delete()){
@@ -250,8 +250,8 @@
             $user->name = ClassTools::getValue('form_name');
             $user->surname = ClassTools::getValue('form_surname');
             $user->phone = ClassTools::getValue('form_phone');
-            // $user->id_user_edit = ClassAuth::getCurrentUserId();
-            $user->id_user_update = '1';
+            $user->id_user_edit = ClassAuth::getCurrentUserId();
+            $user->id_user_update = ClassAuth::getCurrentUserId();
             
             // komunikaty
             if(!$user->update()){
