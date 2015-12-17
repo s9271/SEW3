@@ -126,6 +126,41 @@ if (typeof jQuery === 'undefined') {
         });
     };
     
+    $.fn.sewJsPasswordAjaxWithRepeat = function() {
+        $(this).on( "click", function(){
+            if (!$(this).attr('data-input-class')) {
+                sew_error = 'Nie podano atrybutu "data-input-class".';
+                console.error(sew_error);
+                return;
+            }
+            if (!$(this).attr('data-hint-class')) {
+                sew_error = 'Nie podano atrybutu "data-hint-class".';
+                console.error(sew_error);
+                return;
+            }
+        
+            var class_hint = $(this).data('hint-class');
+            var class_input = $(this).data('input-class');
+            
+            $.ajax({
+                // method: "POST",
+                url: '/ajax',
+                delay: 250,
+                dataType: "json",
+                data: { ajax_module: "user", ajax_function: "generateNewPassword" }
+            }).done(function( data_ajax ) {
+                if(!data_ajax){
+                    console.error('Błąd pobierania danych.');
+                }else if(typeof data_ajax.error != 'undefined'){
+                    console.error(data_ajax.error);
+                }
+                
+                $('input.' + class_input).val(data_ajax);
+                $('.' + class_hint).text('Wygenerowane hasło: ' + data_ajax);
+            });
+        });
+    };
+    
     $.fn.sewJsConfirm = function(){
         $(this).on( "click", function(){
             var show_text = 'Czy na pewno chcesz usunąć rekord?';
@@ -178,6 +213,11 @@ jQuery(document).ready(function($){
     // Password Ajax (uzytkownicy form)
     if ($('.jspasswordajax').length > 0){
         $('.jspasswordajax').sewJsPasswordAjax();
+    }
+    
+    // Password Ajax (uzytkownik form)
+    if ($('.jspasswordajaxwithrepeat').length > 0){
+        $('.jspasswordajaxwithrepeat').sewJsPasswordAjaxWithRepeat();
     }
     
     // Potwierdzenie (wyskakujace okienko)

@@ -112,6 +112,9 @@
                 return;
             }
             
+            // przy kazdym wejsciu na strone aktualizuje date ostatniwgo wejscia uzytkonika
+            $this->sqlUpdateLoginDateRefresh();
+            
             return;
         }
         
@@ -122,6 +125,11 @@
         public function logout(){
             $this->sqlLogout();
             $this->goToLoginPage();
+        }
+        
+        // wylogowanie po id usera
+        public function logoutById($id_user){
+            $this->sqlLogoutById($id_user);
         }
         
         // logowanie
@@ -378,6 +386,18 @@
             return;
         }
         
+        // wylogowanie usera
+        protected function sqlLogoutById($id_user){
+            global $DB;
+            
+            $date_now = new DateTime("now");
+            $date_now->sub(new DateInterval('PT'.ClassAuth::$session_time));
+            
+            $where = "`id_user` = '{$id_user}' AND `date_refresh` > '{$date_now->format('Y-m-d H:i:s')}' AND `is_logged` = '1'";
+            $DB->update('sew_user_login', array('is_logged' => '0'), $where, false);
+            return;
+        }
+        
         // zmiana ip na zweryfikowany
         protected function sqlIpVerified(){
             global $DB;
@@ -415,6 +435,15 @@
             
             $where = "`id_user_new_password` = '{$id_user_new_password}'";
             $DB->update('sew_user_new_password', array('password_key' => $password_key, 'date_send' => date('Y-m-d H:i:s')), $where);
+            return;
+        }
+        
+        // przy kazdym wejsciu na strone aktualizuje date ostatniwgo wejscia uzytkonika
+        protected function sqlUpdateLoginDateRefresh(){
+            global $DB;
+            
+            $where = "`id_users_login` = '{$this->auth_user['id_users_login']}'";
+            $DB->update('sew_user_login', array('date_refresh' => date('Y-m-d H:i:s')), $where);
             return;
         }
     }

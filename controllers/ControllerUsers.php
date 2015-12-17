@@ -18,8 +18,15 @@
                         return $this->getPageAdd();
                     break;
                     case 'edytuj':
-                        // ladowanie strony z formularzem
-                        return $this->getPageEdit();
+                        $page_action_option = ClassTools::getValue('page_action_option');
+                        
+                        if($page_action_option && $page_action_option == 'haslo'){
+                            // ladowanie strony z edycji hasla
+                            return $this->getPageEditPassword();
+                        }else{
+                            // ladowanie strony z formularzem
+                            return $this->getPageEdit();
+                        }
                     break;
                 }
             }
@@ -135,6 +142,55 @@
             return $this->loadTemplate('/user/formEdit');
         }
         
+        // ladowanie strony z edycji hasla
+        protected function getPageEditPassword(){
+            // zmienne wyswietlania na wypadek gdy strona z uzytkownikiem nie istnieje
+            $this->tpl_values['wstecz'] = '/uzytkownicy';
+            $this->tpl_values['title'] = 'Zmiana hasła';
+            
+            // sprawdzanie czy id istnieje w linku
+            if(!$id_item = ClassTools::getValue('id_item')){
+                $this->alerts['danger'] = 'Brak podanego id';
+                
+                // ladowanie strony do wyswietlania bledow
+                // zmienne ktore mozna uzyc: wstecz, title oraz alertow
+                return $this->loadTemplate('alert');
+            }
+            
+            // ladowanie klasy i uzytkownika
+            $user = new ClassUser(ClassTools::getValue('id_item'));
+            
+            // sprawdza czy klasa zostala poprawnie zaladowana
+            if(!$user->load_class){
+                $this->alerts['danger'] = $user->errors;
+                
+                // ladowanie strony do wyswietlania bledow
+                // zmienne ktore mozna uzyc: wstecz, title oraz alertow
+                return $this->loadTemplate('alert');
+            }
+            
+            $this->actions();
+            
+            // tytul
+            $this->tpl_title = 'Użytkownicy: Zmiana hasła';
+            
+            // skrypty
+            $this->load_js_functions = true;
+            
+            // przypisanie zmiennych formularza do zmiennych klasy
+            $array_form_class = array(
+                'id_user' => $user->id,
+                'form_name' => $user->name,
+                'form_surname' => $user->surname
+            );
+            
+            // przypisywanieszych zmiennych do zmiennych formularza
+            $this->setValuesTemplateByArrayPost($array_form_class);
+            
+            // ladowanie strony z formularzem
+            return $this->loadTemplate('/user/password');
+        }
+        
         /* *************** AKCJE ************** */
         /* ************************************ */
         
@@ -144,7 +200,7 @@
                 return;
             }
             
-            // print_r($_POST);
+            print_r($_POST);
             
             // przypisanie zmiennych posta do zmiennych template
             $this->tpl_values = $this->setValuesTemplateByPost();
@@ -158,6 +214,9 @@
                 break;
                 case 'user_edit':
                     return $this->edit(); // edycja
+                break;
+                case 'user_password_update':
+                    return $this->passwordUpdate(); // zmiana hasla
                 break;
             }
             
@@ -264,6 +323,33 @@
             
             // czyszczeie zmiennych wyswietlania
             // $this->tpl_values = '';
+            $_POST = array();
+            
+            return;
+        }
+        
+        // zmiana hasla
+        protected function passwordUpdate(){
+            // ladowanie klasy i uzytkownika
+            $user = new ClassUser(ClassTools::getValue('id_user'));
+            
+            // sprawdza czy klasa zostala poprawnie zaladowana
+            if(!$user->load_class){
+                $this->alerts['danger'] = $user->errors;
+                return;
+            }
+            
+            // komunikaty
+            if(!$user->passwordUpdate(ClassTools::getValue('form_new_password'), ClassTools::getValue('form_new_password_repeat'))){
+                $this->alerts['danger'] = $user->errors;
+                return;
+            }
+            
+            // komunikat
+            $this->alerts['success'] = "Poprawnie zmieniono hasło: <b>{$user->name} {$user->surname}</b>";
+            
+            // czyszczeie zmiennych wyswietlania
+            $this->tpl_values = array();
             $_POST = array();
             
             return;

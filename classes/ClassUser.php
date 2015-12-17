@@ -231,6 +231,8 @@
                 $this->errors[] = "<b>{$name}</b>: Hasło jest za krótkie, minimalna długość <b>{$this->min_length_password}</b> znaków.";
             }elseif (preg_match("/\\s/", $values['password'])) { // sprawdzanie czy haslo ma spacje i inne biale znaki
                 $this->errors[] = "<b>{$name}</b>: Hasło posiada spacje.";
+            }elseif (preg_match("/['\"]/", $new_password)) { // sprawdzanie czy haslo ma cudzyslow lub apostrof
+                $this->errors[] = "<b>{$name}</b>: Hasło posiada cudzysłów lub apostrof.";
             }elseif(!$this->checkPasswordStrong($values['password'])){ // sprawdzanie sily hasla
                 $this->errors[] = "<b>{$name}</b>: Hasło powinno składać się minimalnie z jednego znaku małego, jednego znaku dużego i jednej cyfry.";
             }
@@ -320,6 +322,68 @@
                 $this->errors[] = "Błąd aktualizacji rekordu w bazie.";
                 return false;
             }
+            
+            return true;
+        }
+        
+        // zmiana hasla
+        public function passwordUpdate($new_password, $new_password_repeat){
+            global $login;
+            
+            if(!isset($this->id)){
+                $this->errors = "Brak podanego id.";
+                return false;
+            }
+            
+            $empty = false;
+            $new_password = trim($new_password);
+            $new_password_repeat = trim($new_password_repeat);
+            
+            // sprawdzanie czy haslo jest puste
+            if($new_password == '' || empty($new_password)){
+                $this->errors[] = "<b>Nowe hasło</b>: Pole jest puste.";
+                $empty = true;
+            }
+            
+            // sprawdzanie czy haslo jest puste
+            if($new_password_repeat == '' || empty($new_password_repeat)){
+                $this->errors[] = "<b>Powtórz nowe hasło</b>: Pole jest puste.";
+                $empty = true;
+            }
+            
+            if($empty){
+                return false;
+            }
+            
+            // sprawdzanie czy hasla sie nie roznia
+            if($new_password != $new_password_repeat){
+                $this->errors = "Hasła się różnią.";
+                return false;
+            }
+            // preg_match("/[\'|\"]/", "sdafsdf")
+            // haslo
+            $name = static::$definition['fields']['password']['name'];
+            if(strlen($new_password) < (int)$this->min_length_password){ // sprawdzanie dlugosci hasla
+                $this->errors[] = "<b>{$name}</b>: Hasło jest za krótkie, minimalna długość <b>{$this->min_length_password}</b> znaków.";
+            }elseif (preg_match("/\\s/", $new_password)) { // sprawdzanie czy haslo ma spacje i inne biale znaki
+                $this->errors[] = "<b>{$name}</b>: Hasło posiada spacje.";
+            }elseif (preg_match("/['\"]/", $new_password)) { // sprawdzanie czy haslo ma cudzyslow lub apostrof
+                $this->errors[] = "<b>{$name}</b>: Hasło posiada cudzysłów lub apostrof.";
+            }elseif(!$this->checkPasswordStrong($new_password)){ // sprawdzanie sily hasla
+                $this->errors[] = "<b>{$name}</b>: Hasło powinno składać się minimalnie z jednego znaku małego, jednego znaku dużego i jednej cyfry.";
+            }
+            
+            if($this->errors && count($this->errors) > 0){
+                return false;
+            }
+            
+            if (!$id = $this->sqlUpdatePassword($new_password)){
+                $this->errors[] = "Błąd zapisu do bazy.";
+                return false;
+            }
+            
+            // wylogowanie uzytkownika ktoremu zmieniono haslo
+            $login->logoutById($this->id);
             
             return true;
         }

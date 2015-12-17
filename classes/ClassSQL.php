@@ -210,12 +210,12 @@
                 return false;
             }
         
-            public function update($table, $data, $where = false){
+            public function update($table, $data, $where = false, $check = true){
                 if(!$data || !is_array($data) || count($data) < 1){
                     return false;
                 }
                 
-                if($where){
+                if($where && $check){
                     $record = $this->pdo_fetch("SELECT * FROM `{$table}` WHERE {$where}");
                     
                     if(!$record || !is_array($record) || count($record) < 1){
