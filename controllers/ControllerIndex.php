@@ -1,7 +1,8 @@
 <?php
-    class ControllerIndex{
+    class ControllerIndex extends ControllerModel{
         public function getContent(){
-            return ClassTools::loadTemplate('index');
+            return $this->loadTemplate('index');
+            // return ClassTools::loadTemplate('index');
         }
     }
 ?>

@@ -72,9 +72,21 @@
     {
         // sprawdzenie czy w linku jest controller
         if($controller){
-            if(isset($controllers[$controller])){ // sprawdzenie czy jest zdefiniowany controller
-                $loadController = new $controllers[$controller];
-                print $loadController->getContent();
+            // sprawdzenie czy jest zdefiniowany controller
+            if(isset($controllers[$controller])){
+                
+                if(isset($controllers[$controller]['permissions'])){
+                    if (in_array($login->auth_user['id_permission'], $controllers[$controller]['permissions'])){
+                        $loadController = new $controllers[$controller]['controller'];
+                        print $loadController->getContent();
+                    }else{
+                        $loadController = new ControllerModel();
+                        print $loadController->getPageNoPermissions();
+                    }
+                }else{
+                    $loadController = new $controllers[$controller]['controller'];
+                    print $loadController->getContent();
+                }
             }else{ // jezeli nie jest zdefiniowany to zaladuje 404
                 ClassTools::redirect('404');
             }

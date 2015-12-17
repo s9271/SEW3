@@ -169,5 +169,10 @@
             
             return;
         }
+        
+        // pobieranie stron bez praw
+        public function getPageNoPermissions(){
+            return $this->loadTemplate('no_permissions');
+        }
     }
 ?>

@@ -395,7 +395,7 @@
         public static function sqlGetUserByAuthKey($auth_key){
             global $DB;
             
-            $zapytanie = "SELECT su.`id_user`, su.`login`,  sul.`id_users_login`,  sul.`auth_key`,  sul.`id_user_guard`,  sul.`is_logged`,  sul.`date_refresh`,  su.`mail`,  su.`guard`,  sug.`guard_key`,  sug.`guard_ip`, sug.`verified`, sug.`date_guard_send`
+            $zapytanie = "SELECT su.`id_user`, su.`login`, su.`id_permission`,  sul.`id_users_login`,  sul.`auth_key`,  sul.`id_user_guard`,  sul.`is_logged`,  sul.`date_refresh`,  su.`mail`,  su.`guard`,  sug.`guard_key`,  sug.`guard_ip`, sug.`verified`, sug.`date_guard_send`
                 FROM `sew_users` as su, `sew_user_login` as sul, `sew_user_guard` as sug
                 WHERE sul.`auth_key` = '".ClassTools::pSQL($auth_key)."'
                     AND su.`id_user` = sul.`id_user`
