@@ -29,13 +29,23 @@ input[type="file"]:focus, input[type="checkbox"]:focus, input[type="radio"]:focu
 }
 
 #soldier_list table td a{
-    display: inline-block;
+    /* display: inline-block; */
     text-decoration: none;
 }
 
 #soldier_list table td a > span{
-    font-size: 18px;
+    font-size: 12px;
     line-height: normal;
+    margin-right: 4px;
+}
+
+#soldier_list table td button > span.glyphicon-chevron-down{
+    left: 1px;
+    top: 3px;
+}
+
+#soldier_list ul.dropdown-menu {
+    background-color: #ffffff;
 }
 
 #soldier_list table td a:hover > span{

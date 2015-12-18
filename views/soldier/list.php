@@ -58,8 +58,46 @@
                     <td class="soldier_druzyna"><?php echo $item['soldier_druzyna']; ?></td>
                     <td class="soldier_status"><?php echo $item['soldier_status']; ?></td>
                     <td class="soldier_akcje">
+                        <div class="btn-group-action">
+                            <div class="btn-group">
+                                <a href="#" class="edit btn btn-primary" title="Podgląd">
+                                    <span class="glyphicon glyphicon-zoom-in"></span>Podgląd
+                                </a>
+                                <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                                    <span class="glyphicon glyphicon-chevron-down"></span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href="soldier.php?action=update" title="Edytuj">
+                                            <span class="glyphicon glyphicon-pencil"></span>Edytuj
+                                        </a>
+                                    </li>
+                                    <li class="divider"> </li>
+                                    <li>
+                                        <a href="#" title="Wyposażenie">
+                                            <span class="glyphicon glyphicon-screenshot"></span>Wyposażenie
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="/zolnierze/<?php echo $key; ?>/misje/" title="Misje">
+                                            <span class="glyphicon glyphicon-move"></span>Misje
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" title="Szkolenia">
+                                            <span class="glyphicon glyphicon-check"></span>Szkolenia
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" title="Odznaczenia">
+                                            <span class="glyphicon glyphicon-tags"></span>Odznaczenia
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                     
-                        <a href="soldier.php?action=update" class="soldier_edit" title="Edytuj">
+                        <?php /* <a href="soldier.php?action=update" class="soldier_edit" title="Edytuj">
                             <span class="glyphicon glyphicon-pencil"></span>
                         </a>
                         
@@ -81,7 +119,7 @@
                         
                         <a href="#" class="soldier_orders" title="Odznaczenia">
                             <span class="glyphicon glyphicon-tags"></span>
-                        </a>
+                        </a> */ ?>
                     </td>
                 </tr>
                 <?php
