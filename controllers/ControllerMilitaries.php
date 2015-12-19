@@ -31,7 +31,7 @@
             return $this->getPageList();
         }
         
-        // strona lista jednostek
+        // strona lista
         protected function getPageList(){
             $this->actions();
             
@@ -77,9 +77,9 @@
         
         // strona edycji
         protected function getPageEdit(){
-            // zmienne wyswietlania na wypadek gdy strona z misja nie istnieje
-            $this->tpl_values['wstecz'] = '/misje';
-            $this->tpl_values['title'] = 'Edycja misji';
+            // zmienne wyswietlania na wypadek gdy strona z jednostka nie istnieje
+            $this->tpl_values['wstecz'] = '/jednostki';
+            $this->tpl_values['title'] = 'Edycja jednostki';
             
             // sprawdzanie czy id istnieje w linku
             if(!$id_item = ClassTools::getValue('id_item')){
@@ -92,12 +92,12 @@
             
             $this->actions();
             
-            // ladowanie klasy i misji
-            $mission = new ClassMission($id_item);
+            // ladowanie klasy
+            $military = new ClassMilitary($id_item);
             
-            // sprawdzanie czy misja zostala poprawnie zaladowana
-            if(!$mission->load_class){
-                $this->alerts['danger'] = 'Misja nie istnieje';
+            // sprawdzanie czy jednostka zostala poprawnie zaladowana
+            if(!$military->load_class){
+                $this->alerts['danger'] = 'Jednostka nie istnieje';
                 
                 // ladowanie strony do wyswietlania bledow
                 // zmienne ktore mozna uzyc: wstecz, title oraz alertow
@@ -105,86 +105,33 @@
             }
             
             // tytul
-            $this->tpl_title = 'Misja: Edycja';
+            $this->tpl_title = 'Jednostka Wojskowa: Edycja';
             
             // skrypty
-            $this->load_datetimepicker = true;
             $this->load_select2 = true;
             $this->load_js_functions = true;
             
-            // rodzaje misji
-            $this->tpl_values['form_type'] = ClassMission::getTypes((isset($_POST['form_type']) ? $_POST['form_type'] : $mission->id_mission_type));
+            // ladowanie rodzajow
+            $this->tpl_values['form_groups'] = ClassMilitary::getGroups();
+            
+            // zmienna ktora decyduje co formularz ma robic
             $this->tpl_values['sew_action'] = 'edit';
             
-            // values
-            // prypisanie zmiennych z wyslanego formularza, a jezeli nie istnieja przypisze pobrane z klasy
-            $this->tpl_values['id_mission'] = $mission->id;
-            $this->tpl_values['form_name'] = (isset($_POST['form_name']) ? $_POST['form_name'] : $mission->name);
-            $this->tpl_values['form_location'] = (isset($_POST['form_location']) ? $_POST['form_location'] : $mission->location);
-            $this->tpl_values['form_description'] = (isset($_POST['form_description']) ? $_POST['form_description'] : $mission->description);
-            $this->tpl_values['form_date_start'] = (isset($_POST['form_date_start']) ? $_POST['form_date_start'] : ClassMission::getPlDate($mission->date_start));
-            $this->tpl_values['form_date_end'] = (isset($_POST['form_date_end']) ? $_POST['form_date_end'] : ClassMission::getPlDate($mission->date_end));
-            $this->tpl_values['form_active'] = (isset($_POST['form_active']) ? $_POST['form_active'] : $mission->active);
+            // przypisanie zmiennych formularza do zmiennych klasy
+            $array_form_class = array(
+                'id_military' => $military->id,
+                'form_name' => $military->name,
+                'form_number' => $military->number,
+                'form_group' => $military->id_military_group,
+                'form_location' => $military->location,
+                'form_active' => $military->active
+            );
+            
+            // przypisywanieszych zmiennych do zmiennych formularza
+            $this->setValuesTemplateByArrayPost($array_form_class);
             
             // ladowanie strony z formularzem
-            return $this->loadTemplate('/mission/form');
-        }
-        
-        // strona podgladu
-        protected function getPageView(){
-            // zmienne wyswietlania na wypadek gdy strona z misja nie istnieje
-            $this->tpl_values['wstecz'] = '/misje';
-            $this->tpl_values['title'] = 'Podgląd misji';
-            
-            // sprawdzanie czy id istnieje w linku
-            if(!$id_item = ClassTools::getValue('id_item')){
-                $this->alerts['danger'] = 'Brak podanego id';
-                
-                // ladowanie strony do wyswietlania bledow
-                // zmienne ktore mozna uzyc: wstecz, title oraz alertow
-                return $this->loadTemplate('alert');
-            }
-            
-            $this->actions();
-            
-            // ladowanie klasy i misji
-            $mission = new ClassMission($id_item);
-            
-            // sprawdzanie czy misja zostala poprawnie zaladowana
-            if(!$mission->load_class){
-                $this->alerts['danger'] = 'Misja nie istnieje';
-                
-                // ladowanie strony do wyswietlania bledow
-                // zmienne ktore mozna uzyc: wstecz, title oraz alertow
-                return $this->loadTemplate('alert');
-            }
-            
-            // tytul
-            $this->tpl_title = 'Misja: Podgląd';
-            
-            // skrypty
-            $this->load_js_functions = true;
-            
-            // print_r($mission);
-            
-            // values
-            $this->tpl_values['id_mission'] = $mission->id;
-            $this->tpl_values['form_name'] = $mission->name;
-            $this->tpl_values['form_location'] = $mission->location;
-            $this->tpl_values['form_description'] = ClassTools::nl2br($mission->description);
-            $this->tpl_values['form_date_start'] = ClassMission::getPlDate($mission->date_start);
-            $this->tpl_values['form_date_end'] = ClassMission::getPlDate($mission->date_end);
-            $this->tpl_values['form_active'] = $mission->active;
-            $this->tpl_values['status'] = $mission->status;
-            $this->tpl_values['type'] = $mission->mission_type_name;
-            $this->tpl_values['date_update'] = $mission->date_update;
-            
-            $this->tpl_values['log'] = $mission->sqlGetLogItem();
-            
-            // print_r($this->tpl_values['log']);
-            
-            // ladowanie strony z formularzem
-            return $this->loadTemplate('/mission/view');
+            return $this->loadTemplate('/military/form');
         }
         
         /* *************** AKCJE ************** */
@@ -196,20 +143,17 @@
                 return;
             }
             
-            print_r($_POST);
-            
             // przypisanie zmiennych posta do zmiennych template
             $this->tpl_values = $this->setValuesTemplateByPost();
-            // $this->tpl_values = $_POST;
             
             switch($_POST['form_action']){
                 case 'military_add':
                     return $this->add(); // dodawanie
                 break;
-                case 'mission_delete':
+                case 'military_delete':
                     return $this->delete(); // usuwanie
                 break;
-                case 'mission_save':
+                case 'military_save':
                     return $this->edit(); // edycja
                 break;
             }
@@ -218,7 +162,8 @@
         }
         
         // dodawanie
-        protected function add(){
+        protected function add()
+        {
             $active = ClassTools::getValue('form_active');
             
             $military = new ClassMilitary();
@@ -247,69 +192,60 @@
         
         // usuwanie
         protected function delete(){
-            // ladowanie klasy i misji
-            $mission = new ClassMission($_POST['id_mission']);
+            // ladowanie klasy
+            $military = new ClassMilitary(ClassTools::getValue('id_military'));
             
             // sprawdza czy klasa zostala poprawnie zaladowana
-            if($mission->load_class){
-                // usuwanie misji
-                if($mission->delete()){
+            if($military->load_class)
+            {
+                // usuwanie
+                if($military->delete())
+                {
                     // komunikat
-                    $this->alerts['success'] = "Poprawnie usunięto misję: <b>{$mission->name}</b>";
+                    $this->alerts['success'] = "Poprawnie usunięto jednostkę: <b>{$military->name}</b>.";
                     return;
-                }else{
-                    // bledy w przypadku problemow z usunieciem misji
-                    $this->alerts['danger'] = $mission->errors;
+                }
+                else
+                {
+                    // bledy w przypadku problemow z usunieciem
+                    $this->alerts['danger'] = $military->errors;
                 }
             }
             
-            $this->alerts['danger'] = 'Misja nie istnieje';
+            $this->alerts['danger'] = 'Jednostka nie istnieje.';
             $_POST = array();
             
             return;
         }
         
-        // usuwanie
-        protected function edit(){
-            // ladowanie klasy i misji
-            $mission = new ClassMission($_POST['id_mission']);
+        // edycja
+        protected function edit()
+        {
+            // ladowanie klasy
+            $military = new ClassMilitary(ClassTools::getValue('id_military'));
             
             // sprawdza czy klasa zostala poprawnie zaladowana
-            if(!$mission->load_class){
-                $this->alerts['danger'] = "Misja nie istnieje.";
+            if(!$military->load_class){
+                $this->alerts['danger'] = "Jednostka nie istnieje.";
             }
             
-            // przypisanie zmiennych wyslanych z formularza do danych w klasie
-            $mission->id_mission_type = $_POST['form_type'];
-            $mission->name = $_POST['form_name'];
-            $mission->location = $_POST['form_location'];
-            $mission->description = $_POST['form_description'];
-            // $mission->id_user = ClassAuth::getCurrentUserId();
-            $mission->id_user = '999';
-            $mission->date_start = $_POST['form_date_start'];
-            $mission->date_end = $_POST['form_date_end'] != '' ? $_POST['form_date_end'] : NULL;
-            $mission->active = (isset($_POST['form_active']) && $_POST['form_active'] == '1') ? '1' : '0';
-            $mission->deleted = '0';
+            $active = ClassTools::getValue('form_active');
             
-            // custom - dodatkowy warunek odnosnie dat
-            // sprawdza, czy data rozpoczecia nie jest mniejsza niz data zakonczenia
-            if($mission->date_end != NULL && ClassMission::validIsDateTime($mission->date_start) && ClassMission::validIsDateTime($mission->date_end)){
-                $date_start = date('Y-m-d H:i:s', strtotime($mission->date_start));
-                $date_end = date('Y-m-d H:i:s', strtotime($mission->date_end));
-                
-                if($date_start > $date_end){
-                    $mission->errors[] = "Data rozpoczęcia misji jest większa od daty końca misji.";
-                }
-            }
+            $military->id_military_group = ClassTools::getValue('form_group');
+            $military->number = ClassTools::getValue('form_number');
+            $military->name = ClassTools::getValue('form_name');
+            $military->location = ClassTools::getValue('form_location');
+            $military->id_user = ClassAuth::getCurrentUserId();
+            $military->active = ($active && $active == '1') ? '1' : '0';
             
-            // komunikaty
-            if(!$mission->update()){
-                $this->alerts['danger'] = $mission->errors;
+            // komunikaty bledu
+            if(!$military->update()){
+                $this->alerts['danger'] = $military->errors;
                 return;
             }
             
             // komunikat
-            $this->alerts['success'] = "Poprawnie zaktualizowano misję: <b>{$mission->name}</b>";
+            $this->alerts['success'] = "Poprawnie zaktualizowano jednostkę: <b>{$military->name}</b>";
             
             // czyszczeie zmiennych wyswietlania
             $this->tpl_values = '';

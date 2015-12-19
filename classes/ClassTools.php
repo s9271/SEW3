@@ -20,6 +20,13 @@
             return !is_string($ret)? $ret : stripslashes($ret);
         }
         
+        // pobieranie wartosci z post i get
+        public static function getValuesdf($ret){
+            if (is_string($ret) === true)
+                $ret = urldecode(preg_replace('/((\%5C0+)|(\%00+))/i', '', urlencode($ret)));
+            return !is_string($ret)? $ret : stripslashes($ret);
+        }
+        
         // pobieranie domeny
         public static function getDomainLink(){
             if(isset($_SERVER['HTTPS'])){

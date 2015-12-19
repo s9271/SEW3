@@ -79,17 +79,27 @@
                 return false;
             }
             
-            if(self::sqlCheckExistsNumber($this->number)){
-                $this->errors = "Jednostka o numerze <b>{$this->number}</b> już istnieje.";
-                return false;
-            }
+            // if(self::sqlCheckExistsNumber(false, $this->number)){
+                // $this->errors = "Jednostka o numerze <b>{$this->number}</b> już istnieje.";
+                // return false;
+            // }
             
             return true;
         }
         
-        // sprawdzanie czy misja istnieje
-        public static function isMission($id_mission){
-            return self::sqlMissionExist($id_mission);
+        // dodatkowe wlasne walidacje podczas aktualizowania
+        public function updateCustomValidate(){
+            if(strlen($this->number) > 4){
+                $this->errors = "<b>Numer jednostki</b>: Numer nie może posiadać więcej niż 4 znaki.";
+                return false;
+            }
+            
+            // if(self::sqlCheckExistsNumber($this->id, $this->number)){
+                // $this->errors = "Jednostka o numerze <b>{$this->number}</b> już istnieje.";
+                // return false;
+            // }
+            
+            return true;
         }
         
         /* **************** SQL *************** */
@@ -145,26 +155,19 @@
         }
         
         // sprawdzanie czy numer jednostki istnieje
-        public static function sqlCheckExistsNumber($number){
+        public static function sqlCheckExistsNumber($id_military, $number){
             global $DB;
             $table_name = (self::$use_prefix ? self::$prefix : '').self::$definition['table'];
             
-            $zapytanie = "SELECT `number` FROM `{$table_name}` WHERE `number` = '{$number}' AND `deleted` = '0'";
-            $sql = $DB->pdo_fetch($zapytanie);
+            $where = $id_military ? "AND `id_military` != '{$id_military}'" : '';
             
-            if(!$sql || !is_array($sql) || count($sql) < 1){
-                return false;
-            }
+            $zapytanie = "SELECT `number`
+                FROM `{$table_name}`
+                WHERE `number` = '{$number}'
+                    AND `deleted` = '0'
+                    {$where}
+            ;";
             
-            return true;
-        }
-        
-        // sprawdzanie czy misja istnieje
-        public static function sqlMissionExist($id_mission){
-            global $DB;
-            $table_name = (self::$use_prefix ? self::$prefix : '').self::$definition['table'];
-            
-            $zapytanie = "SELECT ".self::$definition['primary']." FROM `{$table_name}` WHERE `".self::$definition['primary']."` = '{$id_mission}' AND `deleted` = '0'";
             $sql = $DB->pdo_fetch($zapytanie);
             
             if(!$sql || !is_array($sql) || count($sql) < 1){

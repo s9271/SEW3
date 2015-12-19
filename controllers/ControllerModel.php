@@ -158,8 +158,15 @@
         
         // przypisywanieszych zmiennych do zmiennych formularza
         protected function setValuesTemplateByArrayPost(array $array){
-            if(!$_POST || !is_array($_POST) || count($_POST) < 1){
-                $this->tpl_values = array_merge($array, $this->tpl_values);
+            $array = array_map("htmlspecialchars", $array);
+            
+            if(!$_POST || !is_array($_POST) || count($_POST) < 1)
+            {
+                if($this->tpl_values && is_array($this->tpl_values)){
+                    $this->tpl_values = array_merge($array, $this->tpl_values);
+                }else{
+                    $this->tpl_values = $array;
+                }
                 return;
             }
             

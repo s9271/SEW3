@@ -485,12 +485,15 @@
             }
             
             $data = array();
-            // $data['id_user'] = ClassAuth::getCurrentUserId();
-            $data['id_user'] = '3';
+            $data['id_user'] = ClassAuth::getCurrentUserId();
             $data['deleted'] = '1';
             
             if (property_exists($this, 'date_update')) {
                 $data['date_update'] = $this->date_update;
+            }
+            
+            if (property_exists($this, 'active')) {
+                $data['active'] = '0';
             }
             
             return $DB->update($table_name, $data, $where);

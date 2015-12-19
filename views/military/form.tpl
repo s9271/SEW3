@@ -1,3 +1,5 @@
+<?php // var_dump(ClassTools::getValuesdf($this->tpl_values['form_name'])); ?>
+
 <div id="mission_form" class="container">
     <div class="jumbotron">
         <h1 class="controller_title"><?php echo ((isset($this->tpl_values['sew_action']) && $this->tpl_values['sew_action'] == 'add') ? 'Dodaj jednostkę wojskową' : 'Edytuj jednostkę wojskową'); ?></h1>
@@ -74,8 +76,6 @@
                         <button class="btn btn-success mar_button" type="submit" name="form_action" value="military_add"><span class="glyphicon glyphicon-plus"></span>Dodaj</button>
                         
                     <?php }elseif($this->tpl_values['sew_action'] == 'edit'){ ?>
-                        <a class="btn btn-primary" title="Podgląd" href="/jednostki/podglad/<?php echo $this->tpl_values['id_military']; ?>">Podgląd</a>
-                        
                         <input type="hidden" name="id_military" value="<?php echo $this->tpl_values['id_military']; ?>" />
                         <button class="btn btn-success mar_button" type="submit" name="form_action" value="military_save"><span class="glyphicon glyphicon-floppy-disk"></span>Zapisz</button>
                     <?php } ?>

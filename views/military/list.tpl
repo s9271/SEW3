@@ -33,7 +33,6 @@
                             <input type="hidden" name="id_military" value="<?php echo $item['id_military']; ?>" />
                             
                             <div class="btn-group btn-group-sm">
-                                <a href="/jednostki/podglad/<?php echo $item['id_military']; ?>" class="btn btn-primary" title="Podgląd">Podgląd</a>
                                 <a href="/jednostki/edytuj/<?php echo $item['id_military']; ?>" class="btn btn-warning" title="Edytuj">Edytuj</a>
                                 <button class="btn btn-danger jsconfirm" data-confirm="<?php echo $item['name']; ?>: Czy na pewno chcesz usunąć jednostkę?" type="submit" name="form_action" value="military_delete">Usuń</button>
                             </div>
