@@ -12,7 +12,7 @@
     
     
     $controllers['uzytkownicy']  = array('controller' => 'ControllerUsers', 'permissions' => array('1'));
-    $controllers['jednostki']    = array('controller' => 'ControllerMilitaries', 'permissions' => array('1', '2'));
+    $controllers['jednostki']    = array('controller' => 'ControllerMilitaries', 'permissions' => array('1'));
     $controllers['zolnierze']    = array('controller' => 'ControllerSoldiers', 'permissions' => array('1', '2'));
     $controllers['wyposazenie']  = array('controller' => 'ControllerEquipments', 'permissions' => array('1', '2'));
     $controllers['misje']        = array('controller' => 'ControllerMissions', 'permissions' => array('1', '2'));

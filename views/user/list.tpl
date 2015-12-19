@@ -33,9 +33,12 @@
                     <td class="table_guard"><?php echo $item['name_guard']; ?></td>
                     <td class="table_akcje">
                         <form method="post" action="">
-                            <a href="/uzytkownicy/edytuj/<?php echo $item['id_user']; ?>" class="btn btn-warning" title="Edytuj">Edytuj</a>
                             <input type="hidden" name="id_user" value="<?php echo $item['id_user']; ?>" />
-                            <button class="btn btn-danger jsconfirm" data-confirm="<?php echo $item['name'].' '.$item['surname']; ?>: Czy na pewno chcesz usunąć uzytkownika?" type="submit" name="form_action" value="user_delete">Usuń</button>
+                            
+                            <div class="btn-group btn-group-sm">
+                                <a href="/uzytkownicy/edytuj/<?php echo $item['id_user']; ?>" class="btn btn-warning" title="Edytuj">Edytuj</a>
+                                <button class="btn btn-danger jsconfirm" data-confirm="<?php echo $item['name'].' '.$item['surname']; ?>: Czy na pewno chcesz usunąć uzytkownika?" type="submit" name="form_action" value="user_delete">Usuń</button>
+                            </div>
                         </form>
                     </td>
                 </tr>

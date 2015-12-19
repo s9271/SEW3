@@ -74,6 +74,9 @@
             // ladowanie profili (uprawnien)
             $this->tpl_values['form_permissions'] = ClassUser::getPermissions();
             
+            // ladowanie jednostek
+            $this->tpl_values['form_militaries'] = ClassMilitary::getMilitariesWithGroups();
+            
             // ladowanie strony z formularzem
             return $this->loadTemplate('/user/formAdd');
         }
@@ -138,6 +141,9 @@
             // ladowanie profili (uprawnien)
             $this->tpl_values['form_permissions'] = ClassUser::getPermissions();
             
+            // ladowanie jednostek
+            $this->tpl_values['form_militaries'] = ClassMilitary::getMilitariesWithGroups();
+            
             // ladowanie strony z formularzem
             return $this->loadTemplate('/user/formEdit');
         }
@@ -200,7 +206,7 @@
                 return;
             }
             
-            print_r($_POST);
+            // print_r($_POST);
             
             // przypisanie zmiennych posta do zmiennych template
             $this->tpl_values = $this->setValuesTemplateByPost();
@@ -242,7 +248,6 @@
             $user->surname = ClassTools::getValue('form_surname');
             $user->phone = ClassTools::getValue('form_phone');
             $user->id_user_add = ClassAuth::getCurrentUserId();
-            // $user->id_user_add = '123';
             
             // komunikaty bledu
             if(!$user->add()){

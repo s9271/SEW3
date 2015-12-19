@@ -78,22 +78,22 @@
                     <label for="form_military" class="control-label">Jednostka:</label>
                 </div>
                 <div class="col-sm-8">
-                    <select class="form-control input-sm jsselectajax" data-ajax-class="user" data-ajax-function="searchMilitaries" id="form_military" name="form_military">
+                    <select class="form-control input-sm jsselect" id="form_military" name="form_military">
                         <option value="0">Wybierz</option>
                         <?php
-                           /* if (isset($this->tpl_values['form_military'])){
-                                foreach ($this->tpl_values['form_type'] as $group) {
+                           if (isset($this->tpl_values['form_militaries']) && $this->tpl_values['form_militaries']){
+                                foreach ($this->tpl_values['form_militaries'] as $group) {
                                     echo '<optgroup label="'.$group['name'].'">';
                                     
                                     if (isset($group['childs']) && is_array($group['childs']) && count($group['childs']) > 0){
                                         foreach ($group['childs'] as $key_type => $type) {
-                                            echo '<option value="'.$key_type.'"'.((isset($type['current']) && $type['current'] === true) ? ' selected="selected"' : '').'>'.$type['name'].'</option>';
+                                            echo '<option value="'.$key_type.'"'.((isset($this->tpl_values['form_military']) && $this->tpl_values['form_military'] == $key_type) ? ' selected="selected"' : '').'>'.$type['name'].'</option>';
                                         }
                                     }
                                     
                                     echo '</optgroup>';
                                 }
-                            } */
+                            }
                         ?>
                     </select>
                     <span class="sew_hint">Opcjonalne, zalecane przy użytkownikach z kadry administracyjnej.</span>

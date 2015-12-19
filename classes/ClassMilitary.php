@@ -102,6 +102,28 @@
             return true;
         }
         
+        // pobieranie rodzajow jednostek wraz z jednostkami
+        public static function getMilitariesWithGroups(){
+            if(!$groups = self::sqlGetGroups()){
+                return false;
+            }
+            
+            $array = array();
+            
+            foreach($groups as $key => $group){
+                $array[$key]['name'] = $group;
+                $array[$key]['childs'] = array();
+                
+                if($types = self::sqlGetMilitariesByGroupId($key)){
+                    foreach($types as $type){
+                        $array[$key]['childs'][$type['id_military']]['name'] = $type['name'].', '.$type['location'];
+                    }
+                }
+            }
+            
+            return $array;
+        }
+        
         /* **************** SQL *************** */
         /* ************************************ */
         
@@ -149,6 +171,27 @@
                     // Nazwa statusu
                     $sql[$key]['active_name'] = ClassUser::getNameStatus($val['active']);
                 }
+            }
+            
+            return $sql;
+        }
+        
+        // pobieranie wszystkich jednostek powiazanych z dana grupa
+        public static function sqlGetMilitariesByGroupId($id_military_group){
+            global $DB;
+            $table_name = (self::$use_prefix ? self::$prefix : '').self::$definition['table'];
+            
+            $zapytanie = "SELECT `id_military`, `name`, `location`
+                FROM `{$table_name}`
+                WHERE `id_military_group` = '{$id_military_group}'
+                    AND `deleted` = '0'
+                    AND `active` = '1'
+            ;";
+            
+            $sql = $DB->pdo_fetch_all($zapytanie);
+            
+            if(!$sql || !is_array($sql) || count($sql) < 1){
+                return false;
             }
             
             return $sql;
