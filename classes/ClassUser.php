@@ -231,7 +231,7 @@
                 $this->errors[] = "<b>{$name}</b>: Hasło jest za krótkie, minimalna długość <b>{$this->min_length_password}</b> znaków.";
             }elseif (preg_match("/\\s/", $values['password'])) { // sprawdzanie czy haslo ma spacje i inne biale znaki
                 $this->errors[] = "<b>{$name}</b>: Hasło posiada spacje.";
-            }elseif (preg_match("/['\"]/", $new_password)) { // sprawdzanie czy haslo ma cudzyslow lub apostrof
+            }elseif (preg_match("/['\"]/", $values['password'])) { // sprawdzanie czy haslo ma cudzyslow lub apostrof
                 $this->errors[] = "<b>{$name}</b>: Hasło posiada cudzysłów lub apostrof.";
             }elseif(!$this->checkPasswordStrong($values['password'])){ // sprawdzanie sily hasla
                 $this->errors[] = "<b>{$name}</b>: Hasło powinno składać się minimalnie z jednego znaku małego, jednego znaku dużego i jednej cyfry.";

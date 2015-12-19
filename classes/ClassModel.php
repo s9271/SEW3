@@ -100,6 +100,11 @@
                 return false;
             }
             
+            // dodatkowe wlasne walidacje
+            if(!$this->addCustomValidate()){
+                return false;
+            }
+            
             if (!$id = $this->sqlAdd(static::$definition['table'], $values)){
                 $this->errors[] = "Błąd zapisu do bazy.";
                 return false;
@@ -123,6 +128,11 @@
             $values = $this->getFieldsValidate();
             
             if($this->errors && count($this->errors) > 0){
+                return false;
+            }
+            
+            // dodatkowe wlasne walidacje podczas aktualizowania
+            if(!$this->updateCustomValidate()){
                 return false;
             }
             
@@ -203,6 +213,16 @@
             }
             
             return '2';
+        }
+        
+        // dodatkowe wlasne walidacje podczas dodawania
+        public function addCustomValidate(){
+            return true;
+        }
+        
+        // dodatkowe wlasne walidacje podczas aktualizowania
+        public function updateCustomValidate(){
+            return true;
         }
         
         /* ************* WALIDACJA ************ */

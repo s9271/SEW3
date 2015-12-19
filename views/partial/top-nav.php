@@ -65,6 +65,17 @@
                     <li><a href="/military.php?action=list"><span class="glyphicon glyphicon-list-alt"></span>&emsp;&emsp;Pokaż Jednostki</a></li>
                   </ul>
               </li>
+              
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="/jednostki">
+                        <span class="glyphicon glyphicon-edit"></span>&emsp;&emsp;Jednostki Wojskowe 2<span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu sidebar-nav">
+                        <li><a href="/jednostki/dodaj"><span class="glyphicon glyphicon-plus"></span>&emsp;&emsp;Dodaj Jednostkę</a></li>
+                        <li><a href="/jednostki"><span class="glyphicon glyphicon-list-alt"></span>&emsp;&emsp;Pokaż Jednostki</a></li>
+                    </ul>
+                </li>
+                
               <li class="dropdown">
                   <a class="dropdown-toggle" data-toggle="dropdown" href="/soldier.php"><span class="glyphicon glyphicon-user"></span>&emsp;&emsp;Żołnierze<span class="caret"></span></a>
                   <ul class="dropdown-menu sidebar-nav">

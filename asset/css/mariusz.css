@@ -8,6 +8,7 @@ input[type="file"]:focus, input[type="checkbox"]:focus, input[type="radio"]:focu
 }
 
 /* LISTA ZOLNIERZY */
+#military_list table,
 #user_list table,
 #soldier_list table{
     width: 100%;
@@ -343,4 +344,25 @@ button.btn.mar_button .glyphicon{
 
 #user_form select{
     width: 100%;
+}
+
+/* JEDNOSTKI */
+#military_list table .table_akcje{
+    width: 200px;
+}
+
+#military_list table .table_id{
+    width: 50px;
+}
+
+#military_list table .table_number{
+    width: 80px;
+}
+
+#military_list table .table_status{
+    width: 100px;
+}
+
+#military_list table .table_rodzaj{
+    width: 200px;
 }
