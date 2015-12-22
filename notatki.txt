@@ -6,3 +6,6 @@ zolnierz - misje
     
 haslo w sesji
     przy kazdym poprawnym logowaniu bedzie generowac random ciag znakow przypisany do uzytkowanika i ip i bedzie podmieniany w sesji aby nikt z zewnatrz nie mogl podejrzec hasla.
+    
+Odznaczenia
+    podczas edycji ze zmiana ilosci stopni trzeba sprawdzic czy z ktoryms zolnierzem nie jest juz powiazany, jesli tak, to ma uniemozliwic usuniecie

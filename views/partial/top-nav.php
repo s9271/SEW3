@@ -134,6 +134,17 @@
                   <li><a href="/orders.php?action=list"><span class="glyphicon glyphicon-list-alt"></span>&emsp;&emsp;Pokaż Odznaczenia</a></li>
                 </ul>
               </li>
+              
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="/odznaczenia">
+                        <span class="glyphicon glyphicon-tags"></span>&emsp;&emsp;Odznaczenia 2<span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu sidebar-nav">
+                        <li><a href="/odznaczenia/dodaj"><span class="glyphicon glyphicon-plus"></span>&emsp;&emsp;Dodaj Odznaczenie</a></li>
+                        <li><a href="/odznaczenia"><span class="glyphicon glyphicon-list-alt"></span>&emsp;&emsp;Pokaż Odznaczenia</a></li>
+                    </ul>
+                </li>
+                
               <li>
                   <span>---------------------------------------------</span>
               </li>

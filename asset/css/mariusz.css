@@ -8,6 +8,7 @@ input[type="file"]:focus, input[type="checkbox"]:focus, input[type="radio"]:focu
 }
 
 /* LISTA ZOLNIERZY */
+#badges_list table,
 #military_list table,
 #user_list table,
 #soldier_list table{
@@ -370,4 +371,29 @@ button.btn.mar_button .glyphicon{
 #military_list table .table_lokalizacja,
 #military_list table .table_name{
     text-align: left;
+}
+
+/* ODZNACZENIA */
+#badge_form{
+    text-align: left;
+}
+
+#badges_list .table_akcje{
+    width: 130px;
+}
+
+#badges_list .table_name{
+    text-align: left;
+}
+
+#badges_list .table_id{
+    width: 50px;
+}
+
+#badges_list .table_status{
+    width: 100px;
+}
+
+#badges_list .table_rank{
+    width: 300px;
 }

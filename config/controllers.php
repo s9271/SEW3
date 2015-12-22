@@ -17,7 +17,7 @@
     $controllers['wyposazenie']  = array('controller' => 'ControllerEquipments', 'permissions' => array('1', '2'));
     $controllers['misje']        = array('controller' => 'ControllerMissions', 'permissions' => array('1', '2'));
     $controllers['szkolenia']    = array('controller' => 'ControllerTrainings', 'permissions' => array('1', '2'));
-    $controllers['odznaczenia']  = array('controller' => 'ControllerOrders', 'permissions' => array('1', '2'));
+    $controllers['odznaczenia']  = array('controller' => 'ControllerBadges', 'permissions' => array('1'));
     $controllers['404']          = array('controller' => 'Controller404', 'permissions' => array('1', '2'));
     $controllers['login']        = array('controller' => 'ControllerLogin');
 ?>
