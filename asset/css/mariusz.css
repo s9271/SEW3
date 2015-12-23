@@ -315,28 +315,30 @@ button.btn.mar_button .glyphicon{
 
 /* UZYTKOWNICY */
 #user_list table{
+    table-layout: fixed;
     text-align: left;
 }
 
 #user_list table tr .table_id{
     text-align: center;
-    width: 40px;
+    width: 60px;
 }
 
 #user_list table tr .table_permission{
-    width: 170px;
+    width: 190px;
 }
 
 #user_list table tr .table_status{
-    width: 100px;
+    width: 120px;
 }
 
 #user_list table tr .table_guard{
-    width: 100px;
+    width: 120px;
 }
 
 #user_list table tr .table_akcje{
-    width: 130px;
+    text-align: center;
+    width: 145px;
 }
 
 #user_form{
@@ -396,4 +398,19 @@ button.btn.mar_button .glyphicon{
 
 #badges_list .table_rank{
     width: 300px;
+}
+
+/* WYSZUKIWARKA */
+tr.form_search input{
+    border: 1px solid #aaaaaa;
+    border-radius: 4px;
+    height: 28px;
+    line-height: 28px;
+    padding: 0 5px;
+    width: 100%;
+}
+
+tr.form_search .select2,
+tr.form_search select{
+    width: 100%;
 }

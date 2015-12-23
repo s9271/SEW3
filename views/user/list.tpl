@@ -10,14 +10,19 @@
                     <th class="table_id">ID</th>
                     <th class="table_name">Imię</th>
                     <th class="table_surname">Nazwisko</th>
+                    <th class="table_login">Login</th>
                     <th class="table_mail">Adres e-mail</th>
                     <th class="table_permission">Profil</th>
                     <th class="table_status">Status</th>
                     <th class="table_guard">Guard</th>
                     <th class="table_akcje">Akcje</th>
                 </tr>
+                
+                <?php echo $this->getSearchForm(); ?>
+                
             </thead>
             <tbody>
+            
                 <?php 
                     if(isset($this->tpl_values['users']) && $this->tpl_values['users']):
                     foreach ($this->tpl_values['users'] as $key => $item):
@@ -27,6 +32,7 @@
                     <td class="table_id"><?php echo $item['id_user']; ?></td>
                     <td class="table_name"><?php echo $item['name']; ?></td>
                     <td class="table_surname"><?php echo $item['surname']; ?></td>
+                    <td class="table_login"><?php echo $item['login']; ?></td>
                     <td class="table_mail"><?php echo $item['mail']; ?></td>
                     <td class="table_permission"><?php echo $item['name_permission']; ?></td>
                     <td class="table_status"><?php echo $item['name_status']; ?></td>
@@ -48,7 +54,7 @@
                 ?>
                 
                 <tr>
-                    <td class="table_null" colspan="8">Brak użytkowników do wyświetlenia</td>
+                    <td class="table_null" colspan="9">Brak użytkowników do wyświetlenia</td>
                 </tr>
                 <?php
                     endif;

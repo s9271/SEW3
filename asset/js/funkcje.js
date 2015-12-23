@@ -30,6 +30,14 @@ if (typeof jQuery === 'undefined') {
         return;
     };
     
+    $.fn.sewJsSelectNoSearch = function() {
+        $(this).select2({
+            minimumResultsForSearch: Infinity
+        });
+        return;
+        
+    };
+    
     $.fn.sewJsSelectAjax = function() {
         var sew_error = '';
         var data_id_soldier = '';
@@ -208,6 +216,11 @@ jQuery(document).ready(function($){
     // Select ajax
     if ($('.jsselectajax').length > 0){
         $('.jsselectajax').sewJsSelectAjax();
+    }
+    
+    // Select bez wyszukiwarki
+    if ($('.jsselectnosearch').length > 0){
+        $('.jsselectnosearch').sewJsSelectNoSearch();
     }
     
     // Password Ajax (uzytkownicy form)

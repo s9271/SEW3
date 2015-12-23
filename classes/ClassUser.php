@@ -659,7 +659,7 @@
                 $limit = " LIMIT {$limit_start}, {$items_on_page}";
             }
             
-            $zapytanie = "SELECT su.`id_user`, su.`mail`, su.`active`, su.`guard`, suo.`name`, suo.`surname`, sp.`name` as name_permission
+            $zapytanie = "SELECT su.`id_user`, su.`mail`, su.`login`, su.`active`, su.`guard`, suo.`name`, suo.`surname`, sp.`name` as name_permission
                 FROM `sew_users` as su, `sew_user_options` as suo, `sew_permissions` as sp
                 WHERE su.`id_user` = suo.`id_user` AND sp.`id_permission` = su.`id_permission`{$where}
                 ORDER BY `".static::$definition['primary']."`
