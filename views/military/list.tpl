@@ -15,6 +15,9 @@
                     <th class="table_status">Status</th>
                     <th class="table_akcje">Akcje</th>
                 </tr>
+                
+                <?php echo $this->getSearchForm(); ?>
+                
             </thead>
             <tbody>
                 <?php 

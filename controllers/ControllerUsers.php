@@ -60,9 +60,6 @@
             $this->load_select2 = true;
             $this->load_js_functions = true;
             
-            // ladowanie funkcji
-            $this->load_js_functions = true;
-            
             // pobieranie wszystkich uzytkownikow
             $this->tpl_values['users'] = ClassUser::getAllItemsList($this->using_pages, $this->current_page, $this->items_on_page, $this->search_controller);
             
@@ -272,27 +269,6 @@
                 )
             );
             
-            // $form_values = array(
-                // 'table_id'          => 'id_user',
-                // 'table_name'        => 'name',
-                // 'table_surname'     => 'surname',
-                // 'table_login'       => 'login',
-                // 'table_mail'        => 'mail',
-                // 'table_permission'  => array('id_permission' => $form_permissions),
-                // 'table_status'      => array('active' => array(
-                    // '0' => 'Wyłączony',
-                    // '1' => 'Włączony',
-                // )),
-                // 'table_guard'       => array('guard' => array(
-                    // '0' => 'Nieaktywny',
-                    // '1' => 'Aktywny',
-                // )),
-                // 'table_akcje'       => 'actions',
-            // );
-            
-            // print_r($form_values);
-            
-            // return $this->generateSearchForm('users', $form_values);
             return $form_values;
         }
         

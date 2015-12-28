@@ -1,5 +1,11 @@
 <?php
     class ControllerMilitaries extends ControllerModel{
+        protected $search_controller = 'militaries';
+        
+        public function __construct(){
+            $this->search_definition = $this->getSearchDefinition();
+        }
+        
         // funkcja ktora jest pobierana w indexie, jest wymagana w kazdym kontrolerze!!!!!
         public function getContent(){
             return $this->getPage();
@@ -33,22 +39,24 @@
         
         // strona lista
         protected function getPageList(){
+            $this->searchActions();
             $this->actions();
             
             // strony
             $this->controller_name = 'jednostki';
             $this->using_pages = true;
-            $this->count_items = ClassMilitary::sqlGetCountItems();
+            $this->count_items = ClassMilitary::sqlGetCountItems($this->search_controller);
             $this->current_page = ClassTools::getValue('page') ? ClassTools::getValue('page') : '1';
             
             // tytul strony
             $this->tpl_title = 'Jednostki: Lista';
             
             // ladowanie funkcji
+            $this->load_select2 = true;
             $this->load_js_functions = true;
             
             // pobieranie wszystkich rekordow
-            $this->tpl_values = ClassMilitary::sqlGetAllItems($this->using_pages, $this->current_page, $this->items_on_page);
+            $this->tpl_values = ClassMilitary::sqlGetAllItems($this->using_pages, $this->current_page, $this->items_on_page, $this->search_controller);
             
             // ladowanie strony z lista
             return $this->loadTemplate('/military/list');
@@ -132,6 +140,52 @@
             
             // ladowanie strony z formularzem
             return $this->loadTemplate('/military/form');
+        }
+        
+        /* ************ WYSZUKIWARKA *********** */
+        /* ************************************* */
+        
+        protected function getSearchDefinition(){
+            $form_values = array(
+                'class' => 'ClassMilitary',
+                'controller' => $this->search_controller,
+                'form' => array(
+                    'id_military' => array(
+                        'class' => 'table_id',
+                        'type' => 'text'
+                    ),
+                    'number' => array(
+                        'class' => 'table_number',
+                        'type' => 'text'
+                    ),
+                    'name' => array(
+                        'class' => 'table_name',
+                        'type' => 'text'
+                    ),
+                    'location' => array(
+                        'class' => 'table_lokalizacja',
+                        'type' => 'text'
+                    ),
+                    'id_military_group' => array(
+                        'class' => 'table_rodzaj',
+                        'type' => 'select',
+                        'options' => ClassMilitary::getGroups()
+                    ),
+                    'active' => array(
+                        'class' => 'table_status',
+                        'type' => 'select',
+                        'options' => array(
+                            '0' => 'Wyłączony',
+                            '1' => 'Włączony',
+                        )
+                    ),
+                    'actions' => array(
+                        'class' => 'table_akcje'
+                    )
+                )
+            );
+            
+            return $form_values;
         }
         
         /* *************** AKCJE ************** */

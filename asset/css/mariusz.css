@@ -412,6 +412,7 @@ tr.form_search input{
 
 tr.form_search .select2,
 tr.form_search select{
+    text-align: left;
     width: 100%;
 }
 
@@ -421,4 +422,8 @@ tr.form_search select{
 
 table tr.form_search td{
     background-color: #FAEBD7;
+}
+
+table tr.form_search td.table_akcje{
+    min-width: 150px;
 }
