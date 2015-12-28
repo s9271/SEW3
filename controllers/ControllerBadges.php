@@ -1,5 +1,11 @@
 <?php
     class ControllerBadges extends ControllerModel{
+        protected $search_controller = 'badges';
+        
+        public function __construct(){
+            $this->search_definition = $this->getSearchDefinition();
+        }
+        
         // funkcja ktora jest pobierana w indexie, jest wymagana w kazdym kontrolerze!!!!!
         public function getContent(){
             return $this->getPage();
@@ -33,22 +39,24 @@
         
         // strona lista
         protected function getPageList(){
+            $this->searchActions();
             $this->actions();
             
             // strony
             $this->controller_name = 'odznaczenia';
             $this->using_pages = true;
-            $this->count_items = ClassBadge::sqlGetCountItems();
+            $this->count_items = ClassBadge::sqlGetCountItems($this->search_controller);
             $this->current_page = ClassTools::getValue('page') ? ClassTools::getValue('page') : '1';
             
             // tytul strony
             $this->tpl_title = 'Odznaczenia: Lista';
             
             // ladowanie funkcji
+            $this->load_select2 = true;
             $this->load_js_functions = true;
             
             // pobieranie wszystkich rekordow
-            $this->tpl_values = ClassBadge::sqlGetAllItems($this->using_pages, $this->current_page, $this->items_on_page);
+            $this->tpl_values = ClassBadge::sqlGetAllItems($this->using_pages, $this->current_page, $this->items_on_page, $this->search_controller);
             
             // ladowanie strony z lista
             return $this->loadTemplate('/badges/list');
@@ -130,6 +138,51 @@
             
             // ladowanie strony z formularzem
             return $this->loadTemplate('/badges/form');
+        }
+        
+        /* ************ WYSZUKIWARKA *********** */
+        /* ************************************* */
+        
+        protected function getSearchDefinition(){
+            $ranks = ClassBadge::getRanks();
+            $form_ranks = array();
+            
+            foreach($ranks as $rank){
+                $form_ranks[$rank['id_badge_rank']] = $rank['name'];
+            }
+            
+            $form_values = array(
+                'class' => 'ClassBadge',
+                'controller' => $this->search_controller,
+                'form' => array(
+                    'id_badge' => array(
+                        'class' => 'table_id',
+                        'type' => 'text'
+                    ),
+                    'name' => array(
+                        'class' => 'table_name',
+                        'type' => 'text'
+                    ),
+                    'id_badge_rank' => array(
+                        'class' => 'table_rank',
+                        'type' => 'select',
+                        'options' => $form_ranks
+                    ),
+                    'active' => array(
+                        'class' => 'table_status',
+                        'type' => 'select',
+                        'options' => array(
+                            '0' => 'Wyłączony',
+                            '1' => 'Włączony',
+                        )
+                    ),
+                    'actions' => array(
+                        'class' => 'table_akcje'
+                    )
+                )
+            );
+            
+            return $form_values;
         }
         
         /* *************** AKCJE ************** */

@@ -5,6 +5,7 @@
         public static $use_prefix = true;
         protected static $has_deleted_column = true;
         protected static $is_log = true;
+        public static $is_search = true;
         
         // id
         public $id = false;
@@ -102,8 +103,8 @@
         }
         
         // pobieranie wszystkich rekordow
-        public static function sqlGetAllItems($using_pages = false, $current_page = '1', $items_on_page = '5'){
-            if($sql = parent::sqlGetAllItems($using_pages, $current_page, $items_on_page))
+        public static function sqlGetAllItems($using_pages = false, $current_page = '1', $items_on_page = '5', $controller_search = ''){
+            if($sql = parent::sqlGetAllItems($using_pages, $current_page, $items_on_page, $controller_search))
             {
                 foreach($sql as $key => $val)
                 {
