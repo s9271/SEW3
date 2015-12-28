@@ -1,5 +1,11 @@
 <?php
     class ControllerUsers extends ControllerModel{
+        protected $search_controller = 'users';
+        
+        public function __construct(){
+            $this->search_definition = $this->getSearchDefinition();
+        }
+        
         // funkcja ktora jest pobierana w indexie, jest wymagana w kazdym kontrolerze!!!!!
         public function getContent(){
             return $this->getPage();
@@ -36,13 +42,15 @@
         
         // strona lista uzytkownikow
         protected function getPageList(){
+            $this->searchActions();
             $this->actions();
             
             // strony
             $this->controller_name = 'uzytkownicy';
             $this->using_pages = true;
-            $this->items_on_page = 20;
-            $this->count_items = ClassUser::sqlGetCountItems();
+            // $this->items_on_page = 20;
+            $this->count_items = ClassUser::sqlGetCountItems($this->search_controller);
+            // print_r($this->count_items);
             $this->current_page = ClassTools::getValue('page') ? ClassTools::getValue('page') : '1';
             
             // tytul strony
@@ -56,7 +64,7 @@
             $this->load_js_functions = true;
             
             // pobieranie wszystkich uzytkownikow
-            $this->tpl_values['users'] = ClassUser::getAllItemsList($this->using_pages, $this->current_page, $this->items_on_page);
+            $this->tpl_values['users'] = ClassUser::getAllItemsList($this->using_pages, $this->current_page, $this->items_on_page, $this->search_controller);
             
             // ladowanie strony z lista uzytkownikow
             return $this->loadTemplate('/user/list');
@@ -204,7 +212,7 @@
         /* ************ WYSZUKIWARKA *********** */
         /* ************************************* */
         
-        protected function getSearchForm(){
+        protected function getSearchDefinition(){
             $permissions = ClassUser::getPermissions();
             $form_permissions = array();
             
@@ -213,26 +221,79 @@
             }
                 
             $form_values = array(
-                'table_id'          => 'id_user',
-                'table_name'        => 'name',
-                'table_surname'     => 'surname',
-                'table_login'       => 'login',
-                'table_mail'        => 'mail',
-                'table_permission'  => array('id_permission' => $form_permissions),
-                'table_status'      => array('active' => array(
-                    '0' => 'Wyłączony',
-                    '1' => 'Włączony',
-                )),
-                'table_guard'       => array('guard' => array(
-                    '0' => 'Nieaktywny',
-                    '1' => 'Aktywny',
-                )),
-                'table_akcje'       => 'actions',
+                'class' => 'ClassUser',
+                'controller' => $this->search_controller,
+                // 'controller' => 'users',
+                'form' => array(
+                    'id_user' => array(
+                        'class' => 'table_id',
+                        'type' => 'text'
+                    ),
+                    'name' => array(
+                        'class' => 'table_name',
+                        'type' => 'text'
+                    ),
+                    'surname' => array(
+                        'class' => 'table_surname',
+                        'type' => 'text'
+                    ),
+                    'login' => array(
+                        'class' => 'table_login',
+                        'type' => 'text'
+                    ),
+                    'mail' => array(
+                        'class' => 'table_mail',
+                        'type' => 'text'
+                    ),
+                    'id_permission' => array(
+                        'class' => 'table_permission',
+                        'type' => 'select',
+                        'options' => $form_permissions
+                    ),
+                    'active' => array(
+                        'class' => 'table_status',
+                        'type' => 'select',
+                        'options' => array(
+                            '0' => 'Wyłączony',
+                            '1' => 'Włączony',
+                        )
+                    ),
+                    'guard' => array(
+                        'class' => 'table_guard',
+                        'type' => 'select',
+                        'options' => array(
+                            '0' => 'Nieaktywny',
+                            '1' => 'Aktywny',
+                        )
+                    ),
+                    'actions' => array(
+                        'class' => 'table_akcje'
+                    )
+                )
             );
+            
+            // $form_values = array(
+                // 'table_id'          => 'id_user',
+                // 'table_name'        => 'name',
+                // 'table_surname'     => 'surname',
+                // 'table_login'       => 'login',
+                // 'table_mail'        => 'mail',
+                // 'table_permission'  => array('id_permission' => $form_permissions),
+                // 'table_status'      => array('active' => array(
+                    // '0' => 'Wyłączony',
+                    // '1' => 'Włączony',
+                // )),
+                // 'table_guard'       => array('guard' => array(
+                    // '0' => 'Nieaktywny',
+                    // '1' => 'Aktywny',
+                // )),
+                // 'table_akcje'       => 'actions',
+            // );
             
             // print_r($form_values);
             
-            return $this->generateSearchForm('users', $form_values);
+            // return $this->generateSearchForm('users', $form_values);
+            return $form_values;
         }
         
         /* *************** AKCJE ************** */

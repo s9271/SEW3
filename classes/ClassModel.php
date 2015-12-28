@@ -1,5 +1,5 @@
 <?php
-    class ClassModel{
+    class ClassModel extends ClassSearch{
         // prefix uzywany do nazw tabel w bazach
         public static $prefix = 'sew_';
         public static $prefix_log = 'log_';
@@ -521,7 +521,7 @@
         }
         
         // pobieranie wszystkich rekordow
-        public static function sqlGetAllItems($using_pages = false, $current_page = '1', $items_on_page = '5'){
+        public static function sqlGetAllItems($using_pages = false, $current_page = '1', $items_on_page = '5', $controller_search = ''){
             global $DB;
             $table_name = (static::$use_prefix ? static::$prefix : '').static::$definition['table'];
             $where = '';
@@ -529,6 +529,16 @@
             
             if(static::$has_deleted_column){
                 $where = " WHERE `deleted` = '0'";
+            }
+            
+            if(static::$is_search && $where_search = self::generateWhereList($controller_search)){
+                if($where == ''){
+                    $where = "WHERE ";
+                }else{
+                    $where .= " AND ";
+                }
+                
+                $where .= $where_search;
             }
             
             if($using_pages){
@@ -548,7 +558,7 @@
         }
         
         // pobieranie liczby wszystkich rekordow
-        public static function sqlGetCountItems(){
+        public static function sqlGetCountItems($controller_search = ''){
             global $DB;
             $table_name = (static::$use_prefix ? static::$prefix : '').static::$definition['table'];
             $where = '';
@@ -557,7 +567,21 @@
                 $where = " WHERE `deleted` = '0'";
             }
             
-            $zapytanie = "SELECT COUNT(*) as count_items FROM {$table_name}{$where}";
+            if(static::$is_search && $where_search = self::generateWhereList($controller_search)){
+                if($where == ''){
+                    $where = "WHERE ";
+                }else{
+                    $where .= " AND ";
+                }
+                
+                $where .= $where_search;
+            }
+            
+            $zapytanie = "SELECT COUNT(*) as count_items
+                FROM `{$table_name}`
+                {$where}
+            ;";
+            
             $sql = $DB->pdo_fetch($zapytanie);
             
             if(!$sql || !is_array($sql) || count($sql) < 1){

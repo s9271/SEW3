@@ -1,6 +1,7 @@
 <?php
     class ClassUser extends ClassModel{
         public static $use_prefix = true;
+        public static $is_search = true;
         
         // podczas pobierania rekordow, wywoluje sprawdzenie, ktore sa usuniete
         protected static $has_deleted_column = true;
@@ -162,8 +163,8 @@
         }
         
         // pobieranie listy uzytkownikow
-        public static function getAllItemsList($using_pages = false, $current_page = '1', $items_on_page = '5'){
-            if(!$users = self::sqlGetAllItemsList($using_pages, $current_page, $items_on_page)){
+        public static function getAllItemsList($using_pages = false, $current_page = '1', $items_on_page = '5', $controller_search = ''){
+            if(!$users = self::sqlGetAllItemsList($using_pages, $current_page, $items_on_page, $controller_search)){
                 return false;
             }
             
@@ -644,7 +645,7 @@
         }
         
         // pobieranie wszystkich uzytkownikow
-        public static function sqlGetAllItemsList($using_pages = false, $current_page = '1', $items_on_page = '5'){
+        public static function sqlGetAllItemsList($using_pages = false, $current_page = '1', $items_on_page = '5', $controller_search = ''){
             global $DB;
             
             $where = '';
@@ -654,6 +655,11 @@
                 $where = " AND su.`deleted` = '0'";
             }
             
+            if(static::$is_search && $where_search = static::generateWhereList($controller_search, 'su')){
+                $where .= " AND ";
+                $where .= $where_search;
+            }
+            
             if($using_pages){
                 $limit_start = ($current_page-1)*$items_on_page;
                 $limit = " LIMIT {$limit_start}, {$items_on_page}";
@@ -661,10 +667,14 @@
             
             $zapytanie = "SELECT su.`id_user`, su.`mail`, su.`login`, su.`active`, su.`guard`, suo.`name`, suo.`surname`, sp.`name` as name_permission
                 FROM `sew_users` as su, `sew_user_options` as suo, `sew_permissions` as sp
-                WHERE su.`id_user` = suo.`id_user` AND sp.`id_permission` = su.`id_permission`{$where}
+                WHERE su.`id_user` = suo.`id_user`
+                    AND sp.`id_permission` = su.`id_permission`
+                    {$where}
                 ORDER BY `".static::$definition['primary']."`
                 {$limit}
             ;";
+            
+            // print_r($zapytanie);
             
             $sql = $DB->pdo_fetch_all($zapytanie);
             
@@ -672,6 +682,37 @@
                 return false;
             }
             return $sql;
+        }
+        
+        // pobieranie liczby wszystkich rekordow
+        public static function sqlGetCountItems($controller_search = ''){
+            global $DB;
+            $table_name = (static::$use_prefix ? static::$prefix : '').static::$definition['table'];
+            $where = '';
+            
+            if(static::$has_deleted_column){
+                $where = "AND `deleted` = '0'";
+            }
+            
+            if(static::$is_search && $where_search = static::generateWhereList($controller_search, 'su')){
+                $where .= " AND ";
+                $where .= $where_search;
+            }
+            
+            $zapytanie = "SELECT COUNT(*) as count_items
+                FROM `sew_users` as su, `sew_user_options` as suo
+                WHERE su.`id_user` = suo.`id_user`
+                    {$where}
+            ;";
+            // print_r($where);
+            
+            $sql = $DB->pdo_fetch($zapytanie);
+            
+            if(!$sql || !is_array($sql) || count($sql) < 1){
+                return false;
+            }
+            
+            return $sql['count_items'];
         }
         
         // dodawanie do bazy
@@ -729,6 +770,42 @@
         public static function searchMilitaries($ajaxData){
             return array('error' => 'test');
             // return ClassTools::generateRandomPasswd();
+        }
+            
+        
+        /* *********** WYSZUKIWARKA ********** */
+        /* *********************************** */
+        
+        // pobieranie where dla zapytania
+        protected static function generateWhereList($controller, $prefix = false){
+            if(!$session_search = self::getSearchSession($controller)){
+                return false;
+            }
+            
+            $prefix = $prefix ? "{$prefix}." : '';
+            $first = true;
+            
+            foreach($session_search as $key => $val){
+                $val = ClassTools::pSQL($val);
+                
+                if($prefix && ($key == 'name' || $key == 'surname')){
+                    if($first){
+                        $first = false;
+                        $search = "suo.`{$key}` LIKE '%{$val}%'";
+                    }else{
+                        $search .= " AND suo.`{$key}` LIKE '%{$val}%'";
+                    }
+                }else{
+                    if($first){
+                        $first = false;
+                        $search = "su.`{$key}` LIKE '%{$val}%'";
+                    }else{
+                        $search .= " AND su.`{$key}` LIKE '%{$val}%'";
+                    }
+                }
+            }
+            
+            return $search;
         }
     }
 ?>

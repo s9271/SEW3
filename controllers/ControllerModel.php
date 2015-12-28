@@ -1,10 +1,7 @@
 <?php
-    class ControllerModel{
-        // nazwa kontrolera dla linkow do stron
+    class ControllerModel extends ControllerSearch{
+        // nazwa kontrolera dla linkow do stron (po polsku)
         protected $controller_name = '';
-        
-        // alerty, dostepne: success, info, warning, danger
-        protected $alerts = array();
         
         // zaladowane skrypty
         protected $scripts = false;
@@ -180,56 +177,6 @@
         // pobieranie stron bez praw
         public function getPageNoPermissions(){
             return $this->loadTemplate('no_permissions');
-        }
-        
-        // robienie formularza wyszukiwania
-        public function generateSearchForm($controller, array $form_values = array()){
-            if(count($form_values) < 1){
-                return '';
-            }
-            // print_r($_SESSION);
-            // print_r($_POST);
-            
-            $search_session = (isset($_SESSION['search']) && isset($_SESSION['search'][$controller])) ? $_SESSION['search'][$controller] : false;
-            $o = '<tr class="form_search">';
-            $o .= '<form method="post">';
-            
-            foreach($form_values as $class => $name){
-                $o .= '<td class="'.$class.'">';
-                
-                if(!is_array($name)){
-                    if($name != ''){
-                        if($name == 'actions'){
-                            $o .= '<div class="btn-group btn-group-sm">
-                                <button class="btn btn-primary" value="user_search" name="form_action" type="submit">Szukaj</button>
-                                <button class="btn btn-warning" value="user_search_delete" name="form_action" type="submit">Wyczyść</button>
-                            </div>
-                            ';
-                        }else{
-                            $o .= '<input type="text" value="'.($search_session && isset($search_session[$name]) ? htmlspecialchars($search_session[$name]) : '').'" name="'.$name.'" />';
-                        }
-                    }else{
-                        $o .= '---';
-                    }
-                }else{
-                    $o .= '<select name="'.key($name).'" class="jsselectnosearch">';
-                    $o .= '<option value="">---</option>';
-                    
-                    foreach($name[key($name)] as $option_value => $option_name){
-                        $selected = ($search_session && isset($search_session[$name]) && $search_session[$name] == $option_value ? ' selected="selected"' : '');
-                        $o .= '<option value="'.$option_value.'"'.$selected.'>'.$option_name.'</option>';
-                    }
-                    
-                    $o .= '</select>';
-                }
-                
-                $o .= '</td>';
-            }
-            
-            $o .= '</form>';
-            $o .= '</tr>';
-            
-            return $o;
         }
     }
 ?>

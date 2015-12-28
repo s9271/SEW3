@@ -414,3 +414,11 @@ tr.form_search .select2,
 tr.form_search select{
     width: 100%;
 }
+
+.alert-danger.search ul{
+    text-align: left;
+}
+
+table tr.form_search td{
+    background-color: #FAEBD7;
+}
