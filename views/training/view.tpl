@@ -11,6 +11,11 @@
         </div>
         
         <div class="sew-row clearfix">
+            <div class="col-sm-2 text-right row_title">Kod szkolenia:</div>
+            <div class="col-sm-8 row_content"><?php echo $this->tpl_values['form_code']; ?></div>
+        </div>
+        
+        <div class="sew-row clearfix">
             <div class="col-sm-2 text-right row_title">Ośrodek szkolenia:</div>
             <div class="col-sm-8 row_content"><?php echo $this->tpl_values['form_training_center']; ?></div>
         </div>

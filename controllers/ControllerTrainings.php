@@ -131,6 +131,7 @@
             $array_form_class = array(
                 'id_training'           => $item->id,
                 'form_name'             => $item->name,
+                'form_code'             => $item->code,
                 'form_training_center'  => $item->id_training_centre,
                 'form_description'      => $item->description,
                 'form_date_start'       => ClassTraining::getPlDate($item->date_start),
@@ -183,6 +184,7 @@
             // values
             $this->tpl_values['id_training'] = $item->id;
             $this->tpl_values['form_name'] = $item->name;
+            $this->tpl_values['form_code'] = $item->code;
             $this->tpl_values['form_training_center'] = $item->training_center_name;
             $this->tpl_values['form_description'] = ClassTools::nl2br($item->description);
             $this->tpl_values['form_date_start'] = ClassMission::getPlDate($item->date_start);
@@ -217,6 +219,10 @@
                 'form' => array(
                     'id_training' => array(
                         'class' => 'table_id',
+                        'type' => 'text'
+                    ),
+                    'code' => array(
+                        'class' => 'table_code',
                         'type' => 'text'
                     ),
                     'name' => array(
@@ -263,7 +269,7 @@
                 return;
             }
             
-            print_r($_POST);
+            // print_r($_POST);
             
             // przypisanie zmiennych posta do zmiennych template
             $this->tpl_values = $this->setValuesTemplateByPost();
@@ -288,9 +294,11 @@
         {
             $active = ClassTools::getValue('form_active');
             $form_date_end = ClassTools::getValue('form_date_end');
+            $form_code = ClassTools::getValue('form_code');
             
             $item = new ClassTraining();
             $item->name = ClassTools::getValue('form_name');
+            $item->code = $form_code != '' ? $form_code : NULL;
             $item->id_training_centre = ClassTools::getValue('form_training_center');
             $item->description = ClassTools::getValue('form_description');
             $item->date_start = ClassTools::getValue('form_date_start');
@@ -356,8 +364,10 @@
             
             $active = ClassTools::getValue('form_active');
             $form_date_end = ClassTools::getValue('form_date_end');
+            $form_code = ClassTools::getValue('form_code');
             
             $item->name = ClassTools::getValue('form_name');
+            $item->code = $form_code != '' ? $form_code : NULL;
             $item->id_training_centre = ClassTools::getValue('form_training_center');
             $item->description = ClassTools::getValue('form_description');
             $item->date_start = ClassTools::getValue('form_date_start');

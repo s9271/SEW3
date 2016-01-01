@@ -8,6 +8,7 @@
             <thead>
                 <tr>
                     <th class="table_id">ID</th>
+                    <th class="table_code">Kod szkolenia</th>
                     <th class="table_name">Nazwa szkolenia</th>
                     <th class="table_traning_center">Centrum szkolenia</th>
                     <th class="table_date_start">Data rozpoczęcia</th>
@@ -27,6 +28,7 @@
                 
                 <tr>
                     <td class="table_id"><?php echo $item['id_training']; ?></td>
+                    <td class="table_code"><?php echo $item['code']; ?></td>
                     <td class="table_name"><?php echo $item['name']; ?></td>
                     <td class="table_traning_center"><?php echo $item['training_center_name']; ?></td>
                     <td class="table_date_start"><?php echo $item['date_start_name']; ?></td>
@@ -52,7 +54,7 @@
                 ?>
                 
                 <tr>
-                    <td class="table_null" colspan="7">Brak szkoleń do wyświetlenia</td>
+                    <td class="table_null" colspan="8">Brak szkoleń do wyświetlenia</td>
                 </tr>
                 <?php
                     endif;

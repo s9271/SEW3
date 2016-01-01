@@ -23,6 +23,15 @@
 
             <div class="form-group">
                 <div class="col-sm-2 text-right">
+                    <label for="form_code" class="control-label">Kod szkolenia:</label>
+                </div>
+                <div class="col-sm-8">
+                    <input id="form_code" class="form-control login_input input-sm" type="text" placeholder="Kod szkolenia" name="form_code" value="<?php echo ((isset($this->tpl_values['form_code']) && $this->tpl_values['form_code'] != '') ? $this->tpl_values['form_code'] : ''); ?>" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-2 text-right">
                     <label for="form_training_center" class="control-label">*Ośrodek szkolenia:</label>
                 </div>
                 <div class="col-sm-8">
