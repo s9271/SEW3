@@ -177,9 +177,13 @@
         }
         
         // pobieranie nazwy daty po dacie zakonczenia
-        public static function getDateEndNameByDateEnd($date_end){
+        public static function getDateEndNameByDateEnd($date_end, $pl = false){
             if($date_end === NULL || $date_end == '0000-00-00 00:00:00'){
                 return 'Niezdefiniowano';
+            }
+            
+            if($pl){
+                return self::getPlDate($date_end);
             }
             
             return $date_end;
@@ -541,7 +545,7 @@
                 $where = " WHERE `deleted` = '0'";
             }
             
-            if(static::$is_search && $where_search = self::generateWhereList($controller_search)){
+            if(static::$is_search && $controller_search != '' && $where_search = self::generateWhereList($controller_search)){
                 if($where == ''){
                     $where = "WHERE ";
                 }else{
@@ -560,11 +564,46 @@
             // print_r($zapytanie);
             $sql = $DB->pdo_fetch_all($zapytanie, true);
             
-            if(($sql === false || !is_array($sql)) && (static::$is_search && isset($_SESSION['search'][$controller_search]))){
+            if(($sql === false || !is_array($sql)) && (static::$is_search && $controller_search != '' && isset($_SESSION['search'][$controller_search]))){
                 if(static::$is_search && isset($_SESSION['search'][$controller_search])){
                     $_SESSION['search'][$controller_search] = array();
                 }
             }
+            
+            if(!$sql || !is_array($sql) || count($sql) < 1){
+                return false;
+            }
+            
+            return $sql;
+        }
+        
+        // pobieranie wszystkich aktywnych rekordow bez stron i wyszukiwarki
+        public static function sqlGetAllActiveItems($active = true, $deleted = true){
+            global $DB;
+            $table_name = (static::$use_prefix ? static::$prefix : '').static::$definition['table'];
+            $where = "";
+            
+            if($active){
+                $where .= "WHERE `active` = '1'";
+            }
+            
+            if(static::$has_deleted_column && $deleted){
+                if($where == ''){
+                    $where = "WHERE ";
+                }else{
+                    $where .= " AND ";
+                }
+                
+                $where .= "`deleted` = '0'";
+            }
+            
+            $zapytanie = "SELECT *
+                FROM `{$table_name}`
+                {$where}
+                ORDER BY `".static::$definition['primary']."`
+            ;";
+            
+            $sql = $DB->pdo_fetch_all_group($zapytanie, true);
             
             if(!$sql || !is_array($sql) || count($sql) < 1){
                 return false;
@@ -583,7 +622,7 @@
                 $where = " WHERE `deleted` = '0'";
             }
             
-            if(static::$is_search && $where_search = self::generateWhereList($controller_search)){
+            if(static::$is_search && $controller_search != '' && $where_search = self::generateWhereList($controller_search)){
                 if($where == ''){
                     $where = "WHERE ";
                 }else{
@@ -600,7 +639,7 @@
             
             $sql = $DB->pdo_fetch($zapytanie, true);
             
-            if(($sql === false || !is_array($sql)) && (static::$is_search && isset($_SESSION['search'][$controller_search]))){
+            if(($sql === false || !is_array($sql)) && (static::$is_search && $controller_search != '' && isset($_SESSION['search'][$controller_search]))){
                 if(static::$is_search && isset($_SESSION['search'][$controller_search])){
                     $_SESSION['search'][$controller_search] = array();
                 }
@@ -614,7 +653,7 @@
         }
         
         // pobieranie ostatnich zmian
-        public function sqlGetLogItem($limit = '5'){
+        public function sqlGetLogItem($limit = '4'){
             if(!static::$is_log || !$this->load_class){
                 return false;
             }
@@ -622,16 +661,16 @@
             global $DB;
             $table_name_log = static::$prefix_log.static::$definition['table'];
             
-            // zmiana id_mission na id_log_mission
+            // zmiana np. id_mission na id_log_mission
             $id_log = substr_replace(static::$definition['primary'],'log_',3,0);
             
             $zapytanie = "
-                SELECT log_table.`{$id_log}` as id_log, log_table.`date_update`, users.`first_name`, users.`second_name`
-                FROM `{$table_name_log}` as log_table, users
+                SELECT log_table.`{$id_log}` as id_log, log_table.`date_update`, sew_user_options.`name`, sew_user_options.`surname`, sew_user_options.`id_user`
+                FROM `{$table_name_log}` as log_table, `sew_user_options`
                 WHERE log_table.`".static::$definition['primary']."` = {$this->id}
-                    AND log_table.`id_user` = users.`user_id`
+                    AND log_table.`id_user` = sew_user_options.`id_user`
                 ORDER BY log_table.`date_update` DESC
-                LIMIT {$limit}
+                LIMIT 0, {$limit}
             ";
             
             $sql = $DB->pdo_fetch_all($zapytanie);

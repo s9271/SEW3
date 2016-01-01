@@ -4,7 +4,7 @@
         
         <?php $this->getAlerts(true); ?>
     
-        <form method="post" action="" class="form-horizontal">
+        <form method="post" class="form-horizontal">
 
             <div class="form-group">
                 <div class="col-sm-2 text-right require_text">
@@ -20,28 +20,20 @@
                     <input id="form_name" class="form-control login_input input-sm" type="text" placeholder="Nazwa szkolenia" name="form_name" required="required" value="<?php echo ((isset($this->tpl_values['form_name']) && $this->tpl_values['form_name'] != '') ? $this->tpl_values['form_name'] : ''); ?>" />
                 </div>
             </div>
-            
+
             <div class="form-group">
                 <div class="col-sm-2 text-right">
-                    <label for="form_type" class="control-label">*Ośrodek szkolenia:</label>
+                    <label for="form_training_center" class="control-label">*Ośrodek szkolenia:</label>
                 </div>
                 <div class="col-sm-8">
-                    <select class="form-control input-sm jsselect" id="form_type" name="form_type" required="required">
+                    <select class="form-control input-sm jsselect" id="form_training_center" name="form_training_center" required="required">
                         <option value="">Wybierz</option>
                         <?php
-                           /* if (isset($this->tpl_values['form_type'])){
-                                foreach ($this->tpl_values['form_type'] as $group) {
-                                    echo '<optgroup label="'.$group['name'].'">';
-                                    
-                                    if (isset($group['childs']) && is_array($group['childs']) && count($group['childs']) > 0){
-                                        foreach ($group['childs'] as $key_type => $type) {
-                                            echo '<option value="'.$key_type.'"'.((isset($type['current']) && $type['current'] === true) ? ' selected="selected"' : '').'>'.$type['name'].'</option>';
-                                        }
-                                    }
-                                    
-                                    echo '</optgroup>';
+                            if (isset($this->tpl_values['training_centers']) && $this->tpl_values['training_centers']){
+                                foreach ($this->tpl_values['training_centers'] as $key => $training_center) {
+                                    echo '<option value="'.$key.'"'.((isset($this->tpl_values['form_training_center']) && $this->tpl_values['form_training_center'] == $key) ? ' selected="selected"' : '').'>'.$training_center['name'].', '.$training_center['location'].'</option>';
                                 }
-                            } */
+                            }
                         ?>
                     </select>
                 </div>
@@ -96,13 +88,16 @@
             <div class="form-group">
                 <div class="col-sm-offset-2 control-label col-sm-8">
                     <a href="/szkolenia" class="btn btn-info mar_button"><span class="glyphicon glyphicon-chevron-left"></span>Lista</a>
+                    
                     <?php if($this->tpl_values['sew_action'] == 'add'){ ?>
-                        <button class="btn btn-success mar_button" type="submit" name="form_action" value="mission_add"><span class="glyphicon glyphicon-plus"></span>Dodaj</button>
+                        <button class="btn btn-success mar_button" type="submit" name="form_action" value="training_add"><span class="glyphicon glyphicon-plus"></span>Dodaj</button>
+                        
                     <?php }elseif($this->tpl_values['sew_action'] == 'edit'){ ?>
                         <input type="hidden" name="id_training" value="<?php echo $this->tpl_values['id_training']; ?>" />
                         <a class="btn btn-primary" title="Podgląd" href="/szkolenia/podglad/<?php echo $this->tpl_values['id_training']; ?>">Podgląd</a>
-                        <button class="btn btn-success mar_button" type="submit" name="form_action" value="mission_save"><span class="glyphicon glyphicon-floppy-disk"></span>Zapisz</button>
+                        <button class="btn btn-success mar_button" type="submit" name="form_action" value="training_save"><span class="glyphicon glyphicon-floppy-disk"></span>Zapisz</button>
                     <?php } ?>
+                    
                 </div>
             </div>
         </form>

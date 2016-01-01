@@ -452,3 +452,46 @@ table tr.form_search td.table_akcje{
 #training_center_list .table_status{
     width: 150px;
 }
+
+/* SZKOLENIA */
+#training_list table select,
+#training_list table .select2{
+    width: 100% !important;
+}
+
+#training_list table{
+    table-layout: fixed;
+}
+
+#training_list table .table_status{
+    width: 130px;
+}
+
+#training_list table .table_traning_center{
+    width: 350px;
+}
+
+#training_list table .table_id{
+    width: 60px;
+}
+
+#training_list table .table_akcje{
+    width: 192px;
+}
+
+#training_list table .table_date_start{
+    width: 155px;
+}
+
+#training_list table .table_date_end{
+    width: 155px;
+}
+
+.sew_hint.col-sm-offset-2{
+    margin-left: 16.6667%;
+    padding: 0;
+}
+
+#training_view{
+    text-align: left;
+}

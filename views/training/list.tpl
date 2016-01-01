@@ -9,12 +9,15 @@
                 <tr>
                     <th class="table_id">ID</th>
                     <th class="table_name">Nazwa szkolenia</th>
-                    <th class="table_osrodek">Ośrodek szkolenia</th>
+                    <th class="table_traning_center">Centrum szkolenia</th>
                     <th class="table_date_start">Data rozpoczęcia</th>
                     <th class="table_date_end">Data zakończenia</th>
                     <th class="table_status">Status</th>
                     <th class="table_akcje">Akcje</th>
                 </tr>
+                
+                <?php echo $this->getSearchForm(); ?>
+                
             </thead>
             <tbody>
                 <?php 
@@ -23,19 +26,24 @@
                 ?>
                 
                 <tr>
-                    <td class="table_id"><?php echo $item['id_mission']; ?></td>
+                    <td class="table_id"><?php echo $item['id_training']; ?></td>
                     <td class="table_name"><?php echo $item['name']; ?></td>
-                    <td class="table_osrodek"><?php echo $item['traning_centre_name']; ?></td>
-                    <td class="table_date_start"><?php echo $item['date_start']; ?></td>
+                    <td class="table_traning_center"><?php echo $item['training_center_name']; ?></td>
+                    <td class="table_date_start"><?php echo $item['date_start_name']; ?></td>
                     <td class="table_date_end"><?php echo $item['date_end_name']; ?></td>
                     <td class="table_status"><?php echo $item['status']; ?></td>
                     <td class="table_akcje">
-                        <form method="post" action="">
-                            <a href="/szkolenia/podglad/<?php echo $item['id_mission']; ?>" class="btn btn-primary" title="Podgląd">Podgląd</a>
-                            <a href="/szkolenia/edytuj/<?php echo $item['id_mission']; ?>" class="btn btn-warning" title="Edytuj">Edytuj</a>
-                            <input type="hidden" name="id_mission" value="<?php echo $item['id_mission']; ?>" />
-                            <button class="btn btn-danger jsconfirm" data-confirm="<?php echo $item['name']; ?>: Czy na pewno chcesz usunąć szkolenie?" type="submit" name="form_action" value="mission_delete">Usuń</button>
+                    
+                        <form method="post">
+                            <input type="hidden" name="id_training" value="<?php echo $item['id_training']; ?>" />
+                            
+                            <div class="btn-group btn-group-sm">
+                                <a href="/szkolenia/podglad/<?php echo $item['id_training']; ?>" class="btn btn-primary" title="Podgląd">Podgląd</a>
+                                <a href="/szkolenia/edytuj/<?php echo $item['id_training']; ?>" class="btn btn-warning" title="Edytuj">Edytuj</a>
+                                <button class="btn btn-danger jsconfirm" data-confirm="<?php echo $item['name']; ?>: Czy na pewno chcesz usunąć szkolenie?" type="submit" name="form_action" value="training_delete">Usuń</button>
+                            </div>
                         </form>
+                        
                     </td>
                 </tr>
                 <?php

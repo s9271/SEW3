@@ -142,7 +142,7 @@
                 'class' => 'ClassTrainingCenter',
                 'controller' => $this->search_controller,
                 'form' => array(
-                    'id_badge' => array(
+                    'id_training_centre' => array(
                         'class' => 'table_id',
                         'type' => 'text'
                     ),

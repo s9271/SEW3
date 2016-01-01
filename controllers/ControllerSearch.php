@@ -59,7 +59,8 @@
                     break;
                     case 'select':
                         if(isset($values['options']) && is_array($values['options']) && count($values['options']) > 0){
-                            $o .= '<select name="'.$column_name.'" class="jsselectnosearch">';
+                            $class_select = (isset($values['search']) && $values['search'] === true) ? 'jsselect' : 'jsselectnosearch';
+                            $o .= '<select name="'.$column_name.'" class="'.$class_select.'">';
                             $o .= '<option value="">---</option>';
                             
                             foreach($values['options'] as $option_key => $option_value){
@@ -78,7 +79,8 @@
                             </div>
                             ';
                         }else{
-                            $o .= '---';
+                            // $o .= '---';
+                            $o .= '';
                         }
                     break;
                 }
@@ -102,9 +104,12 @@
                 return $session;
             }
             
-            foreach($_POST as $key => $val){
-                if($key != 'form_action_search'){
-                    $session[$key] = (ClassTools::getValue($key) !== false ? ClassTools::getValue($key) : '');
+            if(isset($_POST['form_action_search']))
+            {
+                foreach($_POST as $key => $val){
+                    if($key != 'form_action_search'){
+                        $session[$key] = (ClassTools::getValue($key) !== false ? ClassTools::getValue($key) : '');
+                    }
                 }
             }
             

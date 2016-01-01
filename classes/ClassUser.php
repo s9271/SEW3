@@ -756,6 +756,24 @@
             
             return true;
         }
+        
+        // pobieranie imienia i nazwy uzytkownika
+        public static function sqlGetNameSurnameById($id_user){
+            global $DB;
+            
+            $zapytanie = "SELECT `id_user`, `name`, `surname`
+                FROM `sew_user_options`
+                WHERE `id_user` = '{$id_user}'
+            ;";
+            
+            $sql = $DB->pdo_fetch($zapytanie);
+            
+            if(!$sql || !is_array($sql) || count($sql) < 1){
+                return false;
+            }
+            
+            return $sql;
+        }
             
         
         /* *************** AJAX ************** */
