@@ -487,6 +487,10 @@ table tr.form_search td.table_akcje{
     width: 155px;
 }
 
+#training_list table .table_code{
+    width: 115px;
+}
+
 .sew_hint.col-sm-offset-2{
     margin-left: 16.6667%;
     padding: 0;
@@ -494,4 +498,8 @@ table tr.form_search td.table_akcje{
 
 #training_view{
     text-align: left;
+}
+
+#training_list table tbody td.table_id{
+    text-align: center;
 }
