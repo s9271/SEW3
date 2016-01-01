@@ -45,7 +45,7 @@
             // var_dump($search_session);
             
             $o = '<tr class="form_search">';
-            $o .= '<form method="post">';
+            $o .= '<form method="post" action="'.ClassTools::getDomainLink().ClassTools::getValue('controller').'">';
             
             foreach($form as $column_name => $values){
                 $class = isset($values['class']) ? ' class="'.$values['class'].'"' : '';

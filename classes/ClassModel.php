@@ -155,6 +155,11 @@
                 $this->date_update = date('Y-m-d H:i:s');
             }
             
+            // dodatkowe wlasne walidacje podczas usuwania
+            if(!$this->deleteCustomValidate()){
+                return false;
+            }
+            
             if(static::$has_deleted_column){
                 $this->sqlDeleteOnColumn(static::$definition['table'], $this->id);
             }
@@ -222,6 +227,11 @@
         
         // dodatkowe wlasne walidacje podczas aktualizowania
         public function updateCustomValidate(){
+            return true;
+        }
+        
+        // dodatkowe wlasne walidacje podczas usuwania
+        public function deleteCustomValidate(){
             return true;
         }
         
@@ -548,7 +558,13 @@
             
             $zapytanie = "SELECT * FROM {$table_name}{$where} ORDER BY `".static::$definition['primary']."`{$limit}";
             // print_r($zapytanie);
-            $sql = $DB->pdo_fetch_all($zapytanie);
+            $sql = $DB->pdo_fetch_all($zapytanie, true);
+            
+            if(($sql === false || !is_array($sql)) && (static::$is_search && isset($_SESSION['search'][$controller_search]))){
+                if(static::$is_search && isset($_SESSION['search'][$controller_search])){
+                    $_SESSION['search'][$controller_search] = array();
+                }
+            }
             
             if(!$sql || !is_array($sql) || count($sql) < 1){
                 return false;
@@ -582,7 +598,13 @@
                 {$where}
             ;";
             
-            $sql = $DB->pdo_fetch($zapytanie);
+            $sql = $DB->pdo_fetch($zapytanie, true);
+            
+            if(($sql === false || !is_array($sql)) && (static::$is_search && isset($_SESSION['search'][$controller_search]))){
+                if(static::$is_search && isset($_SESSION['search'][$controller_search])){
+                    $_SESSION['search'][$controller_search] = array();
+                }
+            }
             
             if(!$sql || !is_array($sql) || count($sql) < 1){
                 return false;

@@ -9,7 +9,7 @@
     */
 
     class ClassSQL{
-        public $errors = array();
+        public $errors = false;
         private $pdo;
         private $host;
         private $user;
@@ -77,9 +77,9 @@
             // pobieranie 1 rekorda z bazy
             // $sql -> zapytanie SQL
             // zwracanie: array('name' => 'value', ...)
-            public function pdo_fetch($sql){
+            public function pdo_fetch($sql, $return = false){
                 // $statement = $this->pdo->query($sql);
-                if(!$statement = $this->pdoSelect($sql)){
+                if(!$statement = $this->pdoSelect($sql, $return)){
                     return false;
                 }
                 $row = $statement->fetch(PDO::FETCH_ASSOC);
@@ -89,9 +89,9 @@
             // pobieranie wielu rekordow z bazy
             // $sql -> zapytanie SQL
             // zwracanie: array([0] => array('name' => 'value', ...), [1] => array('name' => 'value', ...), ...)
-            public function pdo_fetch_all($sql){
+            public function pdo_fetch_all($sql, $return = false){
                 // $statement = $this->pdo->query($sql);
-                if(!$statement = $this->pdoSelect($sql)){
+                if(!$statement = $this->pdoSelect($sql, $return)){
                     return false;
                 }
                 $row = $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -153,12 +153,18 @@
             }
             
             // pobieranie sql-a oraz wyswietleniu bledu przy blednej probie poobierania rekordow
-            protected function pdoSelect($sql){
+            protected function pdoSelect($sql, $return = false){
                 $statement = $this->pdo->prepare($sql);
                 
                 if (!$statement->execute()) {
                     $error = $statement->errorInfo();
-                    die("Problem z zapytaniem do bazy: ".utf8_encode($error['2']));
+                    $message = "Problem z zapytaniem do bazy: ".utf8_encode($error['2']);
+                    
+                    if(!$return){
+                        die($message);
+                    }
+                    
+                    $this->errors = $message;
                     return false;
                 }
                 

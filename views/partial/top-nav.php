@@ -144,6 +144,16 @@
                         <li><a href="/odznaczenia"><span class="glyphicon glyphicon-list-alt"></span>&emsp;&emsp;Pokaż Odznaczenia</a></li>
                     </ul>
                 </li>
+              
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="/centra-szkolen">
+                        <span class="glyphicon glyphicon-tags"></span>&emsp;&emsp;Centra Szkoleń<span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu sidebar-nav">
+                        <li><a href="/centra-szkolen/dodaj"><span class="glyphicon glyphicon-plus"></span>&emsp;&emsp;Dodaj centum szkolenia</a></li>
+                        <li><a href="/centra-szkolen"><span class="glyphicon glyphicon-list-alt"></span>&emsp;&emsp;Pokaż centra szkoleń</a></li>
+                    </ul>
+                </li>
                 
               <li>
                   <span>---------------------------------------------</span>

@@ -427,3 +427,28 @@ table tr.form_search td{
 table tr.form_search td.table_akcje{
     min-width: 150px;
 }
+
+/* CENTRA SZKOLEN */
+#training_center_list table{
+    width: 100%;
+}
+
+#training_center_form{
+    text-align: left;
+}
+
+#training_center_list .table_id{
+    width: 50px;
+}
+
+#training_center_list .table_akcje{
+    width: 130px;
+}
+
+#training_center_list .table_name{
+    text-align: left;
+}
+
+#training_center_list .table_status{
+    width: 150px;
+}
