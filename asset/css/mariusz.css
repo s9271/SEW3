@@ -265,6 +265,32 @@ button.btn.mar_button .glyphicon{
     padding: 0;
 }
 
+/* MISJE */
+#mission_list table select,
+#mission_list table .select2{
+    width: 100% !important;
+}
+
+#mission_list table{
+    table-layout: fixed;
+}
+
+#mission_list table .table_id{
+    width: 60px;
+}
+
+#mission_list table .table_rodzaj{
+    width: 200px;
+}
+
+#mission_list table .table_akcje {
+    width: 190px;
+}
+
+#mission_list table td{
+    word-wrap: break-word;
+}
+
 /* PODSTRONY ZOLNIERZA */
 .soldier_option_page{
     text-align: left;

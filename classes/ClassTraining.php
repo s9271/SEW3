@@ -129,6 +129,18 @@
             return $this->addCustomValidate();
         }
         
+        // dodatkowe wlasne walidacje podczas usuwania
+        public function deleteCustomValidate()
+        {
+            // sprawdzanie czy szkolenie jest powiazany z jakims zolnierzem
+            if(self::sqlCheckSoldiersHasTrainingById($this->id)){
+                $this->errors = "Do szkolenia przypisani są żołnierze.";
+                return false;
+            }
+            
+            return true;
+        }
+        
         // sprawdzanie czy wartosc sklada sie tylko z liczb
         public static function validIsInt($value){
             // 23424
@@ -166,6 +178,26 @@
             }
             
             return $sql;
+        }
+        
+        // sprawdzanie czy misja jest powiazana z jakims zolnierzem
+        public static function sqlCheckSoldiersHasTrainingById($id_training){
+            global $DB;
+            
+            $zapytanie = "SELECT COUNT(*) as count_soldiers
+                FROM `sew_soldier2trainings`
+                WHERE `deleted` = '0'
+                    AND `deleted_pernament` = '0'
+                    AND `id_training` = '{$id_training}'
+            ;";
+            
+            $sql = $DB->pdo_fetch($zapytanie);
+            
+            if(!$sql || !is_array($sql) || count($sql) < 1 || $sql['count_soldiers'] < 1){
+                return false;
+            }
+            
+            return true;
         }
     }
 ?>

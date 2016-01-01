@@ -16,6 +16,9 @@
                     <th class="table_status">Status</th>
                     <th class="table_akcje">Akcje</th>
                 </tr>
+                
+                <?php echo $this->getSearchForm(); ?>
+                
             </thead>
             <tbody>
                 <?php 
@@ -31,12 +34,17 @@
                     <td class="table_date_end"><?php echo $item['date_end_name']; ?></td>
                     <td class="table_status"><?php echo $item['status']; ?></td>
                     <td class="table_akcje">
-                        <form method="post" action="">
-                            <a href="/misje/podglad/<?php echo $item['id_mission']; ?>" class="btn btn-primary" title="Podgląd">Podgląd</a>
-                            <a href="/misje/edytuj/<?php echo $item['id_mission']; ?>" class="btn btn-warning" title="Edytuj">Edytuj</a>
+                    
+                        <form method="post">
                             <input type="hidden" name="id_mission" value="<?php echo $item['id_mission']; ?>" />
-                            <button class="btn btn-danger jsconfirm" data-confirm="<?php echo $item['name']; ?>: Czy na pewno chcesz usunąć misję?" type="submit" name="form_action" value="mission_delete">Usuń</button>
+                            
+                            <div class="btn-group btn-group-sm">
+                                <a href="/misje/podglad/<?php echo $item['id_mission']; ?>" class="btn btn-primary" title="Podgląd">Podgląd</a>
+                                <a href="/misje/edytuj/<?php echo $item['id_mission']; ?>" class="btn btn-warning" title="Edytuj">Edytuj</a>
+                                <button class="btn btn-danger jsconfirm" data-confirm="<?php echo $item['name']; ?>: Czy na pewno chcesz usunąć misję?" type="submit" name="form_action" value="mission_delete">Usuń</button>
+                            </div>
                         </form>
+                        
                     </td>
                 </tr>
                 <?php

@@ -3,6 +3,7 @@
         public static $use_prefix = true;
         protected static $has_deleted_column = true;
         protected static $is_log = true;
+        public static $is_search = true;
         
         // id
         public $id = false;
@@ -51,16 +52,16 @@
             'table' => 'missions',
             'primary' => 'id_mission',
             'fields' => array(
-                'id_mission_type' =>    array('required' => true, 'validate' => array('isInt'), 'name' => 'Rodzaj misji'),
-                'name' =>               array('required' => true, 'name' => 'Kryptonim Misji'),
-                'location' =>           array('required' => true, 'name' => 'Lokalizacja Misji'),
-                'description' =>        array('name' => 'Opis'),
-                'id_user' =>            array('required' => true, 'validate' => array('isInt'), 'name' => 'Użytkownik'),
-                'date_update' =>        array('required' => true, 'validate' => array('isDateTime'), 'name' => 'Data aktualizacji'),
-                'date_start' =>         array('required' => true, 'validate' => array('isDateTime'), 'name' => 'Data rozpoczęcia'),
-                'date_end' =>           array('validate' => array('isDateTime'), 'name' => 'Data zakończenia'),
-                'active' =>             array('validate' => array('isBool'), 'name' => 'Aktywny'),
-                'deleted' =>             array('validate' => array('isBool'), 'name' => 'Usunięty'),
+                'id_mission_type'   => array('required' => true, 'validate' => array('isInt'), 'name' => 'Rodzaj misji'),
+                'name'              => array('required' => true, 'name' => 'Kryptonim Misji'),
+                'location'          => array('required' => true, 'name' => 'Lokalizacja Misji'),
+                'description'       => array('name' => 'Opis'),
+                'id_user'           => array('required' => true, 'validate' => array('isInt'), 'name' => 'Użytkownik'),
+                'date_update'       => array('required' => true, 'validate' => array('isDateTime'), 'name' => 'Data aktualizacji'),
+                'date_start'        => array('required' => true, 'validate' => array('isDateTime'), 'name' => 'Data rozpoczęcia'),
+                'date_end'          => array('validate' => array('isDateTime'), 'name' => 'Data zakończenia'),
+                'active'            => array('validate' => array('isBool'), 'name' => 'Aktywny'),
+                'deleted'           => array('validate' => array('isBool'), 'name' => 'Usunięty'),
             ),
         );
         
@@ -76,7 +77,7 @@
         }
         
         // pobieranie rodzajow misji
-        public static function getTypes($id_current_type = false){
+        public static function getTypes(){
             if(!$groups = self::sqlGetGroups()){
                 return false;
             }
@@ -89,11 +90,7 @@
                 
                 if($types = self::sqlGetTypesByGroupId($group['id_mission_group'])){
                     foreach($types as $type){
-                        $array[$group['id_mission_group']]['childs'][$type['id_mission_type']]['name'] = $type['name'];
-                        
-                        if($id_current_type && $id_current_type == $type['id_mission_type']){
-                            $array[$group['id_mission_group']]['childs'][$type['id_mission_type']]['current'] = true;
-                        }
+                        $array[$group['id_mission_group']]['childs'][$type['id_mission_type']] = $type['name'];
                     }
                 }
             }
@@ -104,6 +101,40 @@
         // sprawdzanie czy misja istnieje
         public static function isMission($id_mission){
             return self::sqlMissionExist($id_mission);
+        }
+        
+        // dodatkowe wlasne walidacje podczas dodawania
+        public function addCustomValidate()
+        {
+            // sprawdza, czy data rozpoczecia nie jest mniejsza od daty zakonczenia
+            if($this->date_end !== NULL && self::validIsDateTime($this->date_start) && self::validIsDateTime($this->date_end)){
+                $date_start = date('Y-m-d H:i:s', strtotime($this->date_start));
+                $date_end = date('Y-m-d H:i:s', strtotime($this->date_end));
+                
+                if($date_start > $date_end){
+                    $this->errors[] = "Data rozpoczęcia jest większa od daty zakończenia.";
+                    return false;
+                }
+            }
+            
+            return true;
+        }
+        
+        // dodatkowe wlasne walidacje podczas aktualizowania
+        public function updateCustomValidate(){
+            return $this->addCustomValidate();
+        }
+        
+        // dodatkowe wlasne walidacje podczas usuwania
+        public function deleteCustomValidate()
+        {
+            // sprawdzanie czy misja jest powiazana z jakims zolnierzem
+            if(self::sqlCheckSoldiersHasMissionById($this->id)){
+                $this->errors = "Do misji przypisani są żołnierze.";
+                return false;
+            }
+            
+            return true;
         }
         
         /* **************** SQL *************** */
@@ -174,8 +205,8 @@
         }
         
         // pobieranie wszystkich rekordow
-        public static function sqlGetAllItems($using_pages = false, $current_page = '1', $items_on_page = '5'){
-            if($sql = parent::sqlGetAllItems($using_pages, $current_page, $items_on_page)){
+        public static function sqlGetAllItems($using_pages = false, $current_page = '1', $items_on_page = '5', $controller_search = ''){
+            if($sql = parent::sqlGetAllItems($using_pages, $current_page, $items_on_page, $controller_search)){
                 foreach($sql as $key => $val){
                     $sql[$key]['mission_type_name'] = self::sqlGetTypeNameId($val['id_mission_type']);
                     $sql[$key]['date_end_name'] = self::getDateEndNameByDateEnd($val['date_end']);
@@ -195,6 +226,26 @@
             $sql = $DB->pdo_fetch($zapytanie);
             
             if(!$sql || !is_array($sql) || count($sql) < 1){
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // sprawdzanie czy misja jest powiazana z jakims zolnierzem
+        public static function sqlCheckSoldiersHasMissionById($id_mission){
+            global $DB;
+            
+            $zapytanie = "SELECT COUNT(*) as count_soldiers
+                FROM `sew_soldier2missions`
+                WHERE `deleted` = '0'
+                    AND `deleted_pernament` = '0'
+                    AND `id_mission` = '{$id_mission}'
+            ;";
+            
+            $sql = $DB->pdo_fetch($zapytanie);
+            
+            if(!$sql || !is_array($sql) || count($sql) < 1 || $sql['count_soldiers'] < 1){
                 return false;
             }
             

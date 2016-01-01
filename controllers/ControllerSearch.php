@@ -58,9 +58,36 @@
                         $o .= '<input type="text" value="'.($search_session && isset($search_session[$column_name]) ? $search_session[$column_name] : '').'" name="'.$column_name.'" />';
                     break;
                     case 'select':
-                        if(isset($values['options']) && is_array($values['options']) && count($values['options']) > 0){
-                            $class_select = (isset($values['search']) && $values['search'] === true) ? 'jsselect' : 'jsselectnosearch';
+                        $class_select = (isset($values['search']) && $values['search'] === true) ? 'jsselect' : 'jsselectnosearch';
+                        
+                        if(isset($values['optgroup']) && is_array($values['optgroup']) && count($values['optgroup']) > 0)
+                        {
                             $o .= '<select name="'.$column_name.'" class="'.$class_select.'">';
+                            $o .= '<option value="">---</option>';
+                            
+                            foreach ($values['optgroup'] as $group)
+                            {
+                                $o .= '<optgroup label="'.$group['name'].'">';
+                                
+                                if (isset($group['childs']) && is_array($group['childs']) && count($group['childs']) > 0)
+                                {
+                                    foreach ($group['childs'] as $key_type => $type)
+                                    {
+                                        $selected = ($search_session && isset($search_session[$column_name]) && $search_session[$column_name] != '' && $search_session[$column_name] == $key_type ? ' selected="selected"' : '');
+                                        $o .= '<option value="'.$key_type.'"'.$selected.'>'.$type.'</option>';
+                                    }
+                                }
+                                
+                                $o .= '</optgroup>';
+                            }
+                            
+                            $o .= '</select>';
+                                
+                        }
+                        elseif(isset($values['options']) && is_array($values['options']) && count($values['options']) > 0)
+                        {
+                            $o .= '<select name="'.$column_name.'" class="'.$class_select.'">';
+                            
                             $o .= '<option value="">---</option>';
                             
                             foreach($values['options'] as $option_key => $option_value){

@@ -58,6 +58,7 @@
         </div>
         
         <?php if(isset($this->tpl_values['log']) && $this->tpl_values['log']): ?>
+        
         <div id="log_table" class="sew-row clearfix">
             <div class="clearfix col-sm-offset-2 col-sm-8 no_padding">
                 <h1 class="controller_title">Daty ostatnich zmian:</h1>
@@ -76,6 +77,7 @@
                             <td><?php echo $this->tpl_values['user']['id_user']; ?></td>
                             <td><?php echo $this->tpl_values['user']['name'].' '.$this->tpl_values['user']['surname']; ?></td>
                         </tr>
+                        
                     <?php foreach($this->tpl_values['log'] as $item_log): ?>
                         <tr>
                             <td><?php echo $item_log['date_update']; ?></td>
@@ -83,10 +85,12 @@
                             <td><?php echo $item_log['name'].' '.$item_log['surname']; ?></td>
                         </tr>
                     <?php endforeach; ?>
+                    
                     </tbody>
                 </table>
             </div>
         </div>
         <?php endif; ?>
+        
     </div>
 </div>

@@ -58,6 +58,7 @@
         
         // dodatkowe wlasne walidacje podczas usuwania
         public function deleteCustomValidate(){
+            // sprawdzanie czy centrum szkolenia jest juz powiazane z jakims szkoleniem
             if(self::sqlCheckTrainingsHasCenterById($this->id)){
                 $this->errors = "Do Centrum szkolenia są przypisane szkolenia.";
                 return false;
@@ -86,7 +87,6 @@
         // sprawdzanie czy centrum szkolenia jest przypisane do szkolenia
         public static function sqlCheckTrainingsHasCenterById($id_training_centre){
             global $DB;
-            $table_name = (self::$use_prefix ? self::$prefix : '').'trainings';
             
             $zapytanie = "SELECT COUNT(*) as count_trainings
                 FROM `sew_trainings`

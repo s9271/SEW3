@@ -29,13 +29,13 @@
                     <select class="form-control input-sm jsselect" id="form_type" name="form_type" required="required">
                         <option value="">Wybierz</option>
                         <?php
-                            if (isset($this->tpl_values['form_type'])){
-                                foreach ($this->tpl_values['form_type'] as $group) {
+                            if (isset($this->tpl_values['form_types'])){
+                                foreach ($this->tpl_values['form_types'] as $group) {
                                     echo '<optgroup label="'.$group['name'].'">';
                                     
                                     if (isset($group['childs']) && is_array($group['childs']) && count($group['childs']) > 0){
                                         foreach ($group['childs'] as $key_type => $type) {
-                                            echo '<option value="'.$key_type.'"'.((isset($type['current']) && $type['current'] === true) ? ' selected="selected"' : '').'>'.$type['name'].'</option>';
+                                            echo '<option value="'.$key_type.'"'.((isset($this->tpl_values['form_type']) && $this->tpl_values['form_type'] == $key_type) ? ' selected="selected"' : '').'>'.$type.'</option>';
                                         }
                                     }
                                     
@@ -105,13 +105,17 @@
             <div class="form-group">
                 <div class="col-sm-offset-2 control-label col-sm-8">
                     <a href="/misje" class="btn btn-info mar_button"><span class="glyphicon glyphicon-chevron-left"></span>Lista</a>
+                    
                     <?php if($this->tpl_values['sew_action'] == 'add'){ ?>
                         <button class="btn btn-success mar_button" type="submit" name="form_action" value="mission_add"><span class="glyphicon glyphicon-plus"></span>Dodaj</button>
+                        
                     <?php }elseif($this->tpl_values['sew_action'] == 'edit'){ ?>
                         <input type="hidden" name="id_mission" value="<?php echo $this->tpl_values['id_mission']; ?>" />
                         <a class="btn btn-primary" title="Podgląd" href="/misje/podglad/<?php echo $this->tpl_values['id_mission']; ?>">Podgląd</a>
                         <button class="btn btn-success mar_button" type="submit" name="form_action" value="mission_save"><span class="glyphicon glyphicon-floppy-disk"></span>Zapisz</button>
+                        
                     <?php } ?>
+                    
                 </div>
             </div>
         </form>

@@ -1,5 +1,11 @@
 <?php
     class ControllerMissions extends ControllerModel{
+        protected $search_controller = 'misje';
+        
+        public function __construct(){
+            $this->search_definition = $this->getSearchDefinition();
+        }
+        
         // funkcja ktora jest pobierana w indexie, jest wymagana w kazdym kontrolerze!!!!!
         public function getContent(){
             return $this->getPage();
@@ -33,22 +39,24 @@
         
         // strona lista misjii
         protected function getPageList(){
+            $this->searchActions();
             $this->actions();
             
             // strony
             $this->controller_name = 'misje';
             $this->using_pages = true;
-            $this->count_items = ClassMission::sqlGetCountItems();
+            $this->count_items = ClassMission::sqlGetCountItems($this->search_controller);
             $this->current_page = ClassTools::getValue('page') ? ClassTools::getValue('page') : '1';
             
             // tytul strony
             $this->tpl_title = 'Misja: Lista';
             
             // ladowanie funkcji
+            $this->load_select2 = true;
             $this->load_js_functions = true;
             
             // pobieranie wszystkich rekordow
-            $this->tpl_values = ClassMission::sqlGetAllItems($this->using_pages, $this->current_page, $this->items_on_page);
+            $this->tpl_values = ClassMission::sqlGetAllItems($this->using_pages, $this->current_page, $this->items_on_page, $this->search_controller);
             
             // ladowanie strony z lista misji
             return $this->loadTemplate('/mission/list');
@@ -57,12 +65,6 @@
         // strona dodawania
         protected function getPageAdd(){
             $this->actions();
-            
-            $id_current_type = false;
-            
-            if(isset($_POST['form_type']) && $_POST['form_type'] != ''){
-                $id_current_type = $_POST['form_type'];
-            }
             
             // tytul strony
             $this->tpl_title = 'Misja: Dodaj';
@@ -73,7 +75,7 @@
             $this->load_js_functions = true;
             
             // ladowanie rodzajow misjii
-            $this->tpl_values['form_type'] = ClassMission::getTypes($id_current_type);
+            $this->tpl_values['form_types'] = ClassMission::getTypes();
             
             // zmienna ktora decyduje co formularz ma robic
             $this->tpl_values['sew_action'] = 'add';
@@ -100,10 +102,10 @@
             $this->actions();
             
             // ladowanie klasy i misji
-            $mission = new ClassMission($id_item);
+            $item = new ClassMission($id_item);
             
             // sprawdzanie czy misja zostala poprawnie zaladowana
-            if(!$mission->load_class){
+            if(!$item->load_class){
                 $this->alerts['danger'] = 'Misja nie istnieje';
                 
                 // ladowanie strony do wyswietlania bledow
@@ -119,19 +121,26 @@
             $this->load_select2 = true;
             $this->load_js_functions = true;
             
-            // rodzaje misji
-            $this->tpl_values['form_type'] = ClassMission::getTypes((isset($_POST['form_type']) ? $_POST['form_type'] : $mission->id_mission_type));
+            // zmienna ktora decyduje co formularz ma robic
             $this->tpl_values['sew_action'] = 'edit';
             
-            // values
-            // prypisanie zmiennych z wyslanego formularza, a jezeli nie istnieja przypisze pobrane z klasy
-            $this->tpl_values['id_mission'] = $mission->id;
-            $this->tpl_values['form_name'] = (isset($_POST['form_name']) ? $_POST['form_name'] : $mission->name);
-            $this->tpl_values['form_location'] = (isset($_POST['form_location']) ? $_POST['form_location'] : $mission->location);
-            $this->tpl_values['form_description'] = (isset($_POST['form_description']) ? $_POST['form_description'] : $mission->description);
-            $this->tpl_values['form_date_start'] = (isset($_POST['form_date_start']) ? $_POST['form_date_start'] : ClassMission::getPlDate($mission->date_start));
-            $this->tpl_values['form_date_end'] = (isset($_POST['form_date_end']) ? $_POST['form_date_end'] : ClassMission::getPlDate($mission->date_end));
-            $this->tpl_values['form_active'] = (isset($_POST['form_active']) ? $_POST['form_active'] : $mission->active);
+            // rodzaje misji
+            $this->tpl_values['form_types'] = ClassMission::getTypes();
+            
+            // przypisanie zmiennych formularza do zmiennych klasy
+            $array_form_class = array(
+                'id_mission'            => $item->id,
+                'form_type'             => $item->id_mission_type,
+                'form_name'             => $item->name,
+                'form_location'         => $item->location,
+                'form_description'      => $item->description,
+                'form_date_start'       => ClassMission::getPlDate($item->date_start),
+                'form_date_end'         => ClassMission::getPlDate($item->date_end),
+                'form_active'           => $item->active
+            );
+            
+            // przypisywanieszych zmiennych do zmiennych formularza
+            $this->setValuesTemplateByArrayPost($array_form_class);
             
             // ladowanie strony z formularzem
             return $this->loadTemplate('/mission/form');
@@ -187,11 +196,59 @@
             $this->tpl_values['date_update'] = $mission->date_update;
             
             $this->tpl_values['log'] = $mission->sqlGetLogItem();
+            $this->tpl_values['user'] = ClassUser::sqlGetNameSurnameById($mission->id_user);
             
             // print_r($this->tpl_values['log']);
             
             // ladowanie strony z formularzem
             return $this->loadTemplate('/mission/view');
+        }
+        
+        /* ************ WYSZUKIWARKA *********** */
+        /* ************************************* */
+        
+        protected function getSearchDefinition()
+        {
+            // ladowanie rodzajow misjii
+            $types = ClassMission::getTypes();
+            
+            $form_values = array(
+                'class' => 'ClassMission',
+                'controller' => $this->search_controller,
+                'form' => array(
+                    'id_mission' => array(
+                        'class' => 'table_id',
+                        'type' => 'text'
+                    ),
+                    'name' => array(
+                        'class' => 'table_name',
+                        'type' => 'text'
+                    ),
+                    'id_mission_type' => array(
+                        'class' => 'table_rodzaj',
+                        'type' => 'select',
+                        'optgroup' => $types
+                    ),
+                    'location' => array(
+                        'class' => 'table_lokalizacja',
+                        'type' => 'text'
+                    ),
+                    'date_start' => array(
+                        'class' => 'table_date_start',
+                    ),
+                    'date_end' => array(
+                        'class' => 'table_date_end',
+                    ),
+                    'status' => array(
+                        'class' => 'table_status'
+                    ),
+                    'actions' => array(
+                        'class' => 'table_akcje'
+                    )
+                )
+            );
+            
+            return $form_values;
         }
         
         /* *************** AKCJE ************** */
@@ -203,10 +260,10 @@
                 return;
             }
             
-            print_r($_POST);
+            // print_r($_POST);
             
             // przypisanie zmiennych posta do zmiennych template
-            $this->tpl_values = $_POST;
+            $this->tpl_values = $this->setValuesTemplateByPost();
             
             switch($_POST['form_action']){
                 case 'mission_add':
@@ -224,38 +281,29 @@
         }
         
         // dodawanie
-        protected function add(){
-            $mission = new ClassMission();
-            $mission->id_mission_type = $_POST['form_type'];
-            $mission->name = $_POST['form_name'];
-            $mission->location = $_POST['form_location'];
-            $mission->description = $_POST['form_description'];
-            // $mission->id_user = ClassAuth::getCurrentUserId();
-            $mission->id_user = '1';
-            $mission->date_start = $_POST['form_date_start'];
-            $mission->date_end = $_POST['form_date_end'] != '' ? $_POST['form_date_end'] : NULL;
-            $mission->active = (isset($_POST['form_active']) && $_POST['form_active'] == '1') ? '1' : '0';
-            $mission->deleted = '0';
+        protected function add()
+        {
+            $active = ClassTools::getValue('form_active');
+            $form_date_end = ClassTools::getValue('form_date_end');
             
-            // custom - dodatkowy warunek odnosnie dat
-            // sprawdza, czy data rozpoczecia nie jest mniejsza niz data zakonczenia
-            if($mission->date_end != NULL && ClassMission::validIsDateTime($mission->date_start) && ClassMission::validIsDateTime($mission->date_end)){
-                $date_start = date('Y-m-d H:i:s', strtotime($mission->date_start));
-                $date_end = date('Y-m-d H:i:s', strtotime($mission->date_end));
-                
-                if($date_start > $date_end){
-                    $mission->errors[] = "Data rozpoczęcia misji jest większa od daty końca misji.";
-                }
-            }
+            $item = new ClassMission();
+            $item->name = ClassTools::getValue('form_name');
+            $item->id_mission_type = ClassTools::getValue('form_type');
+            $item->location = ClassTools::getValue('form_location');
+            $item->description = ClassTools::getValue('form_description');
+            $item->date_start = ClassTools::getValue('form_date_start');
+            $item->date_end = $form_date_end != '' ? $form_date_end : NULL;
+            $item->id_user = ClassAuth::getCurrentUserId();
+            $item->active = ($active && $active == '1') ? '1' : '0';
             
             // komunikaty bledu
-            if(!$mission->add()){
-                $this->alerts['danger'] = $mission->errors;
+            if(!$item->add()){
+                $this->alerts['danger'] = $item->errors;
                 return;
             }
             
             // komunikat sukcesu
-            $this->alerts['success'] = "Poprawnie dodano nową misję: <b>{$mission->name}</b>";
+            $this->alerts['success'] = "Poprawnie dodano nową misję: <b>{$item->name}</b>";
             
             // czyszczeie zmiennych wyswietlania
             $this->tpl_values = '';
@@ -279,6 +327,7 @@
                 }else{
                     // bledy w przypadku problemow z usunieciem misji
                     $this->alerts['danger'] = $mission->errors;
+                    return;
                 }
             }
             
@@ -288,47 +337,37 @@
             return;
         }
         
-        // usuwanie
-        protected function edit(){
-            // ladowanie klasy i misji
-            $mission = new ClassMission($_POST['id_mission']);
+        // edycja
+        protected function edit()
+        {
+            // ladowanie klasy
+            $item = new ClassMission(ClassTools::getValue('id_mission'));
             
             // sprawdza czy klasa zostala poprawnie zaladowana
-            if(!$mission->load_class){
+            if(!$item->load_class){
                 $this->alerts['danger'] = "Misja nie istnieje.";
             }
             
-            // przypisanie zmiennych wyslanych z formularza do danych w klasie
-            $mission->id_mission_type = $_POST['form_type'];
-            $mission->name = $_POST['form_name'];
-            $mission->location = $_POST['form_location'];
-            $mission->description = $_POST['form_description'];
-            // $mission->id_user = ClassAuth::getCurrentUserId();
-            $mission->id_user = '999';
-            $mission->date_start = $_POST['form_date_start'];
-            $mission->date_end = $_POST['form_date_end'] != '' ? $_POST['form_date_end'] : NULL;
-            $mission->active = (isset($_POST['form_active']) && $_POST['form_active'] == '1') ? '1' : '0';
-            $mission->deleted = '0';
+            $active = ClassTools::getValue('form_active');
+            $form_date_end = ClassTools::getValue('form_date_end');
             
-            // custom - dodatkowy warunek odnosnie dat
-            // sprawdza, czy data rozpoczecia nie jest mniejsza niz data zakonczenia
-            if($mission->date_end != NULL && ClassMission::validIsDateTime($mission->date_start) && ClassMission::validIsDateTime($mission->date_end)){
-                $date_start = date('Y-m-d H:i:s', strtotime($mission->date_start));
-                $date_end = date('Y-m-d H:i:s', strtotime($mission->date_end));
-                
-                if($date_start > $date_end){
-                    $mission->errors[] = "Data rozpoczęcia misji jest większa od daty końca misji.";
-                }
-            }
+            $item->name = ClassTools::getValue('form_name');
+            $item->id_mission_type = ClassTools::getValue('form_type');
+            $item->location = ClassTools::getValue('form_location');
+            $item->description = ClassTools::getValue('form_description');
+            $item->date_start = ClassTools::getValue('form_date_start');
+            $item->date_end = $form_date_end != '' ? $form_date_end : NULL;
+            $item->id_user = ClassAuth::getCurrentUserId();
+            $item->active = ($active && $active == '1') ? '1' : '0';
             
-            // komunikaty
-            if(!$mission->update()){
-                $this->alerts['danger'] = $mission->errors;
+            // komunikaty bledu
+            if(!$item->update()){
+                $this->alerts['danger'] = $item->errors;
                 return;
             }
             
             // komunikat
-            $this->alerts['success'] = "Poprawnie zaktualizowano misję: <b>{$mission->name}</b>";
+            $this->alerts['success'] = "Poprawnie zaktualizowano misję: <b>{$item->name}</b>";
             
             // czyszczeie zmiennych wyswietlania
             $this->tpl_values = '';

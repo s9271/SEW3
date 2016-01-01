@@ -37,7 +37,7 @@
             return $this->getPageList();
         }
         
-        // strona lista misjii
+        // strona lista
         protected function getPageList(){
             $this->searchActions();
             $this->actions();
@@ -58,7 +58,7 @@
             // pobieranie wszystkich rekordow
             $this->tpl_values = ClassTraining::sqlGetAllItems($this->using_pages, $this->current_page, $this->items_on_page, $this->search_controller);
             
-            // ladowanie strony z lista misji
+            // ladowanie strony z lista
             return $this->loadTemplate('/training/list');
         }
         
@@ -148,7 +148,7 @@
         
         // strona podgladu
         protected function getPageView(){
-            // zmienne wyswietlania na wypadek gdy strona z misja nie istnieje
+            // zmienne wyswietlania na wypadek gdy strona nie istnieje
             $this->tpl_values['wstecz'] = '/szkolenia';
             $this->tpl_values['title'] = 'Podgląd szkolenia';
             
@@ -187,8 +187,8 @@
             $this->tpl_values['form_code'] = $item->code;
             $this->tpl_values['form_training_center'] = $item->training_center_name;
             $this->tpl_values['form_description'] = ClassTools::nl2br($item->description);
-            $this->tpl_values['form_date_start'] = ClassMission::getPlDate($item->date_start);
-            $this->tpl_values['form_date_end'] = ClassMission::getPlDate($item->date_end);
+            $this->tpl_values['form_date_start'] = ClassTraining::getPlDate($item->date_start);
+            $this->tpl_values['form_date_end'] = ClassTraining::getPlDate($item->date_end);
             $this->tpl_values['form_active'] = $item->active;
             $this->tpl_values['status'] = $item->status;
             $this->tpl_values['date_update'] = $item->date_update;
