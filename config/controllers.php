@@ -20,5 +20,6 @@
     $controllers['odznaczenia']      = array('controller' => 'ControllerBadges', 'permissions' => array('1'));
     $controllers['404']              = array('controller' => 'Controller404', 'permissions' => array('1', '2'));
     $controllers['centra-szkolen']   = array('controller' => 'ControllerTrainingCenters', 'permissions' => array('1', '2'));
+    $controllers['typy-wyposazenia'] = array('controller' => 'ControllerEquipmentTypes', 'permissions' => array('1', '2'));
     $controllers['login']            = array('controller' => 'ControllerLogin');
 ?>

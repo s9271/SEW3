@@ -51,7 +51,7 @@
             // $this->items_on_page = 20;
             $this->count_items = ClassUser::sqlGetCountItems($this->search_controller);
             // print_r($this->count_items);
-            $this->current_page = ClassTools::getValue('page') ? ClassTools::getValue('page') : '1';
+            $this->current_page = ClassTools::getValue('number_page') ? ClassTools::getValue('number_page') : '1';
             
             // tytul strony
             $this->tpl_title = 'Użytkownicy: Lista';

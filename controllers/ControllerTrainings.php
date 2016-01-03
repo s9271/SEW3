@@ -46,7 +46,7 @@
             $this->controller_name = 'szkolenia';
             $this->using_pages = true;
             $this->count_items = ClassTraining::sqlGetCountItems($this->search_controller);
-            $this->current_page = ClassTools::getValue('page') ? ClassTools::getValue('page') : '1';
+            $this->current_page = ClassTools::getValue('number_page') ? ClassTools::getValue('number_page') : '1';
             
             // tytul strony
             $this->tpl_title = 'Szkolenia: Lista';

@@ -529,3 +529,40 @@ table tr.form_search td.table_akcje{
 #training_list table tbody td.table_id{
     text-align: center;
 }
+
+/* EKWIPUNEK */
+#equipment_type_list table{
+    table-layout: fixed;
+    text-align: left;
+    width: 100%;
+}
+
+#equipment_type_list table td{
+    vertical-align: middle;
+    word-wrap: break-word;
+}
+
+#equipment_type_list table .table_id{
+    width: 60px;
+}
+
+#equipment_type_list table tbody td.table_akcje,
+#equipment_type_list table tbody td.table_id{
+    text-align: center;
+}
+
+#equipment_type_list table .table_status{
+    width: 100px;
+}
+
+#equipment_type_list table .table_akcje{
+    width: 205px;
+}
+
+#equipment_type_list.childs table .table_akcje{
+    width: 130px;
+}
+
+#equipment_type_form{
+    text-align: left;
+}

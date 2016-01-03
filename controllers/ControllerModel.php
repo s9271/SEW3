@@ -122,7 +122,7 @@
         }
         
         // wyswietlanie stron
-        private function getPages(){
+        protected function getPages(){
             if(!$this->using_pages || $this->count_items <= $this->items_on_page){
                 return;
             }

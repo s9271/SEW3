@@ -1,11 +1,5 @@
 <?php
-    class ControllerTrainingCenters extends ControllerModel{
-        protected $search_controller = 'centra-szkolen';
-        
-        public function __construct(){
-            $this->search_definition = $this->getSearchDefinition();
-        }
-        
+    class ControllerEquipmentTypes extends ControllerCategoryModel{
         // funkcja ktora jest pobierana w indexie, jest wymagana w kazdym kontrolerze!!!!!
         public function getContent(){
             return $this->getPage();
@@ -16,6 +10,7 @@
         
         // pobieranie strony
         protected function getPage(){
+            // print_r($_GET);
             // sprawdzanie czy jest sie na podstronie
             if($page_action = ClassTools::getValue('page_action')){
                 switch($page_action){
@@ -26,10 +21,6 @@
                     case 'edytuj':
                         // ladowanie strony z formularzem
                         return $this->getPageEdit();
-                    break;
-                    case 'podglad':
-                        // ladowanie strony z podgladem
-                        return $this->getPageView();
                     break;
                 }
             }
@@ -42,49 +33,66 @@
             $this->searchActions();
             $this->actions();
             
+            // aktualna strona kategorii
+            $page = ClassTools::getValue('page') ? ClassTools::getValue('page') : NULL;
+            
             // strony
-            $this->controller_name = 'centra-szkolen';
+            $this->controller_name = 'typy-wyposazenia';
             $this->using_pages = true;
-            $this->count_items = ClassTrainingCenter::sqlGetCountItems($this->search_controller);
+            $this->count_items = ClassEquipmentType::sqlGetCountItemsById($page);
             $this->current_page = ClassTools::getValue('number_page') ? ClassTools::getValue('number_page') : '1';
             
             // tytul strony
-            $this->tpl_title = 'Centra szkoleń: Lista';
+            $this->tpl_title = 'Typy wyposażenia: Lista';
             
             // ladowanie funkcji
-            $this->load_select2 = true;
             $this->load_js_functions = true;
             
             // pobieranie wszystkich rekordow
-            $this->tpl_values = ClassTrainingCenter::sqlGetAllItems($this->using_pages, $this->current_page, $this->items_on_page, $this->search_controller);
+            $this->tpl_values['items'] = ClassEquipmentType::sqlGetAllItemsById($page, false, $this->using_pages, $this->current_page, $this->items_on_page);
+            
+            // dodatkowe zmienne dla listy kategorii
+            $this->tpl_values['list_page'] = $page;
+            $this->tpl_values['list_page_name'] = $page === NULL ? '' : ' <b>'.ClassEquipmentType::sqlGetItemNameByIdParent($page).'</b>';
             
             // ladowanie strony z lista
-            return $this->loadTemplate('/training/centres-list');
+            return $this->loadTemplate('/equipment/types-list');
         }
         
         // strona dodawania
         protected function getPageAdd(){
+            // aktualna strona kategorii
+            $page = ClassTools::getValue('page') ? ClassTools::getValue('page') : NULL;
+            
             $this->actions();
             
             // tytul strony
-            $this->tpl_title = 'Centra szkoleń: Dodaj';
+            $this->tpl_title = 'Typ wyposażenia: Dodaj';
             
             // ladowanie pluginow
             $this->load_select2 = true;
             $this->load_js_functions = true;
             
+            // ladowanie glownych kategorii
+            $this->tpl_values['parent_categories'] = ClassEquipmentType::sqlGetAllItemsById(NULL);
+            
             // zmienna ktora decyduje co formularz ma robic
             $this->tpl_values['sew_action'] = 'add';
             
+            // dodatkowe zmienne dla listy kategorii
+            $form_parent = ClassTools::getValue('form_parent');
+            $this->tpl_values['list_page'] = $page;
+            $this->tpl_values['form_parent'] = $form_parent ? $form_parent : ($page === NULL ? false : $page);
+            
             // ladowanie strony z formularzem
-            return $this->loadTemplate('/training/centres-form');
+            return $this->loadTemplate('/equipment/types-form');
         }
         
         // strona edycji
         protected function getPageEdit(){
             // zmienne wyswietlania na wypadek gdy strona nie istnieje
-            $this->tpl_values['wstecz'] = '/centra-szkolen';
-            $this->tpl_values['title'] = 'Edycja centrum szkolenia';
+            $this->tpl_values['wstecz'] = '/typy-wyposazenia';
+            $this->tpl_values['title'] = 'Edycja typu wyposażenia';
             
             // sprawdzanie czy id istnieje w linku
             if(!$id_item = ClassTools::getValue('id_item')){
@@ -98,11 +106,11 @@
             $this->actions();
             
             // ladowanie klasy
-            $item = new ClassTrainingCenter($id_item);
+            $item = new ClassEquipmentType($id_item);
             
-            // sprawdzanie czy item zostal poprawnie zaladowany
+            // sprawdzanie czy klasa zostala poprawnie zaladowana
             if(!$item->load_class){
-                $this->alerts['danger'] = 'Centrum szkolenia nie istnieje';
+                $this->alerts['danger'] = 'Typ wyposażenia nie istnieje';
                 
                 // ladowanie strony do wyswietlania bledow
                 // zmienne ktore mozna uzyc: wstecz, title oraz alertow
@@ -110,65 +118,34 @@
             }
             
             // tytul
-            $this->tpl_title = 'Centra szkoleń: Edycja';
+            $this->tpl_title = 'Typ wyposażenia: Edycja';
             
             // skrypty
             $this->load_select2 = true;
             $this->load_js_functions = true;
+            
+            // ladowanie glownych kategorii
+            $this->tpl_values['parent_categories'] = ClassEquipmentType::sqlGetAllItemsById(NULL, $item->id);
             
             // zmienna ktora decyduje co formularz ma robic
             $this->tpl_values['sew_action'] = 'edit';
             
             // przypisanie zmiennych formularza do zmiennych klasy
             $array_form_class = array(
-                'id_training_centre' => $item->id,
-                'form_name' => $item->name,
-                'form_location' => $item->location,
-                'form_active' => $item->active
+                'id_equipment_type'     => $item->id,
+                'form_parent'           => $item->id_parent,
+                'form_name'             => $item->name,
+                'form_active'           => $item->active
             );
             
             // przypisywanieszych zmiennych do zmiennych formularza
             $this->setValuesTemplateByArrayPost($array_form_class);
             
-            // ladowanie strony z formularzem
-            return $this->loadTemplate('/training/centres-form');
-        }
-        
-        /* ************ WYSZUKIWARKA *********** */
-        /* ************************************* */
-        
-        protected function getSearchDefinition(){
-            $form_values = array(
-                'class' => 'ClassTrainingCenter',
-                'controller' => $this->search_controller,
-                'form' => array(
-                    'id_training_centre' => array(
-                        'class' => 'table_id',
-                        'type' => 'text'
-                    ),
-                    'name' => array(
-                        'class' => 'table_name',
-                        'type' => 'text'
-                    ),
-                    'location' => array(
-                        'class' => 'table_location',
-                        'type' => 'text'
-                    ),
-                    'active' => array(
-                        'class' => 'table_status',
-                        'type' => 'select',
-                        'options' => array(
-                            '0' => 'Wyłączony',
-                            '1' => 'Włączony',
-                        )
-                    ),
-                    'actions' => array(
-                        'class' => 'table_akcje'
-                    )
-                )
-            );
+            // dodatkowe zmienne dla listy kategorii
+            $this->tpl_values['list_page'] = $item->id_parent;
             
-            return $form_values;
+            // ladowanie strony z formularzem
+            return $this->loadTemplate('/equipment/types-form');
         }
         
         /* *************** AKCJE ************** */
@@ -180,19 +157,19 @@
                 return;
             }
             
-            // print_r($_POST);
+            print_r($_POST);
             
             // przypisanie zmiennych posta do zmiennych template
             $this->tpl_values = $this->setValuesTemplateByPost();
             
             switch($_POST['form_action']){
-                case 'training_centre_add':
+                case 'equipment_type_add':
                     return $this->add(); // dodawanie
                 break;
-                case 'training_centre_delete':
+                case 'equipment_type_delete':
                     return $this->delete(); // usuwanie
                 break;
-                case 'training_centre_save':
+                case 'equipment_type_save':
                     return $this->edit(); // edycja
                 break;
             }
@@ -204,10 +181,11 @@
         protected function add()
         {
             $active = ClassTools::getValue('form_active');
+            $form_parent = ClassTools::getValue('form_parent');
             
-            $item = new ClassTrainingCenter();
+            $item = new ClassEquipmentType();
             $item->name = ClassTools::getValue('form_name');
-            $item->location = ClassTools::getValue('form_location');
+            $item->id_parent = $form_parent != '' && is_numeric($form_parent) ? $form_parent : NULL;
             $item->id_user = ClassAuth::getCurrentUserId();
             $item->active = ($active && $active == '1') ? '1' : '0';
             
@@ -218,7 +196,7 @@
             }
             
             // komunikat sukcesu
-            $this->alerts['success'] = "Poprawnie dodano nowe centrum szkolenia: <b>{$item->name}</b>";
+            $this->alerts['success'] = "Poprawnie dodano nowy typ wyposażenia: <b>{$item->name}</b>";
             
             // czyszczeie zmiennych wyswietlania
             $this->tpl_values = '';
@@ -230,27 +208,23 @@
         // usuwanie
         protected function delete(){
             // ladowanie klasy
-            $item = new ClassTrainingCenter(ClassTools::getValue('id_training_centre'));
+            $item = new ClassEquipmentType(ClassTools::getValue('id_equipment_type'));
             
             // sprawdza czy klasa zostala poprawnie zaladowana
-            if($item->load_class)
-            {
+            if($item->load_class){
                 // usuwanie
-                if($item->delete())
-                {
+                if($item->delete()){
                     // komunikat
-                    $this->alerts['success'] = "Poprawnie usunięto centrum szkolenia: <b>{$item->name}</b>.";
+                    $this->alerts['success'] = "Poprawnie usunięto typ wyposażenia: <b>{$item->name}</b>";
                     return;
-                }
-                else
-                {
+                }else{
                     // bledy w przypadku problemow z usunieciem
                     $this->alerts['danger'] = $item->errors;
                     return;
                 }
             }
             
-            $this->alerts['danger'] = 'Centrum szkolenia nie istnieje.';
+            $this->alerts['danger'] = 'Typ wyposażenia nie istnieje';
             $_POST = array();
             
             return;
@@ -260,17 +234,18 @@
         protected function edit()
         {
             // ladowanie klasy
-            $item = new ClassTrainingCenter(ClassTools::getValue('id_training_centre'));
+            $item = new ClassEquipmentType(ClassTools::getValue('id_equipment_type'));
             
             // sprawdza czy klasa zostala poprawnie zaladowana
             if(!$item->load_class){
-                $this->alerts['danger'] = "Centrum szkolenia nie istnieje.";
+                $this->alerts['danger'] = "Typ wyposażenia nie istnieje.";
             }
             
             $active = ClassTools::getValue('form_active');
+            $form_parent = ClassTools::getValue('form_parent');
             
             $item->name = ClassTools::getValue('form_name');
-            $item->location = ClassTools::getValue('form_location');
+            $item->id_parent = $form_parent != '' && is_numeric($form_parent) ? $form_parent : NULL;
             $item->id_user = ClassAuth::getCurrentUserId();
             $item->active = ($active && $active == '1') ? '1' : '0';
             
@@ -281,7 +256,7 @@
             }
             
             // komunikat
-            $this->alerts['success'] = "Poprawnie zaktualizowano centrum szkolenia: <b>{$item->name}</b>";
+            $this->alerts['success'] = "Poprawnie zaktualizowano typ wydażenia: <b>{$item->name}</b>";
             
             // czyszczeie zmiennych wyswietlania
             $this->tpl_values = '';

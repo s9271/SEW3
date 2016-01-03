@@ -89,6 +89,16 @@
                     <li><a href="/equipment.php"><span class="glyphicon glyphicon-plus"></span>&emsp;&emsp;Dodaj Uzbrojenie</a></li>
                     <li><a href="/equipment.php?action=list"><span class="glyphicon glyphicon-list-alt"></span>&emsp;&emsp;Pokaż Uzbrojenie</a></li>
                   </ul>
+              
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="/typy-wyposazenia">
+                        <span class="glyphicon glyphicon-move"></span>&emsp;&emsp;Typy wyposażenia<span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu sidebar-nav">
+                        <li><a href="/typy-wyposazenia/dodaj"><span class="glyphicon glyphicon-plus"></span>&emsp;&emsp;Dodaj typ wyposażenia</a></li>
+                        <li><a href="/typy-wyposazenia"><span class="glyphicon glyphicon-list-alt"></span>&emsp;&emsp;Pokaż typy wyposażenia</a></li>
+                    </ul>
+                </li>
 
               </li>
               <li class="dropdown">
