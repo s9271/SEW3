@@ -84,7 +84,7 @@
         }
         
         // pobieranie wszystkich rekordow
-        public static function sqlGetAllItemsById($id_page, $without_id = false, $using_pages = false, $current_page = '1', $items_on_page = '5'){
+        public static function sqlGetAllItemsById($id_page, $without_id = false, $active = false, $using_pages = false, $current_page = '1', $items_on_page = '5'){
             global $DB;
             $table_name = (static::$use_prefix ? static::$prefix : '').static::$definition['table'];
             $id = static::$definition['primary'];
@@ -100,6 +100,10 @@
             
             if(static::$has_deleted_column){
                 $where = " AND `deleted` = '0'";
+            }
+            
+            if($active){
+                $where .= " AND `active` = '1'";
             }
             
             if($without_id){

@@ -55,7 +55,7 @@
                 
                 switch($type){
                     case 'text':
-                        $o .= '<input type="text" value="'.($search_session && isset($search_session[$column_name]) ? $search_session[$column_name] : '').'" name="'.$column_name.'" />';
+                        $o .= '<input type="text" value="'.($search_session && isset($search_session[$column_name]) ? htmlspecialchars($search_session[$column_name]) : '').'" name="'.$column_name.'" />';
                     break;
                     case 'select':
                         $class_select = (isset($values['search']) && $values['search'] === true) ? 'jsselect' : 'jsselectnosearch';
@@ -67,14 +67,14 @@
                             
                             foreach ($values['optgroup'] as $group)
                             {
-                                $o .= '<optgroup label="'.$group['name'].'">';
+                                $o .= '<optgroup label="'.htmlspecialchars($group['name']).'">';
                                 
                                 if (isset($group['childs']) && is_array($group['childs']) && count($group['childs']) > 0)
                                 {
                                     foreach ($group['childs'] as $key_type => $type)
                                     {
                                         $selected = ($search_session && isset($search_session[$column_name]) && $search_session[$column_name] != '' && $search_session[$column_name] == $key_type ? ' selected="selected"' : '');
-                                        $o .= '<option value="'.$key_type.'"'.$selected.'>'.$type.'</option>';
+                                        $o .= '<option value="'.$key_type.'"'.$selected.'>'.htmlspecialchars($type).'</option>';
                                     }
                                 }
                                 

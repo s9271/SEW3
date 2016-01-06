@@ -1,5 +1,11 @@
 <?php
-    class ControllerEquipmentTypes extends ControllerCategoryModel{
+    class ControllerEquipments extends ControllerModel{
+        protected $search_controller = 'equipments';
+        
+        public function __construct(){
+            $this->search_definition = $this->getSearchDefinition();
+        }
+        
         // funkcja ktora jest pobierana w indexie, jest wymagana w kazdym kontrolerze!!!!!
         public function getContent(){
             return $this->getPage();
@@ -10,7 +16,6 @@
         
         // pobieranie strony
         protected function getPage(){
-            // print_r($_GET);
             // sprawdzanie czy jest sie na podstronie
             if($page_action = ClassTools::getValue('page_action')){
                 switch($page_action){
@@ -21,6 +26,10 @@
                     case 'edytuj':
                         // ladowanie strony z formularzem
                         return $this->getPageEdit();
+                    break;
+                    case 'podglad':
+                        // ladowanie strony z podgladem
+                        return $this->getPageView();
                     break;
                 }
             }
@@ -33,66 +42,52 @@
             $this->searchActions();
             $this->actions();
             
-            // aktualna strona kategorii
-            $page = ClassTools::getValue('page') ? ClassTools::getValue('page') : NULL;
-            
             // strony
-            $this->controller_name = 'typy-wyposazenia';
+            $this->controller_name = 'wyposazenie';
             $this->using_pages = true;
-            $this->count_items = ClassEquipmentType::sqlGetCountItemsById($page);
+            $this->count_items = ClassEquipment::sqlGetCountItems($this->search_controller);
             $this->current_page = ClassTools::getValue('number_page') ? ClassTools::getValue('number_page') : '1';
             
             // tytul strony
-            $this->tpl_title = 'Typy wyposażenia: Lista';
+            $this->tpl_title = 'Wyposażenie: Lista';
             
             // ladowanie funkcji
+            $this->load_select2 = true;
             $this->load_js_functions = true;
             
             // pobieranie wszystkich rekordow
-            $this->tpl_values['items'] = ClassEquipmentType::sqlGetAllItemsById($page, false, false, $this->using_pages, $this->current_page, $this->items_on_page);
-            
-            // dodatkowe zmienne dla listy kategorii
-            $this->tpl_values['list_page'] = $page;
-            $this->tpl_values['list_page_name'] = $page === NULL ? '' : ' <b>'.ClassEquipmentType::sqlGetItemNameByIdParent($page).'</b>';
+            $this->tpl_values['items'] = ClassEquipment::sqlGetAllItems($this->using_pages, $this->current_page, $this->items_on_page, $this->search_controller);
             
             // ladowanie strony z lista
-            return $this->loadTemplate('/equipment/types-list');
+            return $this->loadTemplate('/equipment/list');
         }
         
         // strona dodawania
         protected function getPageAdd(){
-            // aktualna strona kategorii
-            $page = ClassTools::getValue('page') ? ClassTools::getValue('page') : NULL;
-            
             $this->actions();
             
             // tytul strony
-            $this->tpl_title = 'Typ wyposażenia: Dodaj';
+            $this->tpl_title = 'Wyposażenie: Dodaj';
             
             // ladowanie pluginow
             $this->load_select2 = true;
             $this->load_js_functions = true;
             
-            // ladowanie glownych kategorii
-            $this->tpl_values['parent_categories'] = ClassEquipmentType::sqlGetAllItemsById(NULL);
+            // ladowanie rodzajow
+            $this->tpl_values['form_types'] = ClassEquipmentType::getEquipmentTypes();
             
             // zmienna ktora decyduje co formularz ma robic
             $this->tpl_values['sew_action'] = 'add';
             
-            // dodatkowe zmienne dla listy kategorii
-            $form_parent = ClassTools::getValue('form_parent');
-            $this->tpl_values['list_page'] = $page;
-            $this->tpl_values['form_parent'] = $form_parent ? $form_parent : ($page === NULL ? false : $page);
-            
             // ladowanie strony z formularzem
-            return $this->loadTemplate('/equipment/types-form');
+            return $this->loadTemplate('/equipment/form');
         }
         
         // strona edycji
         protected function getPageEdit(){
-            // zmienne wyswietlania na wypadek gdy strona nie istnieje
-            $this->tpl_values['wstecz'] = '/typy-wyposazenia';
-            $this->tpl_values['title'] = 'Edycja typu wyposażenia';
+            // zmienne wyswietlania na wypadek gdy strona z odznaczeniem nie istnieje
+            $this->tpl_values['wstecz'] = '/wyposazenie';
+            $this->tpl_values['title'] = 'Edycja Wyposażenia';
             
             // sprawdzanie czy id istnieje w linku
             if(!$id_item = ClassTools::getValue('id_item')){
@@ -106,11 +101,11 @@
             $this->actions();
             
             // ladowanie klasy
-            $item = new ClassEquipmentType($id_item);
+            $item = new ClassEquipment($id_item);
             
             // sprawdzanie czy klasa zostala poprawnie zaladowana
             if(!$item->load_class){
-                $this->alerts['danger'] = 'Typ wyposażenia nie istnieje';
+                $this->alerts['danger'] = 'Wyposażenie nie istnieje';
                 
                 // ladowanie strony do wyswietlania bledow
                 // zmienne ktore mozna uzyc: wstecz, title oraz alertow
@@ -118,34 +113,71 @@
             }
             
             // tytul
-            $this->tpl_title = 'Typ wyposażenia: Edycja';
+            $this->tpl_title = 'Wyposażenie: Edycja';
             
             // skrypty
             $this->load_select2 = true;
             $this->load_js_functions = true;
             
-            // ladowanie glownych kategorii
-            $this->tpl_values['parent_categories'] = ClassEquipmentType::sqlGetAllItemsById(NULL, $item->id);
+            // ladowanie rodzajow
+            $this->tpl_values['form_types'] = ClassEquipmentType::getEquipmentTypes();
             
             // zmienna ktora decyduje co formularz ma robic
             $this->tpl_values['sew_action'] = 'edit';
             
             // przypisanie zmiennych formularza do zmiennych klasy
             $array_form_class = array(
-                'id_equipment_type'     => $item->id,
-                'form_parent'           => $item->id_parent,
-                'form_name'             => $item->name,
-                'form_active'           => $item->active
+                'id_equipment'      => $item->id,
+                'form_name'         => $item->name,
+                'form_description'  => $item->description,
+                'form_type'         => $item->id_equipment_type,
+                'form_active'       => $item->active
             );
             
             // przypisywanieszych zmiennych do zmiennych formularza
             $this->setValuesTemplateByArrayPost($array_form_class);
             
-            // dodatkowe zmienne dla listy kategorii
-            $this->tpl_values['list_page'] = $item->id_parent;
-            
             // ladowanie strony z formularzem
-            return $this->loadTemplate('/equipment/types-form');
+            return $this->loadTemplate('/equipment/form');
+        }
+        
+        /* ************ WYSZUKIWARKA *********** */
+        /* ************************************* */
+        
+        protected function getSearchDefinition(){
+            $form_values = array(
+                'class' => 'ClassEquipment',
+                'controller' => $this->search_controller,
+                'form' => array(
+                    'id_equipment' => array(
+                        'class' => 'table_id',
+                        'type' => 'text'
+                    ),
+                    'name' => array(
+                        'class' => 'table_name',
+                        'type' => 'text'
+                    ),
+                    'id_equipment_type' => array(
+                        'class' => 'table_type',
+                        'type' => 'select',
+                        'search' => true,
+                        'optgroup' => ClassEquipmentType::getEquipmentTypes()
+                    ),
+                    'active' => array(
+                        'class' => 'table_status',
+                        'type' => 'select',
+                        'options' => array(
+                            '0' => 'Wyłączony',
+                            '1' => 'Włączony',
+                        )
+                    ),
+                    'actions' => array(
+                        'class' => 'table_akcje'
+                    )
+                )
+            );
+            
+            return $form_values;
         }
         
         /* *************** AKCJE ************** */
@@ -157,20 +189,20 @@
                 return;
             }
             
-            // print_r($_POST);
+            print_r($_POST);
             
             // przypisanie zmiennych posta do zmiennych template
             $this->tpl_values = $this->setValuesTemplateByPost();
             // print_r($this->tpl_values);
             
             switch($_POST['form_action']){
-                case 'equipment_type_add':
+                case 'equipment_add':
                     return $this->add(); // dodawanie
                 break;
-                case 'equipment_type_delete':
+                case 'equipment_delete':
                     return $this->delete(); // usuwanie
                 break;
-                case 'equipment_type_save':
+                case 'equipment_save':
                     return $this->edit(); // edycja
                 break;
             }
@@ -181,13 +213,12 @@
         // dodawanie
         protected function add()
         {
-            // return;
             $active = ClassTools::getValue('form_active');
-            $form_parent = ClassTools::getValue('form_parent');
             
-            $item = new ClassEquipmentType();
+            $item = new ClassEquipment();
+            $item->id_equipment_type = ClassTools::getValue('form_type');
             $item->name = ClassTools::getValue('form_name');
-            $item->id_parent = $form_parent != '' && is_numeric($form_parent) ? $form_parent : NULL;
+            $item->description = ClassTools::getValue('form_description');
             $item->id_user = ClassAuth::getCurrentUserId();
             $item->active = ($active && $active == '1') ? '1' : '0';
             
@@ -198,7 +229,7 @@
             }
             
             // komunikat sukcesu
-            $this->alerts['success'] = "Poprawnie dodano nowy typ wyposażenia: <b>{$item->name}</b>";
+            $this->alerts['success'] = "Poprawnie dodano nowe wyposażenie: <b>{$item->name}</b>";
             
             // czyszczeie zmiennych wyswietlania
             $this->tpl_values = '';
@@ -210,23 +241,26 @@
         // usuwanie
         protected function delete(){
             // ladowanie klasy
-            $item = new ClassEquipmentType(ClassTools::getValue('id_equipment_type'));
+            $item = new ClassEquipment(ClassTools::getValue('id_equipment'));
             
             // sprawdza czy klasa zostala poprawnie zaladowana
-            if($item->load_class){
+            if($item->load_class)
+            {
                 // usuwanie
-                if($item->delete()){
+                if($item->delete())
+                {
                     // komunikat
-                    $this->alerts['success'] = "Poprawnie usunięto typ wyposażenia: <b>{$item->name}</b>";
+                    $this->alerts['success'] = "Poprawnie usunięto wyposażenie: <b>{$item->name}</b>.";
                     return;
-                }else{
+                }
+                else
+                {
                     // bledy w przypadku problemow z usunieciem
                     $this->alerts['danger'] = $item->errors;
-                    return;
                 }
             }
             
-            $this->alerts['danger'] = 'Typ wyposażenia nie istnieje';
+            $this->alerts['danger'] = 'Wyposażenie nie istnieje.';
             $_POST = array();
             
             return;
@@ -236,18 +270,18 @@
         protected function edit()
         {
             // ladowanie klasy
-            $item = new ClassEquipmentType(ClassTools::getValue('id_equipment_type'));
+            $item = new ClassEquipment(ClassTools::getValue('id_equipment'));
             
             // sprawdza czy klasa zostala poprawnie zaladowana
             if(!$item->load_class){
-                $this->alerts['danger'] = "Typ wyposażenia nie istnieje.";
+                $this->alerts['danger'] = "Wyposażenie nie istnieje.";
             }
             
             $active = ClassTools::getValue('form_active');
-            $form_parent = ClassTools::getValue('form_parent');
             
+            $item->id_equipment_type = ClassTools::getValue('form_type');
             $item->name = ClassTools::getValue('form_name');
-            $item->id_parent = $form_parent != '' && is_numeric($form_parent) ? $form_parent : NULL;
+            $item->description = ClassTools::getValue('form_description');
             $item->id_user = ClassAuth::getCurrentUserId();
             $item->active = ($active && $active == '1') ? '1' : '0';
             
@@ -258,7 +292,7 @@
             }
             
             // komunikat
-            $this->alerts['success'] = "Poprawnie zaktualizowano typ wydażenia: <b>{$item->name}</b>";
+            $this->alerts['success'] = "Poprawnie zaktualizowano wyposażenie: <b>{$item->name}</b>";
             
             // czyszczeie zmiennych wyswietlania
             $this->tpl_values = '';

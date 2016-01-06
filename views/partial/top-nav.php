@@ -91,6 +91,16 @@
                   </ul>
               
                 <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="/wyposazenie">
+                        <span class="glyphicon glyphicon-move"></span>&emsp;&emsp;Wyposażenie<span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu sidebar-nav">
+                        <li><a href="/wyposazenie/dodaj"><span class="glyphicon glyphicon-plus"></span>&emsp;&emsp;Dodaj wyposażenie</a></li>
+                        <li><a href="/wyposazenie"><span class="glyphicon glyphicon-list-alt"></span>&emsp;&emsp;Pokaż wyposażenie</a></li>
+                    </ul>
+                </li>
+              
+                <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="/typy-wyposazenia">
                         <span class="glyphicon glyphicon-move"></span>&emsp;&emsp;Typy wyposażenia<span class="caret"></span>
                     </a>

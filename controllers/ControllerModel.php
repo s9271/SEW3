@@ -147,7 +147,8 @@
             $values = array();
             
             foreach($_POST as $key => $val){
-                $values[$key] = ClassTools::getValue($key, false);
+                // $values[$key] = ClassTools::getValue($key, false);
+                $values[$key] = htmlspecialchars(ClassTools::getValue($key, false));
             }
             
             return $values;
@@ -168,7 +169,7 @@
             }
             
             foreach($array as $key => $valClass){
-                $this->tpl_values[$key] = (ClassTools::getValue($key) ? ClassTools::getValue($key) : '');
+                $this->tpl_values[$key] = (ClassTools::getValue($key) ? htmlspecialchars(ClassTools::getValue($key)) : '');
             }
             
             return;

@@ -15,6 +15,30 @@
             ),
         );
         
+        // pobieranie listy typow
+        public static function getEquipmentTypes()
+        {
+            // pobieranie glownych kategorii
+            if(!$parents = self::sqlGetAllItemsById(NULL, false, true)){
+                return false;
+            }
+            
+            $array = array();
+            
+            foreach($parents as $parent){
+                $array[$parent['id_equipment_type']]['name'] = $parent['name'];
+                
+                if($childs = self::sqlGetAllItemsById($parent['id_equipment_type'], false, true))
+                {
+                    foreach($childs as $child){
+                        $array[$parent['id_equipment_type']]['childs'][$child['id_equipment_type']] = $child['name'];
+                    }
+                }
+            }
+            
+            return $array;
+        }
+        
         // dodatkowe wlasne walidacje podczas dodawania
         public function addCustomValidate()
         {
@@ -48,10 +72,10 @@
             
             // podczas zmiany podkategori na kategorie glowna
             // sprawdza czy kategoria jest powiazana z jakims ekwipunkiem
-            // if($item->id_parent !== NULL && $this->id_parent === NULL && self::checkEquipmentHasItem($this->id)){
-                // $this->errors[] = "Aby zmienić podkategorię na kategorię główną trzeba wpierw usunąć ją z powiązanym wyposażeniem.";
-                // return false;
-            // }
+            if($item->id_parent !== NULL && $this->id_parent === NULL && self::checkEquipmentHasItem($this->id)){
+                $this->errors[] = "Aby zmienić podkategorię na kategorię główną trzeba wpierw usunąć ją z powiązanym wyposażeniem.";
+                return false;
+            }
             
             return true;
         }
@@ -66,10 +90,10 @@
             }
             
             // sprawdzanie czy kategoria nie jest glowna i czy jest powiazana z jakims ekwipunkiem
-            // if($item->id_parent !== NULL && self::checkEquipmentHasItem($this->id)){
-                // $this->errors = "Do typu wyposażenia powiązane jest wyposażenie.";
-                // return false;
-            // }
+            if($this->id_parent !== NULL && self::checkEquipmentHasItem($this->id)){
+                $this->errors = "Do typu wyposażenia powiązane jest wyposażenie.";
+                return false;
+            }
             
             return true;
         }
@@ -82,7 +106,7 @@
             global $DB;
             
             $zapytanie = "SELECT COUNT(*) as count_item
-                FROM `sew_equipment`
+                FROM `sew_equipments`
                 WHERE `deleted` = '0'
                     AND `id_equipment_type` = '{$id_equipment_type}'
             ;";

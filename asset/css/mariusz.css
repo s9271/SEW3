@@ -439,7 +439,7 @@ tr.form_search input{
 tr.form_search .select2,
 tr.form_search select{
     text-align: left;
-    width: 100%;
+    width: 100% !important;
 }
 
 .alert-danger.search ul{
@@ -531,6 +531,7 @@ table tr.form_search td.table_akcje{
 }
 
 /* EKWIPUNEK */
+#equipments_list table,
 #equipment_type_list table{
     table-layout: fixed;
     text-align: left;
@@ -563,6 +564,23 @@ table tr.form_search td.table_akcje{
     width: 130px;
 }
 
+#equipments_form,
 #equipment_type_form{
     text-align: left;
+}
+
+#equipments_list table .table_akcje{
+    width: 145px;
+}
+
+#equipments_list table .table_id{
+    width: 60px;
+}
+
+#equipments_list table .table_status{
+    width: 150px;
+}
+
+#equipments_list table .table_type{
+    width: 400px;
 }
