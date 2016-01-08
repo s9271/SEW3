@@ -584,3 +584,95 @@ table tr.form_search td.table_akcje{
 #equipments_list table .table_type{
     width: 400px;
 }
+
+
+/* ZOLNIERZE */
+#soldier_list table{
+    table-layout: fixed;
+    text-align: left;
+    width: 100%;
+}
+
+#soldier_list table .table_id{
+    width: 80px;
+}
+
+#soldier_list table .table_akcje{
+    width: 145px;
+}
+
+#soldier_list table .table_status{
+    width: 170px;
+}
+
+#soldier_list table td{
+    vertical-align: middle;
+    word-wrap: break-word;
+}
+
+#soldier_list table td.table_id,
+#soldier_list table td.table_akcje{
+    text-align: center;
+}
+
+#soldier_form{
+    text-align: left;
+}
+
+/* .mar_custom .panel .panel-body .form-group{
+    margin-left: 0;
+    margin-right: 0;
+} */
+
+.mar_custom .form-group label.radio-inline{
+    padding-top: 0;
+    width: auto;
+}
+
+.mar_custom .panel .panel-body{
+    background-color: #f8f8f8;
+}
+
+.mar_custom form .page-header{
+    border-color: #337ab7;
+    color: #337ab7;
+}
+
+.mar_custom form .page-header.danger{
+    border-color: #c9302c;
+    color: #c9302c;
+}
+
+.mar_custom form .page-header.warning{
+    border-color: #EC971F;
+    color: #EC971F;
+}
+
+.mar_custom .no_margin_top{
+    margin-top: 0;
+}
+
+.dropdown-menu-button-link{
+    background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+    border: medium none;
+    clear: both;
+    color: #333333;
+    display: block;
+    font-weight: 400;
+    line-height: 1.42857;
+    padding: 3px 20px;
+    text-align: left;
+    white-space: nowrap;
+    width: 100%;
+}
+
+.dropdown-menu-button-link:focus,
+.dropdown-menu-button-link:hover{
+    background-color: #f5f5f5;
+    color: #262626;
+}
+
+.dropdown-menu-button-link:focus span,
+.dropdown-menu-button-link:hover span{
+    opacity: 0.6;
+}

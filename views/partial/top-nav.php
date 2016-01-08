@@ -83,6 +83,20 @@
                     <li><a href="/soldier.php?action=list"><span class="glyphicon glyphicon-list-alt"></span>&emsp;&emsp;Pokaż Żołnierzy</a></li>
                   </ul>
               </li>
+              
+              
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="/zolnierze">
+                        <span class="glyphicon glyphicon-user"></span>&emsp;&emsp;Żołnierze 2<span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu sidebar-nav">
+                        <li><a href="/zolnierze/dodaj"><span class="glyphicon glyphicon-plus"></span>&emsp;&emsp;Dodaj Żołnierza</a></li>
+                        <li><a href="/zolnierze"><span class="glyphicon glyphicon-list-alt"></span>&emsp;&emsp;Pokaż Żołnierzy</a></li>
+                    </ul>
+                </li>
+              
+              
+              
               <li class="dropdown">
                   <a class="dropdown-toggle" data-toggle="dropdown" href="/equipment.php"><span class="glyphicon glyphicon-screenshot"></span>&emsp;&emsp;Uzbrojenie<span class="caret"></span></a>
                   <ul class="dropdown-menu sidebar-nav">

@@ -61,7 +61,22 @@
                 }
                 // print_r($values);
                 
-                if(isset($valid['validate']) && is_array($valid['validate']) && count($valid['validate']) > 0){
+                // if(isset($valid['validate']) && is_array($valid['validate']) && count($valid['validate']) > 0)
+                // {
+                    // if((!isset($valid['required']) || (isset($valid['required']) && !$valid['required'])) && $values[$key] == '')
+                    // {
+                        
+                    // }
+                    // else
+                    // {
+                        // foreach($valid['validate'] as $valid_key){
+                            // $values[$key] = $this->validByMethod($valid_key, $values[$key], $valid['name'], $key);
+                        // }
+                    // }
+                // }
+                
+                if(isset($valid['validate']) && is_array($valid['validate']) && count($valid['validate']) > 0 && $values[$key] != '')
+                {
                     foreach($valid['validate'] as $valid_key){
                         $values[$key] = $this->validByMethod($valid_key, $values[$key], $valid['name'], $key);
                     }

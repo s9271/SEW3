@@ -1,8 +1,11 @@
 <?php
     class ControllerSoldiers extends ControllerModel{
+        protected $search_controller = 'soldiers';
+        
         public function __construct(){
             // potrzebne do ajaxa i stronnicowania
             $this->controller_name = 'zolnierze';
+            $this->search_definition = $this->getSearchDefinition();
         }
         
         // funkcja ktora jest pobierana w indexie, jest wymagana w kazdym kontrolerze!!!!!
@@ -20,7 +23,7 @@
                 switch($page_action){
                     case 'dodaj':
                         // ladowanie strony z formularzem
-                        // return $this->getPageAdd();
+                        return $this->getPageAdd();
                     break;
                     case 'edytuj':
                         // ladowanie strony z formularzem
@@ -52,9 +55,217 @@
             return $this->getPageList();
         }
         
+        // strona lista
+        protected function getPageList(){
+            $this->searchactions();
+            $this->actions();
+            
+            // strony
+            $this->controller_name = 'zolnierze';
+            $this->using_pages = true;
+            $this->count_items = ClassSoldier::sqlGetCountItems($this->search_controller);
+            $this->current_page = ClassTools::getValue('number_page') ? ClassTools::getValue('number_page') : '1';
+            
+            // tytul strony
+            $this->tpl_title = 'Żołnierze: Lista';
+            
+            // ladowanie funkcji
+            $this->load_select2 = true;
+            $this->load_js_functions = true;
+            
+            // pobieranie wszystkich rekordow
+            $this->tpl_values['items'] = ClassSoldier::sqlGetAllItems($this->using_pages, $this->current_page, $this->items_on_page, $this->search_controller);
+            
+            // ladowanie strony z lista
+            return $this->loadTemplate('/soldier/list');
+        }
+        
+        // strona dodawania
+        protected function getPageAdd(){
+            $this->actions();
+            
+            // tytul strony
+            $this->tpl_title = 'Żołnierz: Dodaj';
+            
+            // ladowanie pluginow
+            $this->load_select2 = true;
+            $this->load_datetimepicker = true;
+            $this->load_js_functions = true;
+            
+            // typow edukacji
+            $this->tpl_values['education_types'] = ClassEducationType::sqlGetAllItemsNameById(NULL, false, true);
+            
+            // ladowanie statusow
+            $this->tpl_values['soldier_statuses'] = ClassSoldierStatus::sqlGetAllItemsNameById(NULL, false, true);
+            
+            // zmienna ktora decyduje co formularz ma robic
+            $this->tpl_values['sew_action'] = 'add';
+            
+            // ladowanie strony z formularzem
+            return $this->loadTemplate('/soldier/form');
+        }
+        
+        /* ************ WYSZUKIWARKA *********** */
+        /* ************************************* */
+        
+        protected function getSearchDefinition(){
+            $form_values = array(
+                'class' => 'ClassSoldier',
+                'controller' => $this->search_controller,
+                'form' => array(
+                    'id_soldier' => array(
+                        'class' => 'table_id',
+                        'type' => 'text'
+                    ),
+                    'name' => array(
+                        'class' => 'table_name',
+                        'type' => 'text'
+                    ),
+                    'surname' => array(
+                        'class' => 'table_surname',
+                        'type' => 'text'
+                    ),
+                    'mail' => array(
+                        'class' => 'table_mail',
+                        'type' => 'text'
+                    ),
+                    'phone' => array(
+                        'class' => 'table_phone',
+                        'type' => 'text'
+                    ),
+                    'pesel' => array(
+                        'class' => 'table_pesel',
+                        'type' => 'text'
+                    ),
+                    'id_status' => array(
+                        'class' => 'table_status',
+                        'type' => 'select',
+                        'options' => ClassSoldierStatus::sqlGetAllItemsNameById(NULL, false, true)
+                    ),
+                    'actions' => array(
+                        'class' => 'table_akcje'
+                    )
+                )
+            );
+            
+            return $form_values;
+        }
+        
+        
+        
+        /* *************** AKCJE ************** */
+        /* ************************************ */
+        
+        protected function actions(){
+            // sprawdzenie czy zostala wykonana jakas akcja zwiazana z formularzem
+            if(!isset($_POST['form_action'])){
+                return;
+            }
+            
+            print_r($_POST);
+            
+            // przypisanie zmiennych posta do zmiennych template
+            $this->tpl_values = $this->setValuesTemplateByPost();
+            
+            switch($_POST['form_action']){
+                case 'soldier_add':
+                    return $this->add(); // dodawanie
+                break;
+                case 'soldier_delete':
+                    return $this->delete(); // usuwanie
+                break;
+                case 'badge_save':
+                    // return $this->edit(); // edycja
+                break;
+            }
+            
+            return;
+        }
+        
+        // dodawanie
+        protected function add()
+        {
+            $item = new ClassSoldier();
+            $item->sex = ClassTools::getValue('form_sex');
+            $item->name = ClassTools::getValue('form_name');
+            $item->second_name = ClassTools::getValue('form_second_name');
+            $item->surname = ClassTools::getValue('form_surname');
+            $item->date_birthday = ClassTools::getValue('form_date_birthday');
+            $item->place_birthday = ClassTools::getValue('form_place_birthday');
+            $item->citizenship = ClassTools::getValue('form_citizenship');
+            $item->nationality = ClassTools::getValue('form_nationality');
+            $item->pesel = ClassTools::getValue('form_pesel');
+            $item->identity_document = ClassTools::getValue('form_identity_document');
+            $item->mail = ClassTools::getValue('form_mail');
+            $item->phone = ClassTools::getValue('form_phone');
+            $item->height = ClassTools::getValue('form_height');
+            $item->weight = ClassTools::getValue('form_weight');
+            $item->shoe_number = ClassTools::getValue('form_shoe_number');
+            $item->blood_group = ClassTools::getValue('form_blood_group');
+            $item->name_mother = ClassTools::getValue('form_name_mother');
+            $item->surname_mother = ClassTools::getValue('form_surname_mother');
+            $item->name_father = ClassTools::getValue('form_name_father');
+            $item->surname_father = ClassTools::getValue('form_surname_father');
+            $item->name_partner = ClassTools::getValue('form_name_partner');
+            $item->surname_partner = ClassTools::getValue('form_surname_partner');
+            $item->id_education_type = ClassTools::getValue('form_education_type');
+            $item->wku = ClassTools::getValue('form_wku');
+            $item->health_category = ClassTools::getValue('form_health_category');
+            $item->injuries = ClassTools::getValue('form_injuries');
+            $item->id_status = ClassTools::getValue('form_status');
+            $item->id_user = ClassAuth::getCurrentUserId();
+            
+            // komunikaty bledu
+            if(!$item->add()){
+                $this->alerts['danger'] = $item->errors;
+                return;
+            }
+            
+            // komunikat sukcesu
+            $this->alerts['success'] = "Poprawnie dodano nowgo żołnierza: <b>{$item->name} {$item->surname}</b>";
+            
+            // czyszczeie zmiennych wyswietlania
+            $this->tpl_values = '';
+            $_POST = array();
+            
+            return;
+        }
+        
+        // usuwanie
+        protected function delete(){
+            // ladowanie klasy
+            $item = new ClassSoldier(ClassTools::getValue('id_soldier'));
+            
+            // sprawdza czy klasa zostala poprawnie zaladowana
+            if($item->load_class)
+            {
+                // usuwanie
+                if($item->delete())
+                {
+                    // komunikat
+                    $this->alerts['success'] = "Poprawnie usunięto żołnierza: <b>{$item->name} {$item->surname}</b>.";
+                    return;
+                }
+                else
+                {
+                    // bledy w przypadku problemow z usunieciem
+                    $this->alerts['danger'] = $item->errors;
+                }
+            }
+            
+            $this->alerts['danger'] = 'Żołnierz nie istnieje.';
+            $_POST = array();
+            
+            return;
+        }
+        
+        
+        
+        
+        /* 
         // strona lista misjii
         protected function getPageList(){
-            $this->actions();
+            $this->actions2();
             
             // strony
             $this->controller_name = 'szkolenia';
@@ -73,11 +284,11 @@
             
             // ladowanie strony z lista misji
             return $this->loadTemplate('/training/list');
-        }
+        } */
         
-        // strona dodawania
+        /* // strona dodawania
         protected function getPageAdd(){
-            $this->actions();
+            $this->actions2();
             
             $id_current_type = false;
             
@@ -101,7 +312,7 @@
             
             // ladowanie strony z formularzem
             return $this->loadTemplate('/training/form');
-        }
+        } */
         
         // strona edycji
         protected function getPageEdit(){
@@ -118,7 +329,7 @@
                 return $this->loadTemplate('alert');
             }
             
-            $this->actions();
+            $this->actions2();
             
             // ladowanie klasy i misji
             $mission = new ClassMission($id_item);
@@ -173,7 +384,7 @@
                 return $this->loadTemplate('alert');
             }
             
-            $this->actions();
+            $this->actions2();
             
             // ladowanie klasy i misji
             $mission = new ClassMission($id_item);
@@ -234,7 +445,7 @@
             }
             
             // ladowanie klasy i misji
-            $soldier = new ClassSoldier($id_soldier);
+            $soldier = new ClassSoldier_old($id_soldier);
             
             // sprawdzanie czy misja zostala poprawnie zaladowana
             if(!$soldier->load_class){
@@ -299,7 +510,7 @@
         
         // strona z lista misjii zolnierza
         protected function getPageMissionsList($soldier){
-            $this->actions();
+            $this->actions2();
             
             // tytul strony
             $this->tpl_title = 'Misje żołnierza';
@@ -327,7 +538,7 @@
         
         // strona z podgladem misji zolnierza
         protected function getPageMissionsView($soldier, $mission){
-            $this->actions();
+            $this->actions2();
             // page_action_option_id
             // tytul strony
             $this->tpl_title = 'Podgląd misji żołnierza';
@@ -379,7 +590,7 @@
         
         // ladowanie strony do odlegowania zolnierza
         protected function getPageMissionsSeconded($soldier, $mission){
-            $this->actions();
+            $this->actions2();
             
             // tytul strony
             $this->tpl_title = 'Oddelegowanie żołnierza';
@@ -416,7 +627,7 @@
         /* *************** AKCJE ************** */
         /* ************************************ */
         
-        protected function actions(){
+        protected function actions2(){
             // sprawdzenie czy zostala wykonana jakas akcja zwiazana z formularzem
             if(!isset($_POST['form_action'])){
                 return;
@@ -429,7 +640,7 @@
             
             switch($_POST['form_action']){
                 case 'mission_add':
-                    return $this->add(); // dodawanie
+                    // return $this->add(); // dodawanie
                 break;
                 case 'mission_delete':
                     return $this->delete(); // usuwanie
@@ -452,7 +663,7 @@
         }
         
         // dodawanie
-        protected function add(){
+        /* protected function add(){
             $mission = new ClassMission();
             $mission->id_mission_type = $_POST['form_type'];
             $mission->name = $_POST['form_name'];
@@ -490,10 +701,10 @@
             $_POST = array();
             
             return;
-        }
+        } */
         
         // usuwanie
-        protected function delete(){
+        /* protected function delete(){
             // ladowanie klasy i misji
             $mission = new ClassMission($_POST['id_mission']);
             
@@ -514,7 +725,7 @@
             $_POST = array();
             
             return;
-        }
+        } */
         
         // usuwanie
         protected function edit(){
@@ -575,7 +786,7 @@
             $id_mission = ClassTools::getValue('add_form_list_id');
             
             // sprawdzanie czy zolnierz istnieje
-            if(!ClassSoldier::isSoldier($id_soldier)){
+            if(!ClassSoldier_old::isSoldier($id_soldier)){
                 $this->alerts['danger'] = "Żołnierz nie istnieje.";
                 return;
             }

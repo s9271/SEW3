@@ -129,10 +129,54 @@
                 return false;
             }
             
-            foreach($sql as $key => $val)
-            {
-                // Nazwa statusu
-                $sql[$key]['active_name'] = ClassUser::getNameStatus($val['active']);
+            if(!$active){
+                foreach($sql as $key => $val)
+                {
+                    // Nazwa statusu
+                    $sql[$key]['active_name'] = ClassUser::getNameStatus($val['active']);
+                }
+            }
+            
+            return $sql;
+        }
+        
+        // pobieranie wszystkich nazw rekordow
+        public static function sqlGetAllItemsNameById($id_page, $without_id = false, $active = false){
+            global $DB;
+            $table_name = (static::$use_prefix ? static::$prefix : '').static::$definition['table'];
+            $id = static::$definition['primary'];
+            
+            $where = '';
+            
+            if($id_page === NULL){
+                $id_page = 'IS NULL';
+            }else{
+                $id_page = "= '{$id_page}'";
+            }
+            
+            if(static::$has_deleted_column){
+                $where = " AND `deleted` = '0'";
+            }
+            
+            if($active){
+                $where .= " AND `active` = '1'";
+            }
+            
+            if($without_id){
+                $where .= " AND `{$id}` != '{$without_id}'";
+            }
+            
+            $zapytanie = "SELECT `{$id}`, `name`
+                FROM `{$table_name}`
+                WHERE `id_parent` {$id_page}
+                    {$where}
+                ORDER BY `{$id}`
+            ;";
+            
+            $sql = $DB->pdo_fetch_all_group_column($zapytanie, true);
+            
+            if(!$sql || !is_array($sql) || count($sql) < 1){
+                return false;
             }
             
             return $sql;
