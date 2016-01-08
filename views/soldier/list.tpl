@@ -44,7 +44,7 @@
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a href="soldier.php?action=update" title="Edytuj">
+                                        <a href="/zolnierze/edytuj/<?php echo $item['id_soldier']; ?>" title="Edytuj">
                                             <span class="glyphicon glyphicon-pencil"></span>Edytuj
                                         </a>
                                     </li>

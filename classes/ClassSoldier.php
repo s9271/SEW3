@@ -45,13 +45,13 @@
         public $phone;
         
         // wysokosc
-        public $height;
+        public $height = NULL;
         
         // waga
-        public $weight;
+        public $weight = NULL;
         
         // nr buta
-        public $shoe_number;
+        public $shoe_number = NULL;
         
         // grupa krwi
         public $blood_group;
@@ -149,11 +149,13 @@
             if($this->load_class)
             {
                 // poziom wyksztalcenia nazwa
-                // $this->education_type_name = self::sqlGetRankNameById($this->id_badge_rank);
+                $this->education_type_name = ClassEducationType::sqlGetItemNameByIdParent($this->id_education_type);
                 
                 // Nazwa statusu
-                // $this->status_name = '';
-                // $this->status_name = ClassUser::getNameStatus($this->active);
+                $this->status_name = ClassSoldierStatus::sqlGetItemNameByIdParent($this->id_status);
+                
+                // Zmiana daty na polski format
+                $this->date_birthday = date('d.m.Y', strtotime($this->date_birthday));
             }
         }
         

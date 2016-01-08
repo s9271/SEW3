@@ -169,7 +169,8 @@
             }
             
             foreach($array as $key => $valClass){
-                $this->tpl_values[$key] = (ClassTools::getValue($key) ? htmlspecialchars(ClassTools::getValue($key)) : '');
+                $value = ClassTools::getValue($key);
+                $this->tpl_values[$key] = ($value || $value == '0' ? htmlspecialchars($value) : '');
             }
             
             return;
