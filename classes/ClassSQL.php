@@ -258,17 +258,19 @@
                 return true;
             }
         
-            public function delete($table, $where = false){
+            public function delete($table, $where = false, $check = true){
                 if(!$where){
                     $this->errors[] = "</b>SQL Usuwanie<b>: Nie podano wartości where.";
                     return false;
                 }
                 
-                $record = pdo_fetch("SELECT * FROM `{$table}` WHERE {$where}");
-                
-                if(!$record || !is_array($record) || count($record) < 1){
-                    $this->errors[] = "</b>SQL Usuwanie<b>: Brak rekordu w bazie.";
-                    return false;
+                if($where && $check){
+                    $record = pdo_fetch("SELECT * FROM `{$table}` WHERE {$where}");
+                    
+                    if(!$record || !is_array($record) || count($record) < 1){
+                        $this->errors[] = "</b>SQL Usuwanie<b>: Brak rekordu w bazie.";
+                        return false;
+                    }
                 }
                 
                 $sql = "DELETE FROM `{$table}` WHERE {$where}";

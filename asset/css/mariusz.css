@@ -727,10 +727,12 @@ table tr.form_search td.table_akcje{
     width: 100% !important;
 }
 
+#soldier_address_form .jumbotron,
 #soldier_schools_form .jumbotron{
     text-align: left;
 }
 
+#soldier_address_form form .select2,
 #soldier_schools_form form .select2{
     width: 100% !important;
 }
@@ -744,10 +746,12 @@ table tr.form_search td.table_akcje{
     width: 95px;
 }
 
+#soldier_addresses_list table:not(.table_add) .table_akcje,
 #soldier_schools_list table:not(.table_add) .table_akcje{
     width: 125px;
 }
 
+#soldier_addresses_list table td,
 #soldier_schools_list table td{
     vertical-align: middle;
 }

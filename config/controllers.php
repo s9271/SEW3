@@ -23,7 +23,7 @@
         'jezyki'        => array('controller' => 'ControllerSoldierLanguages', 'permissions' => array('1', '2')),
         'prawo-jazdy'   => array('controller' => 'ControllerSoldierDriveLicenses', 'permissions' => array('1', '2')),
         'dzieci'        => array('controller' => 'ControllerSoldierChildrens', 'permissions' => array('1', '2')),
-        'adresy'        => array('controller' => 'ControllerSoldiers', 'permissions' => array('1', '2')),
+        'adresy'        => array('controller' => 'ControllerSoldierAddresses', 'permissions' => array('1', '2')),
     ));
     $controllers['wyposazenie']      = array('controller' => 'ControllerEquipments', 'permissions' => array('1', '2'));
     $controllers['misje']            = array('controller' => 'ControllerMissions', 'permissions' => array('1', '2'));

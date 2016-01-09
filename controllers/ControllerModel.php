@@ -148,7 +148,10 @@
             
             foreach($_POST as $key => $val){
                 // $values[$key] = ClassTools::getValue($key, false);
-                $values[$key] = htmlspecialchars(ClassTools::getValue($key, false));
+                // $values[$key] = htmlspecialchars(ClassTools::getValue($key, false));
+                $value = ClassTools::getValue($key, false);
+                $value = is_array($value) ? array_map("htmlspecialchars", $value) : htmlspecialchars($value);
+                $values[$key] = $value;
             }
             
             return $values;
@@ -156,7 +159,8 @@
         
         // przypisywanieszych zmiennych do zmiennych formularza
         protected function setValuesTemplateByArrayPost(array $array){
-            $array = array_map("htmlspecialchars", $array);
+            // $array = array_map("htmlspecialchars", $array);
+            $array = array_map( array($this, 'myHtmlspecialchars'), $array);
             
             if(!$_POST || !is_array($_POST) || count($_POST) < 1)
             {
@@ -170,7 +174,7 @@
             
             foreach($array as $key => $valClass){
                 $value = ClassTools::getValue($key);
-                $this->tpl_values[$key] = ($value || $value == '0' ? htmlspecialchars($value) : '');
+                $this->tpl_values[$key] = ($value || $value == '0' ? $this->myHtmlspecialchars($value) : '');
             }
             
             return;
@@ -179,6 +183,11 @@
         // pobieranie stron bez praw
         public function getPageNoPermissions(){
             return $this->loadTemplate('no_permissions');
+        }
+        
+        
+        protected function myHtmlspecialchars($value){
+            return is_array($value) ? array_map("htmlspecialchars", $value) : htmlspecialchars($value);
         }
     }
 ?>

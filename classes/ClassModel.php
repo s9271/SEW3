@@ -565,7 +565,7 @@
         }
         
         // pobieranie wszystkich rekordow
-        public static function sqlGetAllItems($using_pages = false, $current_page = '1', $items_on_page = '5', $controller_search = ''){
+        public static function sqlGetAllItems($using_pages = false, $current_page = '1', $items_on_page = '5', $controller_search = '', array $custom_where = array()){
             global $DB;
             $table_name = (static::$use_prefix ? static::$prefix : '').static::$definition['table'];
             $where = '';
@@ -583,6 +583,25 @@
                 }
                 
                 $where .= $where_search;
+            }
+            
+            if(count($custom_where) > 0){
+                if($where == ''){
+                    $where = "WHERE ";
+                }else{
+                    $where .= " AND ";
+                }
+                
+                $first = true;
+                
+                foreach($custom_where as $key => $value){
+                    if($first){
+                        $first = false;
+                        $where .= "`{$key}` = '".ClassTools::pSQL($value)."'";
+                    }else{
+                        $where .= " AND `{$key}` = '".ClassTools::pSQL($value)."'";
+                    }
+                }
             }
             
             if($using_pages){
@@ -643,7 +662,7 @@
         }
         
         // pobieranie liczby wszystkich rekordow
-        public static function sqlGetCountItems($controller_search = ''){
+        public static function sqlGetCountItems($controller_search = '', array $custom_where = array()){
             global $DB;
             $table_name = (static::$use_prefix ? static::$prefix : '').static::$definition['table'];
             $where = '';
@@ -660,6 +679,25 @@
                 }
                 
                 $where .= $where_search;
+            }
+            
+            if(count($custom_where) > 0){
+                if($where == ''){
+                    $where = "WHERE ";
+                }else{
+                    $where .= " AND ";
+                }
+                
+                $first = true;
+                
+                foreach($custom_where as $key => $value){
+                    if($first){
+                        $first = false;
+                        $where .= "`{$key}` = '".ClassTools::pSQL($value)."'";
+                    }else{
+                        $where .= " AND `{$key}` = '".ClassTools::pSQL($value)."'";
+                    }
+                }
             }
             
             $zapytanie = "SELECT COUNT(*) as count_items

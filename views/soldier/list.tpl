@@ -103,7 +103,7 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="#" title="Adresy">
+                                        <a href="/zolnierze/<?php echo $item['id_soldier']; ?>/adresy" title="Adresy">
                                             <span class="glyphicon glyphicon-screenshot"></span>Adresy
                                         </a>
                                     </li>
