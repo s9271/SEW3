@@ -1,5 +1,5 @@
 <?php
-    class ControllerSoldierChildrens extends ControllerModel{
+    class ControllerSoldierLanguages extends ControllerModel{
         // funkcja ktora jest pobierana w indexie, jest wymagana w kazdym kontrolerze!!!!!
         public function getContent(){
             return $this->getPage();
@@ -31,25 +31,28 @@
             $this->actions();
             
             // strony
-            $this->controller_name = 'dzieci';
+            $this->controller_name = 'jezyki';
             $this->using_pages = true;
-            $this->count_items = ClassSoldierChildren::sqlGetCountItems();
+            $this->count_items = ClassSoldierLanguage::sqlGetCountItems();
             $this->current_page = ClassTools::getValue('number_page') ? ClassTools::getValue('number_page') : '1';
             
             // tytul strony
-            $this->tpl_title = "{$item->name} {$item->surname}: Dzieci";
+            $this->tpl_title = "{$item->name} {$item->surname}: Języki";
             
             // ladowanie funkcji
-            $this->load_datetimepicker = true;
+            $this->load_select2 = true;
             $this->load_js_functions = true;
             
             // pobieranie wszystkich rekordow
-            $this->tpl_values['items'] = ClassSoldierChildren::sqlGetAllItems($this->using_pages, $this->current_page, $this->items_on_page);
+            $this->tpl_values['items'] = ClassSoldierLanguage::sqlGetAllItems($this->using_pages, $this->current_page, $this->items_on_page);
             
             $this->tpl_values['id_soldier'] = $item->id;
             
+            // pobieranie statusow zaawansowania jezyka
+            $this->tpl_values['language_levels'] = ClassLanguageLevel::getAllItemsNameWhithChild();
+            
             // ladowanie strony z lista
-            return $this->loadTemplate('/soldier/child');
+            return $this->loadTemplate('/soldier/languages');
         }
         
         /* *************** AKCJE ************** */
@@ -67,10 +70,10 @@
             $this->tpl_values = $this->setValuesTemplateByPost();
             
             switch($_POST['form_action']){
-                case 'children_add':
+                case 'language_add':
                     return $this->add(); // dodawanie
                 break;
-                case 'children_delete':
+                case 'language_delete':
                     return $this->delete(); // usuwanie
                 break;
             }
@@ -81,10 +84,9 @@
         // dodawanie
         protected function add()
         {
-            $item = new ClassSoldierChildren();
+            $item = new ClassSoldierLanguage();
             $item->name = ClassTools::getValue('form_name');
-            $item->surname = ClassTools::getValue('form_surname');
-            $item->date_birthday = ClassTools::getValue('form_birthday');
+            $item->id_language_level = ClassTools::getValue('form_language_level');
             $item->id_soldier = ClassTools::getValue('id_soldier');
             $item->id_user = ClassAuth::getCurrentUserId();
             
@@ -95,7 +97,7 @@
             }
             
             // komunikat sukcesu
-            $this->alerts['success'] = "Poprawnie dodano nowe dziecko: <b>{$item->name} {$item->surname}</b>";
+            $this->alerts['success'] = "Poprawnie dodano nowy język: <b>{$item->name}</b>";
             
             // czyszczeie zmiennych wyswietlania
             $this->tpl_values = '';
@@ -107,14 +109,14 @@
         // usuwanie
         protected function delete(){
             // ladowanie klasy
-            $item = new ClassSoldierChildren(ClassTools::getValue('id_children'));
+            $item = new ClassSoldierLanguage(ClassTools::getValue('id_language'));
             
             // sprawdza czy klasa zostala poprawnie zaladowana
             if($item->load_class){
                 // usuwanie
                 if($item->delete()){
                     // komunikat
-                    $this->alerts['success'] = "Poprawnie usunięto dziecko: <b>{$item->name} {$item->surname}</b>";
+                    $this->alerts['success'] = "Poprawnie usunięto język: <b>{$item->name}</b>";
                     return;
                 }else{
                     // bledy w przypadku problemow z usunieciem
@@ -123,7 +125,7 @@
                 }
             }
             
-            $this->alerts['danger'] = 'Dziecko nie istnieje';
+            $this->alerts['danger'] = 'Język nie istnieje';
             $_POST = array();
             
             return;

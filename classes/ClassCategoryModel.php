@@ -48,6 +48,31 @@
             return false;
         }
         
+        // pobieranie listy z dziecmi
+        public static function getAllItemsNameWhithChild()
+        {
+            // pobieranie glownych kategorii
+            if(!$parents = self::sqlGetAllItemsById(NULL, false, true)){
+                return false;
+            }
+            
+            $array = array();
+            $id = static::$definition['primary'];
+            
+            foreach($parents as $parent){
+                $array[$parent[$id]]['name'] = $parent['name'];
+                
+                if($childs = self::sqlGetAllItemsById($parent[$id], false, true))
+                {
+                    foreach($childs as $child){
+                        $array[$parent[$id]]['childs'][$child[$id]] = $child['name'];
+                    }
+                }
+            }
+            
+            return $array;
+        }
+        
         /* **************** SQL *************** */
         /* ************************************ */
         

@@ -710,6 +710,7 @@ table tr.form_search td.table_akcje{
     width: 110px;
 }
 
+#soldier_languages_list table:not(.table_add) .table_akcje,
 #soldier_child_list table:not(.table_add) .table_akcje{
     width: 75px;
 }
@@ -718,4 +719,9 @@ table tr.form_search td.table_akcje{
     font-size: 22px;
     line-height: normal;
     margin: 0 0 10px;
+}
+
+.soldier_children_list table select,
+.soldier_children_list table .select2{
+    width: 100%;
 }

@@ -85,7 +85,7 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="#" title="Języki">
+                                        <a href="/zolnierze/<?php echo $item['id_soldier']; ?>/jezyki" title="Języki">
                                             <span class="glyphicon glyphicon-screenshot"></span>Języki
                                         </a>
                                     </li>
