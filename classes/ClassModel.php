@@ -267,6 +267,11 @@
                         $this->errors[] = "<b>{$name}</b>: Pole nie jest tekstem.";
                     }
                 break;
+                case 'isNameSpaces':
+                    if(!$value_new = self::validIsNameSpaces($value)){
+                        $this->errors[] = "<b>{$name}</b>: Pole nie jest tekstem.";
+                    }
+                break;
                 case 'isDate':
                     if(!$value_new = self::validIsDate($value)){
                         $this->errors[] = "<b>{$name}</b>: Niepoprawny format daty.";
@@ -314,6 +319,16 @@
         public static function validIsName($value){
             // spółka
             if (preg_match('/^[a-zA-ZążśźęćńółĄŻŚŹĘĆŃÓŁ]+$/', $value)) {
+                return true;
+            }
+            
+            return false;
+        }
+        
+        // sprawdzanie czy wartosc sklada sie tylko z liter i spacji
+        public static function validIsNameSpaces($value){
+            // spółka zoo
+            if (preg_match('/^[a-zA-ZążśźęćńółĄŻŚŹĘĆŃÓŁ ]+$/', $value)) {
                 return true;
             }
             

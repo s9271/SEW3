@@ -19,7 +19,7 @@
         'misje'         => array('controller' => 'ControllerSoldiers', 'permissions' => array('1', '2')),
         'szkolenia'     => array('controller' => 'ControllerSoldiers', 'permissions' => array('1', '2')),
         'odznaczenia'   => array('controller' => 'ControllerSoldiers', 'permissions' => array('1', '2')),
-        'szkoly-wyzsze' => array('controller' => 'ControllerSoldiers', 'permissions' => array('1', '2')),
+        'szkoly-wyzsze' => array('controller' => 'ControllerSoldierSchools', 'permissions' => array('1', '2')),
         'jezyki'        => array('controller' => 'ControllerSoldierLanguages', 'permissions' => array('1', '2')),
         'prawo-jazdy'   => array('controller' => 'ControllerSoldierDriveLicenses', 'permissions' => array('1', '2')),
         'dzieci'        => array('controller' => 'ControllerSoldierChildrens', 'permissions' => array('1', '2')),

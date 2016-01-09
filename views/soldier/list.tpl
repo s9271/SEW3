@@ -80,7 +80,7 @@
                                     <li class="divider"> </li>
                                     <li class="dropdown-header">Wykształcenie</li>
                                     <li>
-                                        <a href="#" title="Szkoły wyższe">
+                                        <a href="/zolnierze/<?php echo $item['id_soldier']; ?>/szkoly-wyzsze" title="Szkoły wyższe">
                                             <span class="glyphicon glyphicon-screenshot"></span>Szkoły wyższe
                                         </a>
                                     </li>
