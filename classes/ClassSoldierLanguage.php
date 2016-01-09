@@ -61,6 +61,25 @@
             }
         }
         
+        // dodatkowe wlasne walidacje podczas dodawania
+        public function addCustomValidate()
+        {
+            // sprawdzanie czy stopien zaawansowania istnieje i jest aktywny
+            $item = new ClassLanguageLevel($this->id_language_level);
+            
+            if(!$item->load_class){
+                $this->errors = "Stopień zaawansowania nie istnieje.";
+                return false;
+            }
+            
+            if($item->active != '1'){
+                $this->errors = "Stopień zaawansowania jest wyłączony.";
+                return false;
+            }
+            
+            return true;
+        }
+        
         // dodatkowe wlasne walidacje podczas usuwania
         public function deleteCustomValidate()
         {
@@ -77,8 +96,8 @@
         /* ************************************ */
         
         // pobieranie wszystkich rekordow
-        public static function sqlGetAllItems($using_pages = false, $current_page = '1', $items_on_page = '5', $controller_search = ''){
-            if($sql = parent::sqlGetAllItems($using_pages, $current_page, $items_on_page, $controller_search))
+        public static function sqlGetAllItems($using_pages = false, $current_page = '1', $items_on_page = '5', $controller_search = '', array $custom_where = array()){
+            if($sql = parent::sqlGetAllItems($using_pages, $current_page, $items_on_page, $controller_search, $custom_where))
             {
                 foreach($sql as $key => $val)
                 {

@@ -95,6 +95,19 @@
                 return false;
             }
             
+            // sprawdzanie czy tytul zawodowy istnieje i jest aktywny
+            $item = new ClassAcademicDegree($this->id_academic_degree);
+            
+            if(!$item->load_class){
+                $this->errors = "Tytuł zawodowy nie istnieje.";
+                return false;
+            }
+            
+            if($item->active != '1'){
+                $this->errors = "Tytuł zawodowy jest wyłączony.";
+                return false;
+            }
+            
             // konwersja danty na cele zapisu w bazie
             $this->date_start = date('Y-m-d', strtotime($this->date_start));
             $this->date_end = date('Y-m-d', strtotime($this->date_end));
@@ -133,8 +146,8 @@
         /* ************************************ */
         
         // pobieranie wszystkich rekordow
-        public static function sqlGetAllItems($using_pages = false, $current_page = '1', $items_on_page = '5', $controller_search = ''){
-            if($sql = parent::sqlGetAllItems($using_pages, $current_page, $items_on_page, $controller_search))
+        public static function sqlGetAllItems($using_pages = false, $current_page = '1', $items_on_page = '5', $controller_search = '', array $custom_where = array()){
+            if($sql = parent::sqlGetAllItems($using_pages, $current_page, $items_on_page, $controller_search, $custom_where))
             {
                 foreach($sql as $key => $val)
                 {

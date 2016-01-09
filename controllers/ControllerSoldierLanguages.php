@@ -33,7 +33,7 @@
             // strony
             $this->controller_name = 'jezyki';
             $this->using_pages = true;
-            $this->count_items = ClassSoldierLanguage::sqlGetCountItems();
+            $this->count_items = ClassSoldierLanguage::sqlGetCountItems('', array('id_soldier' => $item->id));
             $this->current_page = ClassTools::getValue('number_page') ? ClassTools::getValue('number_page') : '1';
             
             // tytul strony
@@ -44,7 +44,7 @@
             $this->load_js_functions = true;
             
             // pobieranie wszystkich rekordow
-            $this->tpl_values['items'] = ClassSoldierLanguage::sqlGetAllItems($this->using_pages, $this->current_page, $this->items_on_page);
+            $this->tpl_values['items'] = ClassSoldierLanguage::sqlGetAllItems($this->using_pages, $this->current_page, $this->items_on_page, '', array('id_soldier' => $item->id));
             
             $this->tpl_values['id_soldier'] = $item->id;
             

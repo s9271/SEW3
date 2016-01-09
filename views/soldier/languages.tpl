@@ -93,7 +93,7 @@
                             else:
                         ?>
                         <tr>
-                            <td class="table_null" colspan="5">Żołnierz nie posiada języków</td>
+                            <td class="table_null" colspan="4">Żołnierz nie posiada języków</td>
                         </tr>
                         <?php
                             endif;

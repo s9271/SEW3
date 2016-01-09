@@ -47,7 +47,7 @@
             // strony
             $this->controller_name = 'szkoly-wyzsze';
             $this->using_pages = true;
-            $this->count_items = ClassSoldierLanguage::sqlGetCountItems();
+            $this->count_items = ClassSoldierLanguage::sqlGetCountItems('', array('id_soldier' => $item->id));
             $this->current_page = ClassTools::getValue('number_page') ? ClassTools::getValue('number_page') : '1';
             
             // tytul strony
@@ -59,7 +59,7 @@
             $this->load_js_functions = true;
             
             // pobieranie wszystkich rekordow
-            $this->tpl_values['items'] = ClassSoldierSchool::sqlGetAllItems($this->using_pages, $this->current_page, $this->items_on_page);
+            $this->tpl_values['items'] = ClassSoldierSchool::sqlGetAllItems($this->using_pages, $this->current_page, $this->items_on_page, '', array('id_soldier' => $item->id));
             
             // id zolnierza
             $this->tpl_values['id_soldier'] = $item->id;
