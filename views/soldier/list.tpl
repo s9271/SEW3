@@ -90,7 +90,7 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="#" title="Prawo jazdy">
+                                        <a href="/zolnierze/<?php echo $item['id_soldier']; ?>/prawo-jazdy" title="Prawo jazdy">
                                             <span class="glyphicon glyphicon-screenshot"></span>Prawo jazdy
                                         </a>
                                     </li>

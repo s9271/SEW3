@@ -110,6 +110,7 @@
         protected function delete(){
             // ladowanie klasy
             $item = new ClassSoldierLanguage(ClassTools::getValue('id_language'));
+            $item->id_soldier = ClassTools::getValue('id_soldier');
             
             // sprawdza czy klasa zostala poprawnie zaladowana
             if($item->load_class){

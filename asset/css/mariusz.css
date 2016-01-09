@@ -710,6 +710,7 @@ table tr.form_search td.table_akcje{
     width: 110px;
 }
 
+#soldier_drive_licenses_list table:not(.table_add) .table_akcje,
 #soldier_languages_list table:not(.table_add) .table_akcje,
 #soldier_child_list table:not(.table_add) .table_akcje{
     width: 75px;
@@ -723,5 +724,5 @@ table tr.form_search td.table_akcje{
 
 .soldier_children_list table select,
 .soldier_children_list table .select2{
-    width: 100%;
+    width: 100% !important;
 }
