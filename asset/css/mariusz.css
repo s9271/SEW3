@@ -676,3 +676,46 @@ table tr.form_search td.table_akcje{
 .dropdown-menu-button-link:hover span{
     opacity: 0.6;
 }
+
+/* DZIECI */
+.soldier_children_list .jumbotron{
+    text-align: left;
+}
+
+.soldier_children_list table{
+    table-layout: fixed;
+    text-align: left;
+    width: 100%;
+}
+
+.soldier_children_list table td{
+    vertical-align: middle;
+    word-wrap: break-word;
+}
+
+.soldier_children_list table .table_id{
+    width: 80px;
+}
+
+.soldier_children_list table td.table_id,
+.soldier_children_list table td.table_akcje{
+    text-align: center;
+}
+
+.soldier_children_list table.table_add{
+    margin-bottom: 70px;
+}
+
+.soldier_children_list table.table_add .table_akcje{
+    width: 110px;
+}
+
+#soldier_child_list table:not(.table_add) .table_akcje{
+    width: 75px;
+}
+
+.jumbotron h1.controller_child_title{
+    font-size: 22px;
+    line-height: normal;
+    margin: 0 0 10px;
+}

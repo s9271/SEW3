@@ -98,7 +98,7 @@
                                     <li class="divider"> </li>
                                     <li class="dropdown-header">Dane identyfikacyjne</li>
                                     <li>
-                                        <a href="#" title="Dzieci">
+                                        <a href="/zolnierze/<?php echo $item['id_soldier']; ?>/dzieci" title="Dzieci">
                                             <span class="glyphicon glyphicon-screenshot"></span>Dzieci
                                         </a>
                                     </li>

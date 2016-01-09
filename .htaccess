@@ -9,13 +9,19 @@ RewriteRule ^([_A-Za-z\-]+)/([0-9]+)/(dodaj)/?$ index\.php?controller=$1&page=$2
 RewriteRule ^([_A-Za-z\-]+)/(dodaj)/?$ index\.php?controller=$1&page_action=$2 [L]
 RewriteRule ^([_A-Za-z\-]+)/(edytuj|podglad|usun)/([0-9]+)/?$ index\.php?controller=$1&page_action=$2&id_item=$3 [L]
 RewriteRule ^([_A-Za-z\-]+)/(edytuj|podglad|usun)/([0-9]+)/([_A-Za-z\-]+)/?$ index\.php?controller=$1&page_action=$2&id_item=$3&page_action_option=$4 [L]
-RewriteRule ^(zolnierze)/([0-9]+)/(wyposazenie|misje|szkolenia|odznaczenia)/?$ index\.php?controller=zolnierze&id_soldier=$2&page_action=$3 [L]
-RewriteRule ^(zolnierze)/([0-9]+)/(wyposazenie|misje|szkolenia|odznaczenia)/([0-9]+)/(podglad|usun|oddeleguj)/([0-9]+)/?$ index\.php?controller=zolnierze&id_soldier=$2&page_action=$3&page_action_id=$4&page_action_option=$5&page_action_option_id=$6 [L]
-RewriteRule ^(zolnierze)/([0-9]+)/(wyposazenie|misje|szkolenia|odznaczenia)/(strona)/([0-9]+)/?$ index\.php?controller=zolnierze&id_soldier=$2&page_action=$3&page=$5 [L]
+#RewriteRule ^(zolnierze)/([0-9]+)/(wyposazenie|misje|szkolenia|odznaczenia)/?$ index\.php?controller=zolnierze&id_soldier=$2&page_action=$3 [L]
+#RewriteRule ^(zolnierze)/([0-9]+)/(wyposazenie|misje|szkolenia|odznaczenia)/([0-9]+)/(podglad|usun|oddeleguj)/([0-9]+)/?$ index\.php?controller=zolnierze&id_soldier=$2&page_action=$3&page_action_id=$4&page_action_option=$5&page_action_option_id=$6 [L]
+#RewriteRule ^(zolnierze)/([0-9]+)/(wyposazenie|misje|szkolenia|odznaczenia)/(strona)/([0-9]+)/?$ index\.php?controller=zolnierze&id_soldier=$2&page_action=$3&page=$5 [L]
+
+#ZOLNIERZ
+RewriteRule ^(zolnierze)/([0-9]+)/([_A-Za-z\-]+)/?$ index\.php?controller=$1&id_item=$2&child_controller=$3 [L]
+RewriteRule ^(zolnierze)/([0-9]+)/([_A-Za-z\-]+)/(dodaj)/?$ index\.php?controller=$1&id_item=$2&child_controller=$3&page_action=$4 [L]
+RewriteRule ^(zolnierze)/([0-9]+)/([_A-Za-z\-]+)/(edytuj|podglad|usun|oddeleguj)/([0-9]+)/?$ index\.php?controller=$1&id_item=$2&child_controller=$3&page_action=$4&id_child_item=$5 [L]
 
 #STRONY
 RewriteRule ^([_A-Za-z\-]+)/(strona)/([0-9]+)/?$ index\.php?controller=$1&page_action=$2&number_page=$3 [L]
 RewriteRule ^([_A-Za-z\-]+)/([0-9]+)/(strona)/([0-9]+)/?$ index\.php?controller=$1&page=$2&page_action=$3&number_page=$4 [L]
+RewriteRule ^(zolnierze)/([0-9]+)/([_A-Za-z\-]+)/(strona)/([0-9]+)/?$ index\.php?controller=$1&id_item=$2&child_controller=$3&page_action=$4&number_page=$5 [L]
 
 #RewriteRule ^(sew)/([_A-Za-z\-]+)/([0-9]+)/?$ /sew/index\.php?page_name=$2&page=$3 [L]
 #RewriteRule ^(sew)/([_A-Za-z\-]+)/(usun)/([0-9]+)/?$ /sew/index\.php?page_name=$2&action=usun&id_item=$4 [L]

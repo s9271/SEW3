@@ -74,21 +74,37 @@
         if($controller){
             // sprawdzenie czy jest zdefiniowany controller
             if(isset($controllers[$controller])){
+                $class_controller = $controllers[$controller];
                 
-                if(isset($controllers[$controller]['permissions'])){
-                    if (in_array($login->auth_user['id_permission'], $controllers[$controller]['permissions'])){
-                        $loadController = new $controllers[$controller]['controller'];
+                // sprawdzanie czy kontroller ma dzieci i czy w linku jest podane dziecko
+                $child_controller = ClassTools::getValue('child_controller');
+                
+                if($child_controller){
+                    if(isset($class_controller['childrens']) && isset($class_controller['childrens'][$child_controller])){
+                        $class_controller = $class_controller['childrens'][$child_controller];
+                    }else{
+                        ClassTools::redirect('404');
+                        exit;
+                    }
+                }
+                
+                if(isset($class_controller['permissions']))
+                {
+                    if (in_array($login->auth_user['id_permission'], $class_controller['permissions']))
+                    {
+                        $loadController = new $class_controller['controller'];
                         print $loadController->getContent();
                     }else{
                         $loadController = new ControllerModel();
                         print $loadController->getPageNoPermissions();
                     }
                 }else{
-                    $loadController = new $controllers[$controller]['controller'];
+                    $loadController = new $class_controller['controller'];
                     print $loadController->getContent();
                 }
             }else{ // jezeli nie jest zdefiniowany to zaladuje 404
                 ClassTools::redirect('404');
+                exit;
             }
         }
         elseif(!$controller && $current_link == '/')
