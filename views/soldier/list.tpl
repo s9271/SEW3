@@ -62,7 +62,7 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="/zolnierze/<?php echo $key; ?>/misje/" title="Misje">
+                                        <a href="/zolnierze/<?php echo $item['id_soldier']; ?>/misje" title="Misje">
                                             <span class="glyphicon glyphicon-move"></span>Misje
                                         </a>
                                     </li>

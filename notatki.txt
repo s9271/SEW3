@@ -10,4 +10,4 @@ haslo w sesji
 Odznaczenia
     podczas edycji ze zmiana ilosci stopni trzeba sprawdzic czy z ktoryms zolnierzem nie jest juz powiazany, jesli tak, to ma uniemozliwic usuniecie
 
-    poprawic szkoly, prawa jazdy itp, sprawdzac podczas dodawania czy kategorie sa dostepne i mozna je dodawac
+    poprawic user_tmp na soldier_tmp w szkoleniach, jezykach zolnierza

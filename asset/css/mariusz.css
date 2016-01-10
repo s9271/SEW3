@@ -755,3 +755,42 @@ table tr.form_search td.table_akcje{
 #soldier_schools_list table td{
     vertical-align: middle;
 }
+
+#soldier_missions_list table.table_add .table_akcje{
+    width: 185px;
+}
+
+#soldier_missions_list table:not(.table_add) .table_akcje{
+    width: 145px;
+}
+
+#soldier_missions_list table .table_date_start{
+    width: 185px;
+}
+
+#soldier_missions_list table .table_date_end{
+    width: 185px;
+}
+
+#soldier_missions_list table .table_status{
+    width: 185px;
+}
+
+#soldier_missions_list table:not(.table_add) td{
+    vertical-align: middle;
+    word-wrap: break-word;
+}
+
+#soldier_missions_list table td .btn-group a > span{
+    font-size: 12px;
+    line-height: normal;
+    margin-right: 4px;
+}
+
+#soldier_missions_list .btn-group ul.dropdown-menu {
+    background-color: #ffffff;
+}
+
+#soldier_missions_list table td .btn-group a:hover > span {
+    opacity: 0.6;
+}
