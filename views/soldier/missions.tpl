@@ -64,36 +64,43 @@
                             <td class="table_date_start"><?php echo $item['date_start']; ?></td>
                             <td class="table_date_end"><?php echo $item['date_end']; ?></td>
                             <td class="table_status"><?php echo $item['status_name']; ?></td>
-                            <td class="table_akcje">
+                            <td class="table_akcje<?php echo $item['detached'] == '0' ? '' : ' detached'; ?>">
                                 
                                 <form method="post">
                                     <div class="btn-group">
                                         <a href="/zolnierze/<?php echo $item['id_soldier']; ?>/misje/podglad/<?php echo $item['id_soldier2missions']; ?>" class="edit btn btn-primary" title="Podgląd">
                                             <span class="glyphicon glyphicon-zoom-in"></span>Podgląd
                                         </a>
-                                        <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                                            <span class="glyphicon glyphicon-chevron-down"></span>
-                                        </button>
-                                        <ul class="dropdown-menu dropdown-menu-right">
-                                            <li>
-                                                <a href="/zolnierze/<?php echo $item['id_soldier']; ?>/misje/edytuj/<?php echo $item['id_soldier2missions']; ?>" title="Edytuj">
-                                                    <span class="glyphicon glyphicon-pencil"></span>Edytuj dodatkową informację
-                                                </a>
-                                            </li>
-                                            <li class="divider"> </li>
-                                            <li>
-                                                <a href="/zolnierze/<?php echo $item['id_soldier']; ?>/misje/oddeleguj/<?php echo $item['id_soldier2missions']; ?>" title="Oddeleguj">
-                                                    <span class="glyphicon glyphicon-pencil"></span>Oddeleguj
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <form method="post">
-                                                    <input type="hidden" name="id_soldier" value="<?php echo $item['id_soldier']; ?>" />
-                                                    <input type="hidden" name="id_soldier2missions" value="<?php echo $item['id_soldier2missions']; ?>" />
-                                                    <button class="dropdown-menu-button-link jsconfirm" data-confirm="<?php echo htmlspecialchars($item['name']); ?>: Czy na pewno chcesz usunąć misję?" type="submit" name="form_action" value="mission_delete"><span class="glyphicon glyphicon-trash"></span> Usuń</button>
-                                                </form>
-                                            </li>
-                                        </ul>
+                                        
+                                        <?php if($item['detached'] == '0'){ ?>
+                                        
+                                            <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                                                <span class="glyphicon glyphicon-chevron-down"></span>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-right">
+                                                <li>
+                                                    <a href="/zolnierze/<?php echo $item['id_soldier']; ?>/misje/edytuj/<?php echo $item['id_soldier2missions']; ?>" title="Edytuj">
+                                                        <span class="glyphicon glyphicon-pencil"></span>Edytuj dodatkową informację
+                                                    </a>
+                                                </li>
+                                                <li class="divider"> </li>
+                                                <li>
+                                                    <a href="/zolnierze/<?php echo $item['id_soldier']; ?>/misje/oddeleguj/<?php echo $item['id_soldier2missions']; ?>" title="Oddeleguj">
+                                                        <span class="glyphicon glyphicon-pencil"></span>Oddeleguj
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <form method="post">
+                                                        <input type="hidden" name="id_soldier" value="<?php echo $item['id_soldier']; ?>" />
+                                                        <input type="hidden" name="id_soldier2missions" value="<?php echo $item['id_soldier2missions']; ?>" />
+                                                        <input type="hidden" name="id_mission" value="<?php echo $item['id_mission']; ?>" />
+                                                        <button class="dropdown-menu-button-link jsconfirm" data-confirm="<?php echo htmlspecialchars($item['name']); ?>: Czy na pewno chcesz usunąć misję?" type="submit" name="form_action" value="mission_delete"><span class="glyphicon glyphicon-trash"></span> Usuń</button>
+                                                    </form>
+                                                </li>
+                                            </ul>
+                                            
+                                        <?php } ?>
+                                        
                                     </div>
 
                                 </form>

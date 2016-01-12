@@ -250,7 +250,7 @@
                 case 'mission_detach':
                     return $this->detach(); // oddelegowanie
                 break;
-                case 'language_delete':
+                case 'mission_delete':
                     return $this->delete(); // usuwanie
                 break;
             }
@@ -287,15 +287,24 @@
         // usuwanie
         protected function delete(){
             // ladowanie klasy
-            $item = new ClassSoldierLanguage(ClassTools::getValue('id_language'));
+            $item = new ClassSoldier2Mission(ClassTools::getValue('id_soldier2missions'));
+            
+            // sprawdza czy klasa zostala poprawnie zaladowana
+            if(!$item->load_class){
+                $this->alerts['danger'] = "Misja żołnierza nie istnieje.";
+            }
+            
             $item->id_soldier = ClassTools::getValue('id_soldier');
+            $item->id_mission = ClassTools::getValue('id_mission');
+            $item->description_detach = ClassTools::getValue('form_description_detach');
+            $item->id_user = ClassAuth::getCurrentUserId();
             
             // sprawdza czy klasa zostala poprawnie zaladowana
             if($item->load_class){
                 // usuwanie
                 if($item->delete()){
                     // komunikat
-                    $this->alerts['success'] = "Poprawnie usunięto język: <b>{$item->name}</b>";
+                    $this->alerts['success'] = "Poprawnie usunięto misję.";
                     return;
                 }else{
                     // bledy w przypadku problemow z usunieciem
@@ -304,7 +313,7 @@
                 }
             }
             
-            $this->alerts['danger'] = 'Język nie istnieje';
+            $this->alerts['danger'] = 'Żołnierz nie jest powiązany z tą misją.';
             $_POST = array();
             
             return;

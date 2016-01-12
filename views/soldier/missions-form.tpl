@@ -22,6 +22,7 @@
             <div class="form-group">
                 <div class="col-sm-12">
                     <a href="/zolnierze/<?php echo $this->tpl_values['id_soldier']; ?>/misje/" class="btn btn-info mar_button"><span class="glyphicon glyphicon-chevron-left"></span>Powrót do listy misji żołnierza</a>
+                    <a href="/zolnierze/<?php echo $this->tpl_values['id_soldier']; ?>/misje/podglad/<?php echo $this->tpl_values['id_soldier2missions']; ?>" class="btn btn-primary mar_button">Podgląd</a>
                     
                     <input type="hidden" name="id_soldier" value="<?php echo $this->tpl_values['id_soldier']; ?>" />
                     <input type="hidden" name="id_soldier2missions" value="<?php echo $this->tpl_values['id_soldier2missions']; ?>" />

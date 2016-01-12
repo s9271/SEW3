@@ -799,6 +799,15 @@ table tr.form_search td.table_akcje{
     opacity: 0.6;
 }
 
+#soldier_missions_list table td.table_akcje.detached .btn-group{
+    width: 123px;
+}
+
+#soldier_missions_list table td.table_akcje.detached a {
+    text-align: center;
+    width: 100%;
+}
+
 #soldier_missions_form .jumbotron,
 #soldier_missions_form .jumbotron{
     text-align: left;
