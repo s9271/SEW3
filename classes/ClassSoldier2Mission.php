@@ -14,6 +14,9 @@
         // id misji
         public $id_mission;
         
+        // id misji
+        public $id_mission_tmp;
+        
         // opis
         public $description = '';
         
@@ -72,6 +75,9 @@
             {
                 // przypisanie poprawnego zolnierza do tymczasowej zmiennej
                 $this->id_soldier_tmp = $this->id_soldier;
+                
+                // przypisanie poprawnej misji do tymczasowej zmiennej
+                $this->id_mission_tmp = $this->id_mission;
                 
                 // nazwa statusu misji
                 $item = new ClassMission($this->id_mission);
@@ -145,6 +151,22 @@
             return true;
         }
         
+        // dodatkowe wlasne walidacje podczas aktualizowania
+        public function updateCustomValidate()
+        {
+            if($this->id_soldier_tmp != $this->id_soldier){
+                $this->errors = "Niepoprawny żołnierz.";
+                return false;
+            }
+            
+            if($this->id_mission_tmp != $this->id_mission){
+                $this->errors = "Niepoprawna misja.";
+                return false;
+            }
+            
+            return true;
+        }
+        
         public static function checkInterferingDates($date_start1, $date_start2, $date_end1, $date_end2)
         {
             $date_start1 = strtotime($date_start1);
@@ -183,9 +205,18 @@
         // dodatkowe wlasne walidacje podczas usuwania
         public function deleteCustomValidate()
         {
-            // sprawdzanie czy id_zolnierza do ktorego jest przypisane dziecko zgadza sie z tym do usuwania
-            if($this->id_user_tmp != $this->id_user){
-                $this->errors = "Żołnierz nie posiada tego języka.";
+            if($this->id_soldier_tmp != $this->id_soldier){
+                $this->errors = "Niepoprawny żołnierz.";
+                return false;
+            }
+            
+            if($this->id_mission_tmp != $this->id_mission){
+                $this->errors = "Niepoprawna misja.";
+                return false;
+            }
+            
+            if($this->detached == '1'){
+                $this->errors = "Żołniez jest oddelegowany od tej misji.";
                 return false;
             }
             
@@ -223,6 +254,34 @@
             }
             
             return false;
+        }
+        
+        // oddelegowanie
+        public function detach($auto_date = true){
+            if(!isset($this->id)){
+                $this->errors[] = "Brak podanego id.";
+                return false;
+            }
+            
+            if ($auto_date && property_exists($this, 'date_update')) {
+                $this->date_update = date('Y-m-d H:i:s');
+            }
+            
+            // dodatkowe wlasne walidacje podczas usuwania
+            if(!$this->deleteCustomValidate()){
+                return false;
+            }
+            
+            if (!$this->sqlDetach(static::$definition['table'], $this->id)){
+                $this->errors[] = "Oddelegowanie: Błąd aktualizacji rekordu w bazie.";
+                return false;
+            }
+            
+            unset($this->id);
+            if($this->load_class){
+                $this->load_class = false;
+            }
+            return true;
         }
         
         /* **************** SQL *************** */
@@ -297,6 +356,39 @@
             }
             
             return $sql;
+        }
+        
+        // oddelegowanie
+        protected function sqlDetach($table, $id_item){
+            global $DB;
+            $table_name = (static::$use_prefix ? static::$prefix : '').$table;
+            $where = static::$definition['primary'].' = '.$id_item;
+            
+            if(static::$is_log){
+                $table_name_log = static::$prefix_log.$table;
+                
+                if(!$item_to_log = self::sqlGetItem($id_item)){
+                    $this->errors[] = "LOG: Błąd podczas pobierania rekordu z bazy.";
+                    return false;
+                }
+                
+                if(!$DB->insert($table_name_log, $item_to_log)){
+                    $this->errors[] = "LOG: Błąd podczas zapisywania rekordu w tabeli z logami.";
+                    return false;
+                }
+            }
+            
+            $data = array(
+                'description_detach'    => $this->description_detach,
+                'id_user'               => $this->id_user,
+                'detached'              => '1',
+            );
+            
+            if (property_exists($this, 'date_update')) {
+                $data['date_update'] = $this->date_update;
+            }
+            
+            return $DB->update($table_name, $data, $where);
         }
         
         /* *************** AJAX ************** */

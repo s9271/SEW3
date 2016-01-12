@@ -794,3 +794,21 @@ table tr.form_search td.table_akcje{
 #soldier_missions_list table td .btn-group a:hover > span {
     opacity: 0.6;
 }
+
+#soldier_missions_list table td .btn-group a:hover > span {
+    opacity: 0.6;
+}
+
+#soldier_missions_form .jumbotron,
+#soldier_missions_form .jumbotron{
+    text-align: left;
+}
+
+#soldier_missions_form form .select2,
+#soldier_missions_form form .select2{
+    width: 100% !important;
+}
+
+.mar_custom table{
+    width: 100%;
+}

@@ -10,7 +10,7 @@
                     <table class="table table_add table-striped table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th class="table_mission">Misja</th>
+                                <th class="table_mission">*Misja</th>
                                 <th class="table_akcje">Akcje</th>
                             </tr>
                         </thead>
@@ -74,10 +74,10 @@
                                         <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                                             <span class="glyphicon glyphicon-chevron-down"></span>
                                         </button>
-                                        <ul class="dropdown-menu">
+                                        <ul class="dropdown-menu dropdown-menu-right">
                                             <li>
                                                 <a href="/zolnierze/<?php echo $item['id_soldier']; ?>/misje/edytuj/<?php echo $item['id_soldier2missions']; ?>" title="Edytuj">
-                                                    <span class="glyphicon glyphicon-pencil"></span>Edytuj
+                                                    <span class="glyphicon glyphicon-pencil"></span>Edytuj dodatkową informację
                                                 </a>
                                             </li>
                                             <li class="divider"> </li>

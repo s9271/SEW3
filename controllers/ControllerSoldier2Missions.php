@@ -23,6 +23,24 @@
                 return $this->loadTemplate('alert');
             }
             
+            // sprawdzanie czy jest sie na podstronie
+            if($page_action = ClassTools::getValue('page_action')){
+                switch($page_action){
+                    case 'dodaj':
+                        // ladowanie strony z formularzem
+                        // return $this->getPageAdd($item);
+                    break;
+                    case 'edytuj':
+                        // ladowanie strony z formularzem
+                        return $this->getPageEdit($item);
+                    break;
+                    case 'oddeleguj':
+                        // ladowanie strony z formularzem
+                        return $this->getPageDetach($item);
+                    break;
+                }
+            }
+            
             return $this->getPageList($item);
         }
         
@@ -68,6 +86,146 @@
             return $this->loadTemplate('/soldier/missions');
         }
         
+        // strona edycji
+        protected function getPageEdit($soldier){
+            // zmienne wyswietlania na wypadek gdy strona z odznaczeniem nie istnieje
+            $this->tpl_values['wstecz'] = "/zolnierze/{$soldier->id}/misje";
+            $this->tpl_values['title'] = "{$soldier->name} {$soldier->surname}: Misje: Edycja";
+            
+            // sprawdzanie czy id istnieje w linku
+            if(!$id_child_item = ClassTools::getValue('id_child_item')){
+                $this->alerts['danger'] = 'Brak podanego id';
+                
+                // ladowanie strony do wyswietlania bledow
+                // zmienne ktore mozna uzyc: wstecz, title oraz alertow
+                return $this->loadTemplate('alert');
+            }
+            
+            $this->actions();
+            
+            // ladowanie klasy
+            $item = new ClassSoldier2Mission($id_child_item);
+            
+            // sprawdzanie czy klasa zostala poprawnie zaladowana
+            if(!$item->load_class){
+                $this->alerts['danger'] = 'Misja nie istnieje';
+                
+                // ladowanie strony do wyswietlania bledow
+                // zmienne ktore mozna uzyc: wstecz, title oraz alertow
+                return $this->loadTemplate('alert');
+            }
+            
+            // sprawdzanie szkola jest przypisana do tego zolnierza
+            if($soldier->id != $item->id_soldier){
+                $this->alerts['danger'] = 'Misja nie jest przypisana do tego żołnierza';
+                
+                // ladowanie strony do wyswietlania bledow
+                // zmienne ktore mozna uzyc: wstecz, title oraz alertow
+                return $this->loadTemplate('alert');
+            }
+            
+            // sprawdzanie czy misja nie jest oddelegowana
+            if($item->detached == '1'){
+                $this->alerts['danger'] = 'Żołnierz został oddelegowany od tej misji.';
+                
+                // ladowanie strony do wyswietlania bledow
+                // zmienne ktore mozna uzyc: wstecz, title oraz alertow
+                return $this->loadTemplate('alert');
+            }
+            
+            // tytul
+            $this->tpl_title = "{$soldier->name} {$soldier->surname}: Misja: Edycja";
+            
+            // skrypty
+            $this->load_js_functions = true;
+            
+            // przypisanie zmiennych formularza do zmiennych klasy
+            $array_form_class = array(
+                'id_soldier2missions'       => $item->id,
+                'id_soldier'                => $soldier->id,
+                'id_mission'                => $item->id_mission,
+                'form_description'          => $item->description
+            );
+            
+            // przypisywanieszych zmiennych do zmiennych formularza
+            $this->setValuesTemplateByArrayPost($array_form_class);
+            
+            // ladowanie strony z formularzem
+            return $this->loadTemplate('/soldier/missions-form');
+        }
+        
+        // strona oddelegowania
+        protected function getPageDetach($soldier){
+            // zmienne wyswietlania na wypadek gdy strona z odznaczeniem nie istnieje
+            $this->tpl_values['wstecz'] = "/zolnierze/{$soldier->id}/misje";
+            $this->tpl_values['title'] = "{$soldier->name} {$soldier->surname}: Misje: Oddelegowanie";
+            
+            // sprawdzanie czy id istnieje w linku
+            if(!$id_child_item = ClassTools::getValue('id_child_item')){
+                $this->alerts['danger'] = 'Brak podanego id';
+                
+                // ladowanie strony do wyswietlania bledow
+                // zmienne ktore mozna uzyc: wstecz, title oraz alertow
+                return $this->loadTemplate('alert');
+            }
+            
+            $this->actions();
+            
+            // ladowanie klasy
+            $item = new ClassSoldier2Mission($id_child_item);
+            
+            // sprawdzanie czy klasa zostala poprawnie zaladowana
+            if(!$item->load_class){
+                $this->alerts['danger'] = 'Misja nie istnieje';
+                
+                // ladowanie strony do wyswietlania bledow
+                // zmienne ktore mozna uzyc: wstecz, title oraz alertow
+                return $this->loadTemplate('alert');
+            }
+            
+            // sprawdzanie szkola jest przypisana do tego zolnierza
+            if($soldier->id != $item->id_soldier){
+                $this->alerts['danger'] = 'Misja nie jest przypisana do tego żołnierza';
+                
+                // ladowanie strony do wyswietlania bledow
+                // zmienne ktore mozna uzyc: wstecz, title oraz alertow
+                return $this->loadTemplate('alert');
+            }
+            
+            // sprawdzanie czy misja nie jest oddelegowana
+            if($item->detached == '1' && (!isset($this->alerts['success']) || $this->alerts['success'] == '')){
+                $this->alerts['danger'] = 'Żołnierz został oddelegowany od tej misji.';
+                
+                // zmienne wyswietlania na wypadek gdy strona z odznaczeniem nie istnieje
+                $this->tpl_values['wstecz'] = "/zolnierze/{$soldier->id}/misje";
+                $this->tpl_values['title'] = "{$soldier->name} {$soldier->surname}: Misje: Oddelegowanie";
+                
+                // ladowanie strony do wyswietlania bledow
+                // zmienne ktore mozna uzyc: wstecz, title oraz alertow
+                return $this->loadTemplate('alert');
+            }
+            
+            // tytul
+            $this->tpl_title = "{$soldier->name} {$soldier->surname}: Misja: Oddelegowanie";
+            
+            // skrypty
+            $this->load_js_functions = true;
+            
+            // przypisanie zmiennych formularza do zmiennych klasy
+            $array_form_class = array(
+                'id_soldier2missions'       => $item->id,
+                'id_soldier'                => $soldier->id,
+                'id_mission'                => $item->id_mission,
+                'description_detach'        => $item->description_detach
+            );
+            
+            // przypisywanieszych zmiennych do zmiennych formularza
+            $this->setValuesTemplateByArrayPost($array_form_class);
+            
+            // ladowanie strony z formularzem
+            return $this->loadTemplate('/soldier/missions-detach');
+        }
+        
         /* *************** AKCJE ************** */
         /* ************************************ */
         
@@ -85,6 +243,12 @@
             switch($_POST['form_action']){
                 case 'mission_add':
                     return $this->add($item); // dodawanie
+                break;
+                case 'mission_save':
+                    return $this->edit(); // edytowanie
+                break;
+                case 'mission_detach':
+                    return $this->detach(); // oddelegowanie
                 break;
                 case 'language_delete':
                     return $this->delete(); // usuwanie
@@ -141,6 +305,70 @@
             }
             
             $this->alerts['danger'] = 'Język nie istnieje';
+            $_POST = array();
+            
+            return;
+        }
+        
+        // edycja
+        protected function edit()
+        {
+            // ladowanie klasy
+            $item = new ClassSoldier2Mission(ClassTools::getValue('id_soldier2missions'));
+            
+            // sprawdza czy klasa zostala poprawnie zaladowana
+            if(!$item->load_class){
+                $this->alerts['danger'] = "Misja żołnierza nie istnieje.";
+            }
+            
+            $item->id_soldier = ClassTools::getValue('id_soldier');
+            $item->id_mission = ClassTools::getValue('id_mission');
+            $item->description = ClassTools::getValue('form_description');
+            $item->id_user = ClassAuth::getCurrentUserId();
+            
+            // komunikaty bledu
+            if(!$item->update()){
+                $this->alerts['danger'] = $item->errors;
+                return;
+            }
+            
+            // komunikat
+            $this->alerts['success'] = "Poprawnie zaktualizowano misję żołnierza.";
+            
+            // czyszczeie zmiennych wyswietlania
+            $this->tpl_values = '';
+            $_POST = array();
+            
+            return;
+        }
+        
+        // oddelegowanie
+        protected function detach()
+        {
+            // ladowanie klasy
+            $item = new ClassSoldier2Mission(ClassTools::getValue('id_soldier2missions'));
+            
+            // sprawdza czy klasa zostala poprawnie zaladowana
+            if(!$item->load_class){
+                $this->alerts['danger'] = "Misja żołnierza nie istnieje.";
+            }
+            
+            $item->id_soldier = ClassTools::getValue('id_soldier');
+            $item->id_mission = ClassTools::getValue('id_mission');
+            $item->description_detach = ClassTools::getValue('form_description_detach');
+            $item->id_user = ClassAuth::getCurrentUserId();
+            
+            // komunikaty bledu
+            if(!$item->detach()){
+                $this->alerts['danger'] = $item->errors;
+                return;
+            }
+            
+            // komunikat
+            $this->alerts['success'] = "Poprawnie oddelegowano żołnierza z misji.";
+            
+            // czyszczeie zmiennych wyswietlania
+            $this->tpl_values = '';
             $_POST = array();
             
             return;
