@@ -221,12 +221,14 @@ button.btn.mar_button .glyphicon{
     text-align: left;
 }
 
+.mar_custom .row_title,
 .sew-row > .row_title{
     font-weight: bold;
     line-height: normal;
     margin-top: 10px;
 }
 
+.mar_custom .row_content,
 .sew-row > .row_content{
     background-color: #fefefe;
     line-height: normal;
@@ -234,6 +236,9 @@ button.btn.mar_button .glyphicon{
     padding: 10px;
 }
 
+.mar_custom .row_content .sew_green,
+.mar_custom .row_content .sew_purple,
+.mar_custom .row_content .sew_orange,
 #mission_view .sew-row > .row_content .sew_green,
 #mission_view .sew-row > .row_content .sew_purple,
 #mission_view .sew-row > .row_content .sew_orange{
@@ -522,6 +527,10 @@ table tr.form_search td.table_akcje{
     padding: 0;
 }
 
+.sew_hint.col-sm-offset-3{
+    margin-left: 25%;
+}
+
 #training_view{
     text-align: left;
 }
@@ -633,17 +642,17 @@ table tr.form_search td.table_akcje{
     background-color: #f8f8f8;
 }
 
-.mar_custom form .page-header{
+.mar_custom .page-header{
     border-color: #337ab7;
     color: #337ab7;
 }
 
-.mar_custom form .page-header.danger{
+.mar_custom .page-header.danger{
     border-color: #c9302c;
     color: #c9302c;
 }
 
-.mar_custom form .page-header.warning{
+.mar_custom .page-header.warning{
     border-color: #EC971F;
     color: #EC971F;
 }
@@ -808,7 +817,7 @@ table tr.form_search td.table_akcje{
     width: 100%;
 }
 
-#soldier_missions_form .jumbotron,
+#soldier_missions_view .jumbotron,
 #soldier_missions_form .jumbotron{
     text-align: left;
 }
@@ -820,4 +829,8 @@ table tr.form_search td.table_akcje{
 
 .mar_custom table{
     width: 100%;
+}
+
+.margin_top_15{
+    margin-top: 15px;
 }

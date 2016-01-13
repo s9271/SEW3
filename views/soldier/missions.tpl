@@ -64,7 +64,7 @@
                             <td class="table_date_start"><?php echo $item['date_start']; ?></td>
                             <td class="table_date_end"><?php echo $item['date_end']; ?></td>
                             <td class="table_status"><?php echo $item['status_name']; ?></td>
-                            <td class="table_akcje<?php echo $item['detached'] == '0' ? '' : ' detached'; ?>">
+                            <td class="table_akcje<?php echo $item['detached'] == '0' || $this->tpl_values['id_login_permission'] == '1' ? '' : ' detached'; ?>">
                                 
                                 <form method="post">
                                     <div class="btn-group">
@@ -72,7 +72,7 @@
                                             <span class="glyphicon glyphicon-zoom-in"></span>Podgląd
                                         </a>
                                         
-                                        <?php if($item['detached'] == '0'){ ?>
+                                        <?php if($item['detached'] == '0' || $this->tpl_values['id_login_permission'] == '1'){ ?>
                                         
                                             <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                                                 <span class="glyphicon glyphicon-chevron-down"></span>
@@ -84,11 +84,17 @@
                                                     </a>
                                                 </li>
                                                 <li class="divider"> </li>
+                                                
+                                                <?php if($item['detached'] == '0'){ ?>
+                                                
                                                 <li>
                                                     <a href="/zolnierze/<?php echo $item['id_soldier']; ?>/misje/oddeleguj/<?php echo $item['id_soldier2missions']; ?>" title="Oddeleguj">
                                                         <span class="glyphicon glyphicon-pencil"></span>Oddeleguj
                                                     </a>
                                                 </li>
+                                                
+                                                <?php } ?>
+                                                
                                                 <li>
                                                     <form method="post">
                                                         <input type="hidden" name="id_soldier" value="<?php echo $item['id_soldier']; ?>" />

@@ -205,6 +205,8 @@
         // dodatkowe wlasne walidacje podczas usuwania
         public function deleteCustomValidate()
         {
+            global $login;
+            
             if($this->id_soldier_tmp != $this->id_soldier){
                 $this->errors = "Niepoprawny żołnierz.";
                 return false;
@@ -215,8 +217,8 @@
                 return false;
             }
             
-            if($this->detached == '1'){
-                $this->errors = "Żołniez jest oddelegowany od tej misji.";
+            if($this->detached == '1' && $login->auth_user['id_permission'] != '1'){
+                $this->errors = "Żołniez jest oddelegowany od tej misji.<br />Tylko <b>Administrator</b> ma możliwość usunięcia oddelogowanych żołnierzy.";
                 return false;
             }
             
@@ -268,7 +270,21 @@
             }
             
             // dodatkowe wlasne walidacje podczas usuwania
-            if(!$this->deleteCustomValidate()){
+            // if(!$this->deleteCustomValidate()){
+                // return false;
+            // }
+            if($this->id_soldier_tmp != $this->id_soldier){
+                $this->errors = "Niepoprawny żołnierz.";
+                return false;
+            }
+            
+            if($this->id_mission_tmp != $this->id_mission){
+                $this->errors = "Niepoprawna misja.";
+                return false;
+            }
+            
+            if($this->detached == '1'){
+                $this->errors = "Żołnierz już jest oddelegowany od tej misji.";
                 return false;
             }
             

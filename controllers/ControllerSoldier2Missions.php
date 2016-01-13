@@ -26,10 +26,6 @@
             // sprawdzanie czy jest sie na podstronie
             if($page_action = ClassTools::getValue('page_action')){
                 switch($page_action){
-                    case 'dodaj':
-                        // ladowanie strony z formularzem
-                        // return $this->getPageAdd($item);
-                    break;
                     case 'edytuj':
                         // ladowanie strony z formularzem
                         return $this->getPageEdit($item);
@@ -37,6 +33,10 @@
                     case 'oddeleguj':
                         // ladowanie strony z formularzem
                         return $this->getPageDetach($item);
+                    break;
+                    case 'podglad':
+                        // ladowanie strony z formularzem
+                        return $this->getPageView($item);
                     break;
                 }
             }
@@ -46,6 +46,8 @@
         
         // strona lista
         protected function getPageList($item){
+            global $login;
+            
             $this->actions($item);
             
             // strony
@@ -81,6 +83,9 @@
                     $this->tpl_values['mission_selectes'] = '<option value="'.$id_mission.'" selected="selected">'.$item->name.'</option>';
                 }
             }
+            
+            // prawa zalogowanego uzytkownika
+            $this->tpl_values['id_login_permission'] = $login->auth_user['id_permission'];
             
             // ladowanie strony z lista
             return $this->loadTemplate('/soldier/missions');
@@ -152,6 +157,85 @@
             
             // ladowanie strony z formularzem
             return $this->loadTemplate('/soldier/missions-form');
+        }
+        
+        // strona podglądu
+        protected function getPageView($soldier){
+            global $login;
+            
+            // zmienne wyswietlania na wypadek gdy strona z odznaczeniem nie istnieje
+            $wstecz = "/zolnierze/{$soldier->id}/misje";
+            $title = "{$soldier->name} {$soldier->surname}: Misje: Podgląd";
+            
+            // sprawdzanie czy id istnieje w linku
+            if(!$id_child_item = ClassTools::getValue('id_child_item')){
+                $this->tpl_values['wstecz'] = $wstecz;
+                $this->tpl_values['title'] = $title;
+                $this->alerts['danger'] = 'Brak podanego id';
+                
+                // ladowanie strony do wyswietlania bledow
+                // zmienne ktore mozna uzyc: wstecz, title oraz alertow
+                return $this->loadTemplate('alert');
+            }
+            
+            $this->actions();
+            
+            // ladowanie klasy
+            $item = new ClassSoldier2Mission($id_child_item);
+            
+            $this->tpl_values['wstecz'] = $wstecz;
+            $this->tpl_values['title'] = $title;
+            
+            // sprawdzanie czy klasa zostala poprawnie zaladowana
+            if(!$item->load_class){
+                $this->alerts['danger'] = 'Przypisanie misji nie istnieje.';
+                
+                // ladowanie strony do wyswietlania bledow
+                // zmienne ktore mozna uzyc: wstecz, title oraz alertow
+                return $this->loadTemplate('alert');
+            }
+            
+            // sprawdzanie szkola jest przypisana do tego zolnierza
+            if($soldier->id != $item->id_soldier){
+                $this->alerts['danger'] = 'Misja nie jest przypisana do tego żołnierza';
+                
+                // ladowanie strony do wyswietlania bledow
+                // zmienne ktore mozna uzyc: wstecz, title oraz alertow
+                return $this->loadTemplate('alert');
+            }
+            
+            // tytul
+            $this->tpl_title = "{$soldier->name} {$soldier->surname}: Misja: Podgląd";
+            
+            // skrypty
+            $this->load_js_functions = true;
+            
+            $this->tpl_values['status_name'] = $item->status_name;
+            $this->tpl_values['detached'] = $item->detached;
+            $this->tpl_values['description'] = ClassTools::nl2br($item->description);
+            $this->tpl_values['description_detach'] = ClassTools::nl2br($item->description_detach);
+            $this->tpl_values['user_detach'] = ClassUser::sqlGetNameSurnameById($item->id_user);
+            $this->tpl_values['date_update'] = date('d.m.Y H:i', strtotime($item->date_update));
+            
+            // ladowanie misji
+            $this->tpl_values['mission'] = new ClassMission($item->id_mission);
+            
+            
+            // prawa zalogowanego uzytkownika
+            $this->tpl_values['id_login_permission'] = $login->auth_user['id_permission'];
+            
+            // przypisanie zmiennych formularza do zmiennych klasy
+            $array_form_class = array(
+                'id_soldier2missions'       => $item->id,
+                'id_soldier'                => $soldier->id,
+                'id_mission'                => $item->id_mission
+            );
+            
+            // przypisywanieszych zmiennych do zmiennych formularza
+            $this->setValuesTemplateByArrayPost($array_form_class);
+            
+            // ladowanie strony z formularzem
+            return $this->loadTemplate('/soldier/missions-view');
         }
         
         // strona oddelegowania
@@ -296,7 +380,6 @@
             
             $item->id_soldier = ClassTools::getValue('id_soldier');
             $item->id_mission = ClassTools::getValue('id_mission');
-            $item->description_detach = ClassTools::getValue('form_description_detach');
             $item->id_user = ClassAuth::getCurrentUserId();
             
             // sprawdza czy klasa zostala poprawnie zaladowana

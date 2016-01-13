@@ -44,6 +44,15 @@
         // Data zakończenia nazwa
         public $date_end_name;
         
+        // Data zakończenia nazwa
+        public $date_start_pl;
+        
+        // Data zakończenia nazwa
+        public $date_end_name_pl;
+        
+        // nazwa aktywacji
+        public $active_name;
+        
         // Status
         public $status;
         
@@ -73,6 +82,11 @@
                 $this->mission_type_name = self::sqlGetTypeNameId($this->id_mission_type);
                 $this->date_end_name = self::getDateEndNameByDateEnd($this->date_end);
                 $this->status = self::getStatusName($this->date_end, $this->active);
+                
+                $this->date_end_name_pl = self::getDateEndNameByDateEnd($this->date_end, true);
+                $this->date_start_pl = date('d.m.Y H:i:s', strtotime($this->date_start));
+                
+                $this->active_name = ClassUser::getNameStatus($this->active);
             }
         }
         
