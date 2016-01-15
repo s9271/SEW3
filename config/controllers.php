@@ -17,7 +17,7 @@
         'stopien'       => array('controller' => 'ControllerSoldiers', 'permissions' => array('1', '2')),
         'wyposazenie'   => array('controller' => 'ControllerSoldiers', 'permissions' => array('1', '2')),
         'misje'         => array('controller' => 'ControllerSoldier2Missions', 'permissions' => array('1', '2')),
-        'szkolenia'     => array('controller' => 'ControllerSoldiers', 'permissions' => array('1', '2')),
+        'szkolenia'     => array('controller' => 'ControllerSoldier2Trainings', 'permissions' => array('1', '2')),
         'odznaczenia'   => array('controller' => 'ControllerSoldiers', 'permissions' => array('1', '2')),
         'szkoly-wyzsze' => array('controller' => 'ControllerSoldierSchools', 'permissions' => array('1', '2')),
         'jezyki'        => array('controller' => 'ControllerSoldierLanguages', 'permissions' => array('1', '2')),

@@ -1,5 +1,5 @@
 <?php
-    class ClassSoldier2Mission extends ClassModel
+    class ClassSoldier2Training extends ClassModel
     {
         public static $use_prefix = true;
         protected static $has_deleted_column = true;
@@ -11,35 +11,35 @@
         // id zolnierza
         public $id_soldier;
         
-        // id misji
-        public $id_mission;
+        // Zolnierz - zmienna trzymajaca zolnierza poprawnego, potrzebne do sprawdzania podczas usuwania
+        public $id_soldier_tmp;
         
-        // id misji
-        public $id_mission_tmp;
+        // id szkolenia
+        public $id_training;
+        
+        // id szkolenia - tymczasowy
+        public $id_training_tmp;
         
         // opis
         public $description = '';
         
-        // opic podczas oddelegowania
-        public $description_detach = '';
+        // opic podczas odsylania
+        public $description_return = '';
         
         // Użytkownik
         public $id_user;
         
-        // Zolnierz - zmienna trzymajaca zolnierza poprawnego, potrzebne do sprawdzania podczas usuwania
-        public $id_soldier_tmp;
-        
         // Data aktualizacji
         public $date_update;
         
-        // Oddelegowany
-        public $detached = '0';
+        // odeslany
+        public $returned = '0';
         
         // Usunięty
         public $deleted = '0';
         
-        // nazwa misji
-        public $mission_name;
+        // nazwa szkolenia
+        public $training_name;
         
         // nazwa statusu
         public $status_name;
@@ -52,20 +52,19 @@
         
         // walidacja, primary id, tabela i kolumny
         public static $definition = array(
-            'table' => 'soldier2missions',
-            'primary' => 'id_soldier2missions',
+            'table' => 'soldier2trainings',
+            'primary' => 'id_soldier2trainings',
             'fields' => array(
                 'id_soldier'            => array('required' => true, 'validate' => array('isInt'), 'name' => 'Id żołnierza'),
-                'id_mission'            => array('required' => true, 'validate' => array('isInt'), 'name' => 'Id misji'),
+                'id_training'           => array('required' => true, 'validate' => array('isInt'), 'name' => 'Id szkolenia'),
                 'description'           => array('name' => 'Opis'),
-                'description_detach'    => array('name' => 'Opis oddelegowania'),
+                'description_return'    => array('name' => 'Opis odesłania'),
                 'id_user'               => array('required' => true, 'validate' => array('isInt'), 'name' => 'Użytkownik'),
                 'date_update'           => array('required' => true, 'validate' => array('isDateTime'), 'name' => 'Data aktualizacji'),
-                'detached'              => array('validate' => array('isBool'), 'name' => 'Oddelegowany'),
+                'returned'              => array('validate' => array('isBool'), 'name' => 'Odesłany'),
                 'deleted'               => array('validate' => array('isBool'), 'name' => 'Usunięty'),
             ),
         );
-        
         
         // pobieranie danych gdy jest podane id
         public function load(){
@@ -76,18 +75,20 @@
                 // przypisanie poprawnego zolnierza do tymczasowej zmiennej
                 $this->id_soldier_tmp = $this->id_soldier;
                 
-                // przypisanie poprawnej misji do tymczasowej zmiennej
-                $this->id_mission_tmp = $this->id_mission;
+                // przypisanie poprawnego szkolenia do tymczasowej zmiennej
+                $this->id_training_tmp = $this->id_training;
                 
-                // nazwa statusu misji
-                $item = new ClassMission($this->id_mission);
-                $this->status_name = self::getStatusMission($item->date_start, $item->date_end, $this->detached);
+                // nazwa statusu szkolenia
+                $item = new ClassTraining($this->id_training);
+                // $sql[$key]['status_name'] = self::getStatusTraining($val['date_start'], $val['date_end'], $val['returned']);
+                // $this->status_name = self::getStatusName($item->date_end, $this->returned);
+                $this->status_name = self::getStatusTraining($item->date_start, $item->date_end, $this->returned);
                 
                 // data rozpoczęcia
                 $this->date_start = date('d.m.Y H:i', strtotime($item->date_start));
                 
                 // data zakonczenia
-                $this->date_end  = $this->date_end  === NULL || $this->date_end  == '0000-00-00 00:00:00' ? 'Niezdefiniowano' : date('d.m.Y H:i', strtotime($item->date_end));
+                $this->date_end  = $item->date_end  === NULL || $item->date_end  == '0000-00-00 00:00:00' ? 'Niezdefiniowano' : date('d.m.Y H:i', strtotime($item->date_end));
             }
         }
         
@@ -99,38 +100,17 @@
                 return false;
             }
             
-            // sprawdzanie czy misja istnieje i jest aktywna
-            $item = new ClassMission($this->id_mission);
+            // sprawdzanie czy szkolenie istnieje i jest aktywna
+            $item = new ClassTraining($this->id_training);
             
             if(!$item->load_class){
-                $this->errors = "Misja nie istnieje.";
+                $this->errors = "Szkolenie nie istnieje.";
                 return false;
             }
             
             if($item->active != '1'){
-                $this->errors = "Misja jest wyłączona.";
+                $this->errors = "Szkolenie jest wyłączone.";
                 return false;
-            }
-            
-            // sprawdzenie czy zolnierz posiada misje
-            $soldier_missions = self::sqlGetSoldierMissions($this->id_soldier);
-            
-            if($soldier_missions)
-            {
-                foreach($soldier_missions as $soldier_mission)
-                {
-                    // sprawdzenie czy zolnierz chce 2x do tej samej misji zostac przypisany
-                    if($soldier_mission['id_mission'] == $this->id_mission && $soldier_mission['detached'] == '0'){
-                        $this->errors = "Żołnierz posiada już tą misję.";
-                        return false;
-                    }
-                    
-                    // sprawdzanie czy nowa misja koliduje z jakas inna misja, na ktorej zolnierz jest
-                    if($soldier_mission['detached'] == '0' && self::checkInterferingDates($soldier_mission['date_start'], $item->date_start, $soldier_mission['date_end'], $item->date_end)){
-                        $this->errors = "Misja <b>{$item->name}</b> koliduje czasowo z misją <b>{$soldier_mission['name']}</b>.";
-                        return false;
-                    }
-                }
             }
             
             // sprawdzenie czy zolnierz posiada szkolenia
@@ -140,9 +120,30 @@
             {
                 foreach($soldier_trainings as $soldier_training)
                 {
+                    // sprawdzenie czy zolnierz chce 2x do tej samej misji zostac przypisany
+                    if($soldier_training['id_training'] == $this->id_training && $soldier_training['returned'] == '0'){
+                        $this->errors = "Żołnierz posiada już te szkolenie.";
+                        return false;
+                    }
+                    
                     // sprawdzanie czy nowa misja koliduje z jakas inna misja, na ktorej zolnierz jest
                     if($soldier_training['returned'] == '0' && self::checkInterferingDates($soldier_training['date_start'], $item->date_start, $soldier_training['date_end'], $item->date_end)){
-                        $this->errors = "Misja <b>{$item->name}</b> koliduje czasowo ze szkoleniem <b>{$soldier_training['name']}</b>.";
+                        $this->errors = "Szkolenie <b>{$item->name}</b> koliduje czasowo ze szkoleniem <b>{$soldier_training['name']}</b>.";
+                        return false;
+                    }
+                }
+            }
+            
+            // sprawdzenie czy zolnierz posiada misje
+            $soldier_missions = ClassSoldier2Mission::sqlGetSoldierMissions($this->id_soldier);
+            
+            if($soldier_missions)
+            {
+                foreach($soldier_missions as $soldier_mission)
+                {
+                    // sprawdzanie czy nowe szkolenie koliduje z jakas inna misja, na ktorej zolnierz jest
+                    if($soldier_mission['detached'] == '0' && self::checkInterferingDates($soldier_mission['date_start'], $item->date_start, $soldier_mission['date_end'], $item->date_end)){
+                        $this->errors = "Szkolenie <b>{$item->name}</b> koliduje czasowo z misją <b>{$soldier_mission['name']}</b>.";
                         return false;
                     }
                 }
@@ -159,8 +160,8 @@
                 return false;
             }
             
-            if($this->id_mission_tmp != $this->id_mission){
-                $this->errors = "Niepoprawna misja.";
+            if($this->id_training_tmp != $this->id_training){
+                $this->errors = "Niepoprawne szkolenie.";
                 return false;
             }
             
@@ -212,13 +213,13 @@
                 return false;
             }
             
-            if($this->id_mission_tmp != $this->id_mission){
-                $this->errors = "Niepoprawna misja.";
+            if($this->id_training_tmp != $this->id_training){
+                $this->errors = "Niepoprawne szkolenie.";
                 return false;
             }
             
-            if($this->detached == '1' && $login->auth_user['id_permission'] != '1'){
-                $this->errors = "Żołniez jest oddelegowany od tej misji.<br />Tylko <b>Administrator</b> ma możliwość usunięcia oddelogowanych żołnierzy.";
+            if($this->returned == '1' && $login->auth_user['id_permission'] != '1'){
+                $this->errors = "Żołniez jest odesłany z tego szkolenia.<br />Tylko <b>Administrator</b> ma możliwość usunięcia odesłanych żołnierzy.";
                 return false;
             }
             
@@ -231,35 +232,35 @@
                 return false;
             }
             
-            $mission = new ClassMission($this->id_mission);
-            $this->mission_name = $mission->name;
+            $item = new ClassTraining($this->id_training);
+            $this->training_name = $item->name;
             
             return true;
         }
         
-        // pobieranie nazwy statusu misji
-        public static function getStatusMission($date_start, $date_end, $detached, $color = true){
-            if($detached == '1'){
-                return $color ? '<span class="sew_orange">Oddelegowany</span>' : 'Oddelegowany';
+        // pobieranie nazwy statusu szkolenia
+        public static function getStatusTraining($date_start, $date_end, $returned, $color = true){
+            if($returned == '1'){
+                return $color ? '<span class="sew_orange">Odesłany</span>' : 'Odesłany';
             }
             
             if($date_end === NULL || $date_end == '0000-00-00 00:00:00'){
-                return $color ? '<span class="sew_green">Aktywna</span>' : 'Aktywna';
+                return $color ? '<span class="sew_green">Aktywne</span>' : 'Aktywne';
             }
             
             if(strtotime($date_end) < strtotime("now")){
-                return $color ? '<span class="sew_purple">Zakończona</span>' : 'Zakończona';
+                return $color ? '<span class="sew_purple">Zakończone</span>' : 'Zakończone';
             }
             
             if(strtotime($date_end) > strtotime("now") && strtotime($date_start) > strtotime("now")){
-                return $color ? '<span class="sew_blue">Nierozpoczęta</span>' : 'Nierozpoczęta';
+                return $color ? '<span class="sew_blue">Nierozpoczęte</span>' : 'Nierozpoczęte';
             }
             
             return false;
         }
         
         // oddelegowanie
-        public function detach($auto_date = true){
+        public function trainingReturn($auto_date = true){
             if(!isset($this->id)){
                 $this->errors[] = "Brak podanego id.";
                 return false;
@@ -278,18 +279,18 @@
                 return false;
             }
             
-            if($this->id_mission_tmp != $this->id_mission){
-                $this->errors = "Niepoprawna misja.";
+            if($this->id_training_tmp != $this->id_training){
+                $this->errors = "Niepoprawne szkolenie.";
                 return false;
             }
             
-            if($this->detached == '1'){
-                $this->errors = "Żołnierz już jest oddelegowany od tej misji.";
+            if($this->returned == '1'){
+                $this->errors = "Żołnierz już jest odesłany z tego szkolenia.";
                 return false;
             }
             
-            if (!$this->sqlDetach(static::$definition['table'], $this->id)){
-                $this->errors[] = "Oddelegowanie: Błąd aktualizacji rekordu w bazie.";
+            if (!$this->sqlReturn(static::$definition['table'], $this->id)){
+                $this->errors[] = "Odesłanie: Błąd aktualizacji rekordu w bazie.";
                 return false;
             }
             
@@ -318,7 +319,7 @@
         }
         
         // pobieranie wszystkich rekordow z misjami
-        public static function sqlGetSoldierMissions($id_soldier, $using_pages = false, $current_page = '1', $items_on_page = '5', $controller_search = ''){
+        public static function sqlGetSoldierTrainings($id_soldier, $using_pages = false, $current_page = '1', $items_on_page = '5', $controller_search = ''){
             global $DB;
             $where = '';
             $limit = '';
@@ -334,11 +335,11 @@
                 $limit = " LIMIT {$limit_start}, {$items_on_page}";
             }
             
-            $zapytanie = "SELECT sm.`id_soldier2missions`, sm.`id_soldier`, sm.`id_mission`, sm.`description`, sm.`description_detach`, sm.`detached`, s.`name`, s.`date_start`, s.`date_end`
-                FROM `sew_soldier2missions` as sm, `sew_missions` as s
+            $zapytanie = "SELECT sm.`id_soldier2trainings`, sm.`id_soldier`, sm.`id_training`, sm.`description`, sm.`description_return`, sm.`returned`, s.`name`, s.`date_start`, s.`date_end`
+                FROM `sew_soldier2trainings` as sm, `sew_trainings` as s
                 WHERE sm.`deleted` = '0'
                     AND s.`deleted` = '0'
-                    AND sm.`id_mission` = s.`id_mission`
+                    AND sm.`id_training` = s.`id_training`
                     AND sm.`id_soldier` = '{$id_soldier}'
                     {$where}
                 ORDER BY `".static::$definition['primary']."`
@@ -361,8 +362,8 @@
             
             foreach($sql as $key => $val)
             {
-                // nazwa statusu misji
-                $sql[$key]['status_name'] = self::getStatusMission($val['date_start'], $val['date_end'], $val['detached']);
+                // nazwa statusu szkolenia
+                $sql[$key]['status_name'] = self::getStatusTraining($val['date_start'], $val['date_end'], $val['returned']);
                 
                 // data rozpoczęcia
                 $sql[$key]['date_start'] = date('d.m.Y H:i', strtotime($sql[$key]['date_start']));
@@ -375,7 +376,7 @@
         }
         
         // oddelegowanie
-        protected function sqlDetach($table, $id_item){
+        protected function sqlReturn($table, $id_item){
             global $DB;
             $table_name = (static::$use_prefix ? static::$prefix : '').$table;
             $where = static::$definition['primary'].' = '.$id_item;
@@ -395,9 +396,9 @@
             }
             
             $data = array(
-                'description_detach'    => $this->description_detach,
+                'description_return'    => $this->description_return,
                 'id_user'               => $this->id_user,
-                'detached'              => '1',
+                'returned'              => '1',
             );
             
             if (property_exists($this, 'date_update')) {
@@ -410,8 +411,8 @@
         /* *************** AJAX ************** */
         /* *********************************** */
         
-        // wyszukiwanie misji dla zolnierzy
-        public static function sqlSearchMissionForSoldier($ajax_get){
+        // wyszukiwanie szkolen dla zolnierzy
+        public static function sqlSearchTrainingsForSoldier($ajax_get){
             if(!isset($ajax_get['id_soldier']) || $ajax_get['id_soldier'] == ''){
                 return array('error' => 'Nie podano identyfikatora żołnierza.');
             }
@@ -426,36 +427,36 @@
                 return array('error' => 'Żołnierz nie istnieje.');
             }
             
-            // wyszukiwanie misji
-            $table_mission = 'sew_missions';
-            $sql_search = $DB->search($table_mission, array('name' => "%{$ajax_get['search']}%"), '`id_mission`, `name`', "`deleted` = '0' AND `active` = '1'");
+            // wyszukiwanie szkolen
+            $table_training = 'sew_trainings';
+            $sql_search = $DB->search($table_training, array('name' => "%{$ajax_get['search']}%"), '`id_training`, `name`', "`deleted` = '0' AND `active` = '1'");
             
-            // gdy nie ma misji wyswietli brak
+            // gdy nie ma szkolen wyswietli brak
             if(!$sql_search){
                 return $array;
             }
             
-            // pobieranie misji z ktorymi zolnierz juz jest powiazany
-            $soldier_missions = self::sqlGetAllItems(false, '', '', '', array('id_soldier' => $ajax_get['id_soldier']));
+            // pobieranie szkolen z ktorymi zolnierz juz jest powiazany
+            $soldier_trainigs = self::sqlGetAllItems(false, '', '', '', array('id_soldier' => $ajax_get['id_soldier']));
             
-            if(!$soldier_missions){
-                foreach($sql_search as $mission){
-                    $array['items'][] = array('id' => $mission['id_mission'], 'text' => $mission['name']);
+            if(!$soldier_trainigs){
+                foreach($sql_search as $training){
+                    $array['items'][] = array('id' => $training['id_training'], 'text' => $training['name']);
                 }
             }else{
-                $soldier_missions_mod = array();
+                $soldier_trainigs_mod = array();
                 
-                foreach($soldier_missions as $soldier_mission)
+                foreach($soldier_trainigs as $soldier_training)
                 {
-                    $soldier_missions_mod[$soldier_mission['id_mission']] = $soldier_mission;
+                    $soldier_trainigs_mod[$soldier_training['id_training']] = $soldier_training;
                 }
             
                 $i = 0;
                 
-                foreach($sql_search as $mission){
-                    $array['items'][$i] = array('id' => $mission['id_mission'], 'text' => $mission['name']);
+                foreach($sql_search as $training){
+                    $array['items'][$i] = array('id' => $training['id_training'], 'text' => $training['name']);
                     
-                    if(isset($soldier_missions_mod[$mission['id_mission']]) && $soldier_missions_mod[$mission['id_mission']]['detached'] == '0'){
+                    if(isset($soldier_trainigs_mod[$training['id_training']]) && $soldier_trainigs_mod[$training['id_training']]['returned'] == '0'){
                         $array['items'][$i]['disabled'] = true;
                     }
                     $i++;

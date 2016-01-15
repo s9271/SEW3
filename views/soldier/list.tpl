@@ -67,7 +67,7 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="#" title="Szkolenia">
+                                        <a href="/zolnierze/<?php echo $item['id_soldier']; ?>/szkolenia" title="Szkolenia">
                                             <span class="glyphicon glyphicon-check"></span>Szkolenia
                                         </a>
                                     </li>

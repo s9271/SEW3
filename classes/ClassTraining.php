@@ -47,6 +47,9 @@
         // Data zakończenia nazwa
         public $date_end_name;
         
+        // nazwa aktywacji
+        public $active_name;
+        
         // Status
         public $status;
         
@@ -89,6 +92,9 @@
                 
                 // nazwa statusu
                 $this->status = self::getStatusName($this->date_end, $this->active);
+                
+                
+                $this->active_name = ClassUser::getNameStatus($this->active);
             }
         }
         

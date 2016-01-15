@@ -180,6 +180,10 @@ button.btn.mar_button .glyphicon{
     color: #800080;
 }
 
+.sew_blue{
+    color: #0000ff;
+}
+
 .sew-pages{
     margin-bottom: 10px;
 }
@@ -239,6 +243,7 @@ button.btn.mar_button .glyphicon{
 .mar_custom .row_content .sew_green,
 .mar_custom .row_content .sew_purple,
 .mar_custom .row_content .sew_orange,
+.mar_custom .row_content .sew_blue,
 #mission_view .sew-row > .row_content .sew_green,
 #mission_view .sew-row > .row_content .sew_purple,
 #mission_view .sew-row > .row_content .sew_orange{
@@ -769,59 +774,77 @@ table tr.form_search td.table_akcje{
     width: 185px;
 }
 
+#soldier_trainings_list table.table_add .table_akcje{
+    width: 220px;
+}
+
+#soldier_trainings_list table:not(.table_add) .table_akcje,
 #soldier_missions_list table:not(.table_add) .table_akcje{
     width: 145px;
 }
 
+#soldier_trainings_list table .table_date_start,
 #soldier_missions_list table .table_date_start{
     width: 185px;
 }
 
+#soldier_trainings_list table .table_date_end,
 #soldier_missions_list table .table_date_end{
     width: 185px;
 }
 
+#soldier_trainings_list table .table_status,
 #soldier_missions_list table .table_status{
     width: 185px;
 }
 
+#soldier_trainings_list table:not(.table_add) td,
 #soldier_missions_list table:not(.table_add) td{
     vertical-align: middle;
     word-wrap: break-word;
 }
 
+#soldier_trainings_list table td .btn-group a > span,
 #soldier_missions_list table td .btn-group a > span{
     font-size: 12px;
     line-height: normal;
     margin-right: 4px;
 }
 
+#soldier_trainings_list .btn-group ul.dropdown-menu,
 #soldier_missions_list .btn-group ul.dropdown-menu {
     background-color: #ffffff;
 }
 
+#soldier_trainings_list table td .btn-group a:hover > span,
 #soldier_missions_list table td .btn-group a:hover > span {
     opacity: 0.6;
 }
 
+#soldier_trainings_list table td .btn-group a:hover > span,
 #soldier_missions_list table td .btn-group a:hover > span {
     opacity: 0.6;
 }
 
+#soldier_trainings_list table td.table_akcje.returned .btn-group,
 #soldier_missions_list table td.table_akcje.detached .btn-group{
     width: 123px;
 }
 
+#soldier_trainings_list table td.table_akcje.returned a,
 #soldier_missions_list table td.table_akcje.detached a {
     text-align: center;
     width: 100%;
 }
 
+#soldier_trainings_view .jumbotron,
+#soldier_trainings_form .jumbotron,
 #soldier_missions_view .jumbotron,
 #soldier_missions_form .jumbotron{
     text-align: left;
 }
 
+#soldier_trainings_form form .select2,
 #soldier_missions_form form .select2,
 #soldier_missions_form form .select2{
     width: 100% !important;
