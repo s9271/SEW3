@@ -72,7 +72,7 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="#" title="Odznaczenia">
+                                        <a href="/zolnierze/<?php echo $item['id_soldier']; ?>/odznaczenia" title="Odznaczenia">
                                             <span class="glyphicon glyphicon-tags"></span>Odznaczenia
                                         </a>
                                     </li>

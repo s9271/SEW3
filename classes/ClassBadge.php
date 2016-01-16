@@ -67,6 +67,30 @@
             return self::sqlGetRanks();
         }
         
+        // pobieranie odznaczen wraz ze stopniami
+        public static function sqlGetBadgesWithRanks()
+        {
+            if(!$ranks = self::sqlGetRanks()){
+                return false;
+            }
+            
+            $array = array();
+            
+            foreach($ranks as $rank){
+                $array[$rank['id_badge_rank']]['name'] = $rank['name'];
+                
+                if($types = self::sqlGetBadgesByRankId($rank['id_badge_rank']))
+                {
+                    foreach($types as $type){
+                        $array[$rank['id_badge_rank']]['childs'][$type['id_badge']] = $type['name'];
+                    }
+                }
+            }
+            
+            return $array;
+        }
+        
+        
         /* **************** SQL *************** */
         /* ************************************ */
         
@@ -114,6 +138,27 @@
                     // Nazwa statusu
                     $sql[$key]['active_name'] = ClassUser::getNameStatus($val['active']);
                 }
+            }
+            
+            return $sql;
+        }
+        
+        // pobieranie wszystkich odznak danej grupy
+        public static function sqlGetBadgesByRankId($id_badge_rank){
+            global $DB;
+            $table_name = (self::$use_prefix ? self::$prefix : '').'badges';
+            
+            $zapytanie = "SELECT *
+                FROM `{$table_name}`
+                WHERE `id_badge_rank` = '{$id_badge_rank}'
+                    AND `active` = '1'
+                    AND `deleted` = '0'
+            ;";
+            
+            $sql = $DB->pdo_fetch_all($zapytanie);
+            
+            if(!$sql || !is_array($sql) || count($sql) < 1){
+                return false;
             }
             
             return $sql;
