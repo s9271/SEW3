@@ -14,7 +14,7 @@
     $controllers['uzytkownicy']      = array('controller' => 'ControllerUsers', 'permissions' => array('1'));
     $controllers['jednostki']        = array('controller' => 'ControllerMilitaries', 'permissions' => array('1'));
     $controllers['zolnierze']        = array('controller' => 'ControllerSoldiers', 'permissions' => array('1', '2'), 'childrens' => array(
-        'stopien'       => array('controller' => 'ControllerSoldiers', 'permissions' => array('1', '2')),
+        'stopien'       => array('controller' => 'ControllerSoldiersRanks', 'permissions' => array('1', '2')),
         'wyposazenie'   => array('controller' => 'ControllerSoldiers', 'permissions' => array('1', '2')),
         'misje'         => array('controller' => 'ControllerSoldier2Missions', 'permissions' => array('1', '2')),
         'szkolenia'     => array('controller' => 'ControllerSoldier2Trainings', 'permissions' => array('1', '2')),
