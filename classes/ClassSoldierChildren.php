@@ -93,8 +93,8 @@
         /* ************************************ */
         
         // pobieranie wszystkich rekordow
-        public static function sqlGetAllItems($using_pages = false, $current_page = '1', $items_on_page = '5', $controller_search = ''){
-            if($sql = parent::sqlGetAllItems($using_pages, $current_page, $items_on_page, $controller_search))
+        public static function sqlGetAllItems($using_pages = false, $current_page = '1', $items_on_page = '5', $controller_search = '', array $custom_where = array()){
+            if($sql = parent::sqlGetAllItems($using_pages, $current_page, $items_on_page, $controller_search, $custom_where))
             {
                 foreach($sql as $key => $val)
                 {

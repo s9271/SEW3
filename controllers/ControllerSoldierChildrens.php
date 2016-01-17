@@ -44,7 +44,7 @@
             $this->load_js_functions = true;
             
             // pobieranie wszystkich rekordow
-            $this->tpl_values['items'] = ClassSoldierChildren::sqlGetAllItems($this->using_pages, $this->current_page, $this->items_on_page);
+            $this->tpl_values['items'] = ClassSoldierChildren::sqlGetAllItems($this->using_pages, $this->current_page, $this->items_on_page, '', array('id_soldier' => $item->id));
             
             $this->tpl_values['id_soldier'] = $item->id;
             
