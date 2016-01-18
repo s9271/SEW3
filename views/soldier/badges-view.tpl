@@ -39,14 +39,7 @@
         <div class="row margin_top_15">
             <div class="col-sm-3 text-right row_title">Data odebrania:</div>
             <div class="col-sm-9">
-                <div class="row_content"><?php echo $this->tpl_values['date_update']; ?></div>
-            </div>
-        </div>
-        
-        <div class="row margin_top_15">
-            <div class="col-sm-3 text-right row_title">Użytkownik odebrania:</div>
-            <div class="col-sm-9">
-                <div class="row_content"><?php echo $this->tpl_values['user_receive'] ? '#'.$this->tpl_values['user_receive']['id_user'].' '.$this->tpl_values['user_receive']['name'].' '.$this->tpl_values['user_receive']['surname'] : ''; ?></div>
+                <div class="row_content"><?php echo $this->tpl_values['date_receive']; ?></div>
             </div>
         </div>
         

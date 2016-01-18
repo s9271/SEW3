@@ -233,6 +233,7 @@
             $this->tpl_title = "{$soldier->name} {$soldier->surname}: Odznaczenia: Odbierz";
             
             // skrypty
+            $this->load_datetimepicker = true;
             $this->load_js_functions = true;
             
             // przypisanie zmiennych formularza do zmiennych klasy
@@ -240,6 +241,7 @@
                 'id_soldier2badges'         => $item->id,
                 'id_soldier'                => $soldier->id,
                 'id_badge'                  => $item->id_badge,
+                'form_date'                 => $item->date_receive,
                 'description_receive'       => $item->description_receive
             );
             
@@ -304,6 +306,7 @@
             $this->tpl_values['status_name'] = $item->status_name;
             $this->tpl_values['received'] = $item->received;
             $this->tpl_values['badge_type'] = $item->badge_type;
+            $this->tpl_values['date_receive'] = $item->date_receive;
             $this->tpl_values['date_grant'] = $item->date_grant;
             $this->tpl_values['description'] = ClassTools::nl2br($item->description);
             $this->tpl_values['description_receive'] = ClassTools::nl2br($item->description_receive);
@@ -467,6 +470,7 @@
             $item->description_receive = ClassTools::getValue('form_description_receive');
             $item->id_badge = ClassTools::getValue('id_badge');
             $item->id_soldier = ClassTools::getValue('id_soldier');
+            $item->date_receive = ClassTools::getValue('form_date');
             $item->id_user = ClassAuth::getCurrentUserId();
             
             // komunikaty bledu

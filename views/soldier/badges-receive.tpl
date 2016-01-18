@@ -11,6 +11,14 @@
                     * - wymagane pola
                 </div>
             </div>
+                
+            <div class="form-group">
+                <div class="col-sm-6">
+                    <label for="form_date">*Data odebrania:</label>
+                    <input name="form_date" type="text" class="form-control input-sm jsdate" id="form_date" placeholder="Data odebrania" required="required" value="<?php echo ((isset($this->tpl_values['form_date']) && $this->tpl_values['form_date'] != '') ? $this->tpl_values['form_date'] : ''); ?>" />
+                    <span class="sew_hint">Format: 00.00.0000</span>
+                </div>
+            </div>
             
             <div class="form-group">
                 <div class="col-sm-12">

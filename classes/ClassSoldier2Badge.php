@@ -26,6 +26,9 @@
         // data przyznania
         public $date_grant;
         
+        // data odebrania
+        public $date_receive = NULL;
+        
         // opis
         public $description = '';
         
@@ -65,6 +68,7 @@
                 'id_badge'              => array('required' => true, 'validate' => array('isInt'), 'name' => 'Id odznaczenia'),
                 'badge_type'            => array('validate' => array('isNameSpaces'), 'name' => 'Typ odznaczenia'),
                 'date_grant'            => array('required' => true, 'validate' => array('isDate'), 'name' => 'Data przyznania'),
+                'date_receive'            => array('required' => true, 'validate' => array('isDate'), 'name' => 'Data odebrania'),
                 'description'           => array('name' => 'Opis'),
                 'description_receive'   => array('name' => 'Opis odebrania'),
                 'id_user'               => array('required' => true, 'validate' => array('isInt'), 'name' => 'Użytkownik'),
@@ -92,6 +96,7 @@
                 
                 // data przyznania
                 $this->date_grant = date('d.m.Y', strtotime($this->date_grant));
+                $this->date_receive = $this->date_receive  === NULL ? $this->date_receive : date('d.m.Y', strtotime($this->date_receive));
                 
                 // nazwa statusu szkolenia
                 $this->status_name = self::getStatusBadge($this->received);
@@ -193,10 +198,6 @@
                 $this->date_update = date('Y-m-d H:i:s');
             }
             
-            // dodatkowe wlasne walidacje podczas usuwania
-            // if(!$this->deleteCustomValidate()){
-                // return false;
-            // }
             if($this->id_soldier_tmp != $this->id_soldier){
                 $this->errors = "Niepoprawny żołnierz.";
                 return false;
@@ -211,6 +212,15 @@
                 $this->errors = "Żołnierzowi już odebrano to odznaczenie.";
                 return false;
             }
+            
+            // sprawdzenie czy data zwrotu nie jest mniejsza niz data przyznania
+            if(strtotime($this->date_receive) <= strtotime($this->date_grant)){
+                $this->errors = "Data odebrania jest mniejsza lub równa dacie przyznania.";
+                return false;
+            }
+            
+            $this->date_receive = date('Y-m-d H:i:s', strtotime($this->date_receive));
+            
             
             if (!$this->sqlReceive(static::$definition['table'], $this->id)){
                 $this->errors[] = "Odebranie odznaczenia: Błąd aktualizacji rekordu w bazie.";
@@ -329,6 +339,7 @@
             $data = array(
                 'description_receive'   => $this->description_receive,
                 'id_user'               => $this->id_user,
+                'date_receive'          => $this->date_receive,
                 'received'              => '1',
             );
             
