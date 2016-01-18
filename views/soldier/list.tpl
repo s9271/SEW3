@@ -52,12 +52,12 @@
                                     <li class="divider"> </li>
                                     <li class="dropdown-header">Informacje wojskowe</li>
                                     <li>
-                                        <a href="#" title="Stopień Wojskowy">
+                                        <a href="/zolnierze/<?php echo $item['id_soldier']; ?>/stopien" title="Stopień Wojskowy">
                                             <span class="glyphicon glyphicon-screenshot"></span>Stopień Wojskowy
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="#" title="Wyposażenie">
+                                        <a href="/zolnierze/<?php echo $item['id_soldier']; ?>/wyposazenie" title="Wyposażenie">
                                             <span class="glyphicon glyphicon-screenshot"></span>Wyposażenie
                                         </a>
                                     </li>

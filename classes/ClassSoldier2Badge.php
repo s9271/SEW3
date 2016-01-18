@@ -250,7 +250,7 @@
         }
         
         
-        // pobieranie wszystkich rekordow z misjami
+        // pobieranie wszystkich rekordow z odznaczeniami
         public static function sqlGetSoldierBadges($id_soldier, $using_pages = false, $current_page = '1', $items_on_page = '5', $controller_search = ''){
             global $DB;
             $where = '';

@@ -68,11 +68,11 @@
                 <form method="post" class="pull-right">
                     <?php if($this->tpl_values['received'] == '0'){ ?>
                     
-                        <a class="btn btn-warning mar_button" href="/zolnierze/<?php echo $this->tpl_values['id_soldier']; ?>/misje/edytuj/<?php echo $this->tpl_values['id_soldier2badges']; ?>" title="Edytuj">
+                        <a class="btn btn-warning mar_button" href="/zolnierze/<?php echo $this->tpl_values['id_soldier']; ?>/odznaczenia/edytuj/<?php echo $this->tpl_values['id_soldier2badges']; ?>" title="Edytuj">
                             <span class="glyphicon glyphicon-pencil"></span>Edytuj
                         </a>
                     
-                        <a class="btn btn-warning mar_button" href="/zolnierze/<?php echo $this->tpl_values['id_soldier']; ?>/misje/odbierz/<?php echo $this->tpl_values['id_soldier2badges']; ?>" title="Odbierz">
+                        <a class="btn btn-warning mar_button" href="/zolnierze/<?php echo $this->tpl_values['id_soldier']; ?>/odznaczenia/odbierz/<?php echo $this->tpl_values['id_soldier2badges']; ?>" title="Odbierz">
                             <span class="glyphicon glyphicon-pencil"></span>Odbierz
                         </a>
                     

@@ -16,7 +16,7 @@ RewriteRule ^([_A-Za-z\-]+)/(edytuj|podglad|usun)/([0-9]+)/([_A-Za-z\-]+)/?$ ind
 #ZOLNIERZ
 RewriteRule ^(zolnierze)/([0-9]+)/([_A-Za-z\-]+)/?$ index\.php?controller=$1&id_item=$2&child_controller=$3 [L]
 RewriteRule ^(zolnierze)/([0-9]+)/([_A-Za-z\-]+)/(dodaj)/?$ index\.php?controller=$1&id_item=$2&child_controller=$3&page_action=$4 [L]
-RewriteRule ^(zolnierze)/([0-9]+)/([_A-Za-z\-]+)/(edytuj|podglad|usun|oddeleguj|odeslij|odbierz)/([0-9]+)/?$ index\.php?controller=$1&id_item=$2&child_controller=$3&page_action=$4&id_child_item=$5 [L]
+RewriteRule ^(zolnierze)/([0-9]+)/([_A-Za-z\-]+)/(edytuj|podglad|usun|oddeleguj|odeslij|odbierz|zwroc)/([0-9]+)/?$ index\.php?controller=$1&id_item=$2&child_controller=$3&page_action=$4&id_child_item=$5 [L]
 
 #STRONY
 RewriteRule ^([_A-Za-z\-]+)/(strona)/([0-9]+)/?$ index\.php?controller=$1&page_action=$2&number_page=$3 [L]

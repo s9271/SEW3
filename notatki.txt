@@ -11,3 +11,8 @@ Odznaczenia
     podczas edycji ze zmiana ilosci stopni trzeba sprawdzic czy z ktoryms zolnierzem nie jest juz powiazany, jesli tak, to ma uniemozliwic usuniecie
 
     poprawic user_tmp na soldier_tmp w szkoleniach, jezykach zolnierza
+    
+misje/szkolenia
+    sprawdzanie czy zolnierz jest w rezerwie
+    
+sprawdzenie czy podczas usuwania typu ekwipunku nie jest jakis ekwipunek z nia powiazany

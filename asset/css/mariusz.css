@@ -741,6 +741,8 @@ table tr.form_search td.table_akcje{
     width: 100% !important;
 }
 
+#soldier_eqipments_list .jumbotron,
+#soldier_ranks_list .jumbotron,
 #soldier_address_form .jumbotron,
 #soldier_schools_form .jumbotron{
     text-align: left;
@@ -799,6 +801,8 @@ table tr.form_search td.table_akcje{
     width: 185px;
 }
 
+#soldier_ranks_list table:not(.table_add) td,
+#soldier_eqipments_list table:not(.table_add) td,
 #soldier_badges_list table:not(.table_add) td,
 #soldier_trainings_list table:not(.table_add) td,
 #soldier_missions_list table:not(.table_add) td{
@@ -806,6 +810,7 @@ table tr.form_search td.table_akcje{
     word-wrap: break-word;
 }
 
+#soldier_eqipments_list table td .btn-group a > span,
 #soldier_badges_list table td .btn-group a > span,
 #soldier_trainings_list table td .btn-group a > span,
 #soldier_missions_list table td .btn-group a > span{
@@ -814,30 +819,35 @@ table tr.form_search td.table_akcje{
     margin-right: 4px;
 }
 
+#soldier_eqipments_list .btn-group ul.dropdown-menu,
 #soldier_badges_list .btn-group ul.dropdown-menu,
 #soldier_trainings_list .btn-group ul.dropdown-menu,
 #soldier_missions_list .btn-group ul.dropdown-menu {
     background-color: #ffffff;
 }
 
+#soldier_eqipments_list table td .btn-group a:hover > span,
 #soldier_badges_list table td .btn-group a:hover > span,
 #soldier_trainings_list table td .btn-group a:hover > span,
 #soldier_missions_list table td .btn-group a:hover > span {
     opacity: 0.6;
 }
 
+#soldier_eqipments_list table td .btn-group a:hover > span,
 #soldier_badges_list table td .btn-group a:hover > span,
 #soldier_trainings_list table td .btn-group a:hover > span,
 #soldier_missions_list table td .btn-group a:hover > span {
     opacity: 0.6;
 }
 
+#soldier_eqipments_list table td.table_akcje.returned .btn-group,
 #soldier_badges_list table td.table_akcje.received .btn-group,
 #soldier_trainings_list table td.table_akcje.returned .btn-group,
 #soldier_missions_list table td.table_akcje.detached .btn-group{
     width: 123px;
 }
 
+#soldier_eqipments_list table td.table_akcje.returned a,
 #soldier_badges_list table td.table_akcje.received a,
 #soldier_trainings_list table td.table_akcje.returned a,
 #soldier_missions_list table td.table_akcje.detached a {
@@ -847,14 +857,18 @@ table tr.form_search td.table_akcje{
 
 #soldier_trainings_view .jumbotron,
 #soldier_trainings_form .jumbotron,
+#soldier_equipments_form .jumbotron,
 #soldier_badges_view .jumbotron,
 #soldier_badges_form .jumbotron,
+#soldier_equipments_view .jumbotron,
 #soldier_missions_view .jumbotron,
 #soldier_missions_form .jumbotron{
     text-align: left;
 }
 
 #soldier_badges_form form .select2,
+#soldier_eqipments_list form .select2,
+#soldier_equipments_form form .select2,
 #soldier_trainings_form form .select2,
 #soldier_missions_form form .select2,
 #soldier_missions_form form .select2{
@@ -884,3 +898,45 @@ table tr.form_search td.table_akcje{
 #soldier_badges_list table .table_id{
     width: 60px;
 }
+
+#soldier_ranks_list table.table_add .table_date{
+    width: 200px;
+}
+
+#soldier_ranks_list table.table_now .table_date{
+    width: 280px;
+}
+
+#soldier_ranks_list table.table_items .table_date{
+    width: 200px;
+}
+
+#soldier_ranks_list table.table_add .table_akcje{
+    width: 105px;
+}
+
+#soldier_ranks_list table.table_items .table_akcje{
+    width: 80px;
+}
+
+#soldier_eqipments_list table.table_add .table_akcje{
+    width: 220px;
+}
+
+#soldier_eqipments_list table.table_add .table_date{
+    width: 200px;
+}
+
+#soldier_eqipments_list table.table_add .table_count{
+    width: 100px;
+}
+
+#soldier_eqipments_list table.table_items .table_akcje{
+    width: 150px;
+}
+
+#soldier_eqipments_list table.table_items .table_status{
+    width: 160px;
+}
+
+
