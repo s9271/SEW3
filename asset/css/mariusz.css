@@ -83,7 +83,7 @@ input[type="file"]:focus, input[type="checkbox"]:focus, input[type="radio"]:focu
 
 #mission_list table .table_status{
     font-weight: bold;
-    width: 110px;
+    width: 125px;
 }
 
 #mission_list table .table_id{

@@ -81,7 +81,8 @@
             if($this->load_class){
                 $this->mission_type_name = self::sqlGetTypeNameId($this->id_mission_type);
                 $this->date_end_name = self::getDateEndNameByDateEnd($this->date_end);
-                $this->status = self::getStatusName($this->date_end, $this->active);
+                // $this->status = self::getStatusName($this->date_end, $this->active);
+                $this->status = self::getStatusMission($this->date_start, $this->date_end);
                 
                 $this->date_end_name_pl = self::getDateEndNameByDateEnd($this->date_end, true);
                 $this->date_start_pl = date('d.m.Y H:i:s', strtotime($this->date_start));
@@ -149,6 +150,23 @@
             }
             
             return true;
+        }
+        
+        // pobieranie nazwy statusu misji
+        public static function getStatusMission($date_start, $date_end, $color = true){
+            if(strtotime($date_start) < strtotime("now") && (($date_end === NULL || $date_end == '0000-00-00 00:00:00') || strtotime($date_end) > strtotime("now"))){
+                return $color ? '<span class="sew_green">Aktywna</span>' : 'Aktywna';
+            }
+            
+            if($date_end !== NULL && $date_end != '0000-00-00 00:00:00' && strtotime($date_end) < strtotime("now")){
+                return $color ? '<span class="sew_purple">Zakończona</span>' : 'Zakończona';
+            }
+            
+            if(strtotime($date_start) > strtotime("now")){
+                return $color ? '<span class="sew_blue">Nierozpoczęta</span>' : 'Nierozpoczęta';
+            }
+            
+            return false;
         }
         
         /* **************** SQL *************** */
@@ -224,7 +242,8 @@
                 foreach($sql as $key => $val){
                     $sql[$key]['mission_type_name'] = self::sqlGetTypeNameId($val['id_mission_type']);
                     $sql[$key]['date_end_name'] = self::getDateEndNameByDateEnd($val['date_end']);
-                    $sql[$key]['status'] = self::getStatusName($val['date_end'], $val['active']);
+                    // $sql[$key]['status'] = self::getStatusName($val['date_end'], $val['active']);
+                    $sql[$key]['status'] = self::getStatusMission($val['date_start'], $val['date_end']);
                 }
             }
             

@@ -159,8 +159,6 @@
             }
         }
         
-        
-        
         // dodatkowe wlasne walidacje podczas dodawania
         public function addCustomValidate()
         {
@@ -219,16 +217,16 @@
         public function deleteCustomValidate()
         {
             // sprawdzanie czy zolnierz jest na misji
-            // if(self::checkSoldierHasEquipment($this->id)){
-                // $this->errors = "Do wyposażenia powiązani są żołnierze.";
-                // return false;
-            // }
+            if(self::checkSoldierIsOnMission($this->id)){
+                $this->errors = "Żołnierz przebywa aktualnie lub będzie przebywać na misji.";
+                return false;
+            }
             
             // sprawdzanie czy zolnierz jest na szkoleniu
-            // if(self::checkSoldierHasEquipment($this->id)){
-                // $this->errors = "Do wyposażenia powiązani są żołnierze.";
-                // return false;
-            // }
+            if(self::checkSoldierIsOnTraining($this->id)){
+                $this->errors = "Żołnierz przebywa aktualnie lub będzie przebywać na szkoleniu.";
+                return false;
+            }
             
             return true;
         }
@@ -241,24 +239,24 @@
         // }
         
         // pobieranie zolnierza
-        public function getSoldier($id_soldier){
-            if(!$soldier = $this->sqlGetSoldier($id_soldier)){
-                $this->errors[] = "Brak żołnierza w bazie.";
-                return false;
-            }
+        // public function getSoldier($id_soldier){
+            // if(!$soldier = $this->sqlGetSoldier($id_soldier)){
+                // $this->errors[] = "Brak żołnierza w bazie.";
+                // return false;
+            // }
             
-            $this->soldierName = $soldier['soldierName'];
-            $this->soldierSurname = $soldier['soldierSurname'];
-            $this->birthday = $soldier['birthday'];
-            $this->sex = $soldier['sex'];
-            $this->phone = $soldier['phone'];
-            $this->email = $soldier['email'];
-            $this->code = $soldier['code'];
-            $this->city = $soldier['city'];
+            // $this->soldierName = $soldier['soldierName'];
+            // $this->soldierSurname = $soldier['soldierSurname'];
+            // $this->birthday = $soldier['birthday'];
+            // $this->sex = $soldier['sex'];
+            // $this->phone = $soldier['phone'];
+            // $this->email = $soldier['email'];
+            // $this->code = $soldier['code'];
+            // $this->city = $soldier['city'];
             
-            $this->load_class = true;
-            return true;
-        }
+            // $this->load_class = true;
+            // return true;
+        // }
         
         // sprawdzanie czy zolnierz istnieje
         public static function isSoldier($id_soldier){
@@ -314,6 +312,52 @@
             $zapytanie = "SELECT id FROM soldiers WHERE `id` = {$id_soldier}";
             $sql = $DB->pdo_fetch($zapytanie);
             
+            if(!$sql || !is_array($sql) || count($sql) < 1){
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // sprawdzanie czy zolnierz jest lub bedzie na misji
+        public static function checkSoldierIsOnMission($id_soldier){
+            global $DB;
+            $zapytanie = "SELECT `id_soldier2missions`
+                FROM `sew_soldier2missions` as sm, `sew_missions` as s
+                WHERE sm.`id_soldier` = '{$id_soldier}'
+                    AND sm.`detached` = '0'
+                    AND sm.`deleted` = '0'
+                    AND s.`deleted` = '0'
+                    AND sm.`id_mission` = s.`id_mission`
+                    AND (
+                        (s.`date_start` = '0000-00-00 00:00:00' OR s.`date_start` IS NULL) OR (DATE(s.`date_start`) > DATE(CURDATE()) OR DATE(s.`date_end`) > DATE(CURDATE()))
+                    )
+            ;";
+            
+            $sql = $DB->pdo_fetch_all($zapytanie);
+            if(!$sql || !is_array($sql) || count($sql) < 1){
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // sprawdzanie czy zolnierz jest lub bedzie na szkoleniu
+        public static function checkSoldierIsOnTraining($id_soldier){
+            global $DB;
+            $zapytanie = "SELECT `id_soldier2trainings`
+                FROM `sew_soldier2trainings` as sm, `sew_trainings` as s
+                WHERE sm.`id_soldier` = '{$id_soldier}'
+                    AND sm.`returned` = '0'
+                    AND sm.`deleted` = '0'
+                    AND s.`deleted` = '0'
+                    AND sm.`id_training` = s.`id_training`
+                    AND (
+                        (s.`date_start` = '0000-00-00 00:00:00' OR s.`date_start` IS NULL) OR (DATE(s.`date_start`) > DATE(CURDATE()) OR DATE(s.`date_end`) > DATE(CURDATE()))
+                    )
+            ;";
+            
+            $sql = $DB->pdo_fetch_all($zapytanie);
             if(!$sql || !is_array($sql) || count($sql) < 1){
                 return false;
             }

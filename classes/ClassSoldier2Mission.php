@@ -243,15 +243,15 @@
                 return $color ? '<span class="sew_orange">Oddelegowany</span>' : 'Oddelegowany';
             }
             
-            if($date_end === NULL || $date_end == '0000-00-00 00:00:00'){
+            if(strtotime($date_start) < strtotime("now") && ($date_end === NULL || $date_end == '0000-00-00 00:00:00' || strtotime($date_end) > strtotime("now"))){
                 return $color ? '<span class="sew_green">Aktywna</span>' : 'Aktywna';
             }
             
-            if(strtotime($date_end) < strtotime("now")){
+            if($date_end !== NULL && $date_end != '0000-00-00 00:00:00' && strtotime($date_end) < strtotime("now")){
                 return $color ? '<span class="sew_purple">Zakończona</span>' : 'Zakończona';
             }
             
-            if(strtotime($date_end) > strtotime("now") && strtotime($date_start) > strtotime("now")){
+            if(strtotime($date_start) > strtotime("now")){
                 return $color ? '<span class="sew_blue">Nierozpoczęta</span>' : 'Nierozpoczęta';
             }
             

@@ -91,7 +91,8 @@
                 $this->date_end_name = self::getDateEndNameByDateEnd($this->date_end, true);
                 
                 // nazwa statusu
-                $this->status = self::getStatusName($this->date_end, $this->active);
+                // $this->status = self::getStatusName($this->date_end, $this->active);
+                $this->status = self::getStatusTraining($this->date_start, $this->date_end);
                 
                 
                 $this->active_name = ClassUser::getNameStatus($this->active);
@@ -157,6 +158,25 @@
             return false;
         }
         
+        // pobieranie nazwy statusu szkolenia
+        public static function getStatusTraining($date_start, $date_end, $color = true){
+            // print_r($date_start);
+            print_r($date_end);
+            if(strtotime($date_start) < strtotime("now") && (($date_end === NULL || $date_end == '0000-00-00 00:00:00') || strtotime($date_end) > strtotime("now"))){
+                return $color ? '<span class="sew_green">Aktywne</span>' : 'Aktywne';
+            }
+            
+            if($date_end !== NULL && $date_end != '0000-00-00 00:00:00' && strtotime($date_end) < strtotime("now")){
+                return $color ? '<span class="sew_purple">Zakończone</span>' : 'Zakończone';
+            }
+            
+            if(strtotime($date_start) > strtotime("now")){
+                return $color ? '<span class="sew_blue">Nierozpoczęte</span>' : 'Nierozpoczęte';
+            }
+            
+            return false;
+        }
+        
         /* **************** SQL *************** */
         /* ************************************ */
         
@@ -179,7 +199,8 @@
                     $sql[$key]['date_start_name'] = self::getPlDate($val['date_start']);
                     
                     // nazwa statusu
-                    $sql[$key]['status'] = self::getStatusName($val['date_end'], $val['active']);
+                    // $sql[$key]['status'] = self::getStatusName($val['date_end'], $val['active']);
+                    $sql[$key]['status'] = self::getStatusTraining($val['date_start'], $val['date_end']);
                 }
             }
             
