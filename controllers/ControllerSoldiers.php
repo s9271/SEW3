@@ -31,7 +31,7 @@
                     break;
                     case 'podglad':
                         // ladowanie strony z podgladem misji
-                        // return $this->getPageView();
+                        return $this->getPageView();
                     break;
                 }
             }
@@ -126,7 +126,7 @@
             $this->load_datetimepicker = true;
             $this->load_js_functions = true;
             
-            // typow edukacji
+            // ladowanie typow edukacji
             $this->tpl_values['education_types'] = ClassEducationType::sqlGetAllItemsNameById(NULL, false, true);
             
             // ladowanie statusow
@@ -172,6 +172,117 @@
             
             // ladowanie strony z formularzem
             return $this->loadTemplate('/soldier/form');
+        }
+        
+        // strona podglądu
+        protected function getPageView(){
+            global $login;
+            
+            // zmienne wyswietlania na wypadek gdy strona z odznaczeniem nie istnieje
+            $this->tpl_values['wstecz'] = '/zolnierze';
+            $this->tpl_values['title'] = 'Podgląd Żołnierza';
+            
+            // sprawdzanie czy id istnieje w linku
+            if(!$id_item = ClassTools::getValue('id_item')){
+                $this->alerts['danger'] = 'Brak podanego id';
+                
+                // ladowanie strony do wyswietlania bledow
+                // zmienne ktore mozna uzyc: wstecz, title oraz alertow
+                return $this->loadTemplate('alert');
+            }
+            
+            $this->actions();
+            
+            // ladowanie klasy
+            $item = new ClassSoldier($id_item);
+            
+            // sprawdzanie czy klasa zostala poprawnie zaladowana
+            if(!$item->load_class){
+                $this->alerts['danger'] = 'Żołnierz nie istnieje';
+                
+                // ladowanie strony do wyswietlania bledow
+                // zmienne ktore mozna uzyc: wstecz, title oraz alertow
+                return $this->loadTemplate('alert');
+            }
+            
+            // tytul
+            $this->tpl_title = 'Żołnierz: Podgląd';
+            
+            // ladowanie dzieci
+            $this->tpl_values['soldier_child'] = $item->getChildrens();
+            
+            // ladowanie adresow
+            $this->tpl_values['soldier_addresses'] = $item->getAddresses();
+            
+            // ladowanie szkol wyzszych
+            $this->tpl_values['soldier_schools'] = $item->getSchools();
+            
+            // ladowanie jezykow
+            $this->tpl_values['soldier_languages'] = $item->getLanguages();
+            
+            // ladowanie praw jazdy
+            $this->tpl_values['soldier_driver_licenses'] = $item->getDriverLicenses();
+            
+            // ladowanie stopni wojskowych
+            $this->tpl_values['soldier_ranks'] = $item->getRanks();
+            
+            // ladowanie aktualnego stopnia wojskowego
+            $this->tpl_values['soldier_actually_rank'] = ClassSoldierRank::getActuallyRank($item->id);
+            
+            // ladowanie odznaczen
+            $this->tpl_values['soldier_badges'] = $item->getBadges();
+            
+            // ladowanie wyposazenia
+            $this->tpl_values['soldier_equipments'] = $item->getEquipments();
+            
+            // ladowanie misji
+            $this->tpl_values['soldier_missions'] = $item->getMissions();
+            
+            // ladowanie szkolen
+            $this->tpl_values['soldier_trainings'] = $item->getTrainings();
+            
+            // Wypadki i urazy
+            $this->tpl_values['form_injuries'] = ClassTools::nl2br($item->injuries);
+            
+            // przypisanie zmiennych formularza do zmiennych klasy
+            $array_form_class = array(
+                'id_soldier'                => $item->id,
+                'form_sex'                  => $item->sex,
+                'sex_name'                  => $item->sex_name,
+                'form_name'                 => $item->name,
+                'form_second_name'          => $item->second_name,
+                'form_surname'              => $item->surname,
+                'form_date_birthday'        => $item->date_birthday,
+                'form_place_birthday'       => $item->place_birthday,
+                'form_citizenship'          => $item->citizenship,
+                'form_nationality'          => $item->nationality,
+                'form_pesel'                => $item->pesel,
+                'form_identity_document'    => $item->identity_document,
+                'form_mail'                 => $item->mail,
+                'form_phone'                => $item->phone,
+                'education_type_name'       => $item->education_type_name,
+                'form_height'               => $item->height != '' ? $item->height.'cm' : '',
+                'form_weight'               => $item->weight != '' ? $item->weight.'kg' : '',
+                'form_shoe_number'          => $item->shoe_number,
+                'form_blood_group'          => $item->blood_group,
+                'form_name_mother'          => $item->name_mother,
+                'form_surname_mother'       => $item->surname_mother,
+                'form_name_father'          => $item->name_father,
+                'form_surname_father'       => $item->surname_father,
+                'form_name_partner'         => $item->name_partner,
+                'form_surname_partner'      => $item->surname_partner,
+                'form_education_type'       => $item->id_education_type,
+                'form_wku'                  => $item->wku,
+                'form_health_category'      => $item->health_category,
+                'form_status'               => $item->id_status,
+                'status_name'               => $item->status_name
+            );
+            
+            // przypisywanieszych zmiennych do zmiennych formularza
+            $this->setValuesTemplateByArrayPost($array_form_class);
+            
+            // ladowanie strony z formularzem
+            return $this->loadTemplate('/soldier/view');
         }
         
         /* ************ WYSZUKIWARKA *********** */

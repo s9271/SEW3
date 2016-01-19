@@ -104,6 +104,9 @@
         // Nazwa statusu
         public $status_name;
         
+        // Nazwa plci
+        public $sex_name;
+        
         // walidacja, primary id, tabela i kolumny
         public static $definition = array(
             'table' => 'soldiers',
@@ -156,6 +159,17 @@
                 
                 // Zmiana daty na polski format
                 $this->date_birthday = date('d.m.Y', strtotime($this->date_birthday));
+                
+                // nazwa plci
+                $this->sex_name = self::getSexName($this->sex);
+            }
+        }
+        
+        public static function getSexName($sex){
+            if($sex == '0'){
+                return 'Mężczyzna';
+            }else{
+                return 'Kobieta';
             }
         }
         
@@ -261,6 +275,172 @@
         // sprawdzanie czy zolnierz istnieje
         public static function isSoldier($id_soldier){
             return self::sqlSoldierExist($id_soldier);
+        }
+        
+        // pobieranie dzieci
+        public function getChildrens(){
+            $items = ClassSoldierChildren::sqlGetAllItems(false, '1', '100', '', array('id_soldier' => $this->id));
+            
+            if($items && is_array($items) && count($items) > 0){
+                return $items;
+            }
+            
+            return false;
+        }
+        
+        // pobieranie dzieci
+        public function getAddresses(){
+            $items = ClassSoldierAddress::sqlGetAllItems(false, '1', '100', '', array('id_soldier' => $this->id));
+            
+            if($items && is_array($items) && count($items) > 0){
+                return $items;
+            }
+            
+            return false;
+        }
+        
+        // pobieranie szkol wyzszych
+        public function getSchools(){
+            $items = ClassSoldierSchool::sqlGetAllItems(false, '1', '100', '', array('id_soldier' => $this->id));
+            
+            if($items && is_array($items) && count($items) > 0){
+                return $items;
+            }
+            
+            return false;
+        }
+        
+        // pobieranie jezykow
+        public function getLanguages(){
+            $items = ClassSoldierLanguage::sqlGetAllItems(false, '1', '100', '', array('id_soldier' => $this->id));
+            
+            if($items && is_array($items) && count($items) > 0){
+                return $items;
+            }
+            
+            return false;
+        }
+        
+        // pobieranie praw jazdy
+        public function getDriverLicenses(){
+            $items = ClassSoldierDriveLicense::sqlGetAllItems(false, '1', '100', '', array('id_soldier' => $this->id));
+            
+            if($items && is_array($items) && count($items) > 0){
+                return $items;
+            }
+            
+            return false;
+        }
+        
+        // pobieranie praw jazdy
+        public function getRanks(){
+            $items = ClassSoldierRank::sqlGetAllItems(false, '1', '100', '', array('id_soldier' => $this->id));
+            
+            if($items && is_array($items) && count($items) > 0){
+                return $items;
+            }
+            
+            return false;
+        }
+        
+        // pobieranie odznaczen
+        public function getBadges(){
+            $items = ClassSoldier2Badge::sqlGetSoldierBadges($this->id);
+            
+            if($items && is_array($items) && count($items) > 0)
+            {
+                $array = false;
+                
+                foreach($items as $key => $item)
+                {
+                    if($item['received'] == '1'){
+                        continue;
+                    }
+                    
+                    $array[$key] = $item;
+                }
+                
+                if($array){
+                    return $array;
+                }
+            }
+            
+            return false;
+        }
+        
+        // pobieranie wyposazenia
+        public function getEquipments(){
+            $items = ClassSoldier2Equipment::sqlGetSoldierEquipments($this->id);
+            
+            if($items && is_array($items) && count($items) > 0)
+            {
+                $array = false;
+                
+                foreach($items as $key => $item)
+                {
+                    if($item['returned'] == '1'){
+                        continue;
+                    }
+                    
+                    $array[$key] = $item;
+                }
+                
+                if($array){
+                    return $array;
+                }
+            }
+            
+            return false;
+        }
+        
+        // pobieranie misji
+        public function getMissions(){
+            $items = ClassSoldier2Mission::sqlGetSoldierMissions($this->id);
+            
+            if($items && is_array($items) && count($items) > 0)
+            {
+                $array = false;
+                
+                foreach($items as $key => $item)
+                {
+                    if($item['detached'] == '1' || ($item['date_end_tmp'] !== NULL && $item['date_end_tmp'] != '0000-00-00 00:00:00' && strtotime($item['date_end_tmp']) < strtotime("now"))){
+                        continue;
+                    }
+                    
+                    $array[$key] = $item;
+                }
+                
+                if($array){
+                    return $array;
+                }
+            }
+            
+            return false;
+        }
+        
+        // pobieranie szkolen
+        public function getTrainings(){
+            $items = ClassSoldier2Training::sqlGetSoldierTrainings($this->id);
+            
+            if($items && is_array($items) && count($items) > 0)
+            {
+                $array = false;
+                
+                foreach($items as $key => $item)
+                {
+                    if($item['returned'] == '1' || ($item['date_end_tmp'] !== NULL && $item['date_end_tmp'] != '0000-00-00 00:00:00' && strtotime($item['date_end_tmp']) < strtotime("now"))){
+                        continue;
+                    }
+                    
+                    $array[$key] = $item;
+                }
+                
+                if($array){
+                    return $array;
+                }
+            }
+            
+            return false;
         }
         
         /* **************** SQL *************** */

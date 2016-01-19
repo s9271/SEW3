@@ -652,14 +652,21 @@ table tr.form_search td.table_akcje{
     color: #337ab7;
 }
 
+.mar_custom .page-header.red,
 .mar_custom .page-header.danger{
     border-color: #c9302c;
     color: #c9302c;
 }
 
+.mar_custom .page-header.yellow,
 .mar_custom .page-header.warning{
     border-color: #EC971F;
     color: #EC971F;
+}
+
+.mar_custom .page-header.purple{
+    border-color: #800080;
+    color: #800080;
 }
 
 .mar_custom .no_margin_top{
@@ -883,6 +890,10 @@ table tr.form_search td.table_akcje{
     margin-top: 15px;
 }
 
+.margin_top_50{
+    margin-top: 50px;
+}
+
 #soldier_badges_list table .table_status{
     width: 100px;
 }
@@ -939,4 +950,6 @@ table tr.form_search td.table_akcje{
     width: 160px;
 }
 
-
+.glyphicon-print{
+    margin-right: 3px;
+}

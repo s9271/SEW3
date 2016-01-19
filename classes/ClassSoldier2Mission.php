@@ -50,6 +50,9 @@
         // misja end
         public $date_end;
         
+        // misja end
+        public $date_end_tmp;
+        
         // walidacja, primary id, tabela i kolumny
         public static $definition = array(
             'table' => 'soldier2missions',
@@ -87,6 +90,7 @@
                 $this->date_start = date('d.m.Y H:i', strtotime($item->date_start));
                 
                 // data zakonczenia
+                $this->date_end_tmp  = $this->date_end;
                 $this->date_end  = $this->date_end  === NULL || $this->date_end  == '0000-00-00 00:00:00' ? 'Niezdefiniowano' : date('d.m.Y H:i', strtotime($item->date_end));
             }
         }
@@ -368,6 +372,7 @@
                 $sql[$key]['date_start'] = date('d.m.Y H:i', strtotime($sql[$key]['date_start']));
                 
                 // data zakonczenia
+                $sql[$key]['date_end_tmp'] = $sql[$key]['date_end'];
                 $sql[$key]['date_end'] = $sql[$key]['date_end'] === NULL || $sql[$key]['date_end'] == '0000-00-00 00:00:00' ? 'Niezdefiniowano' : date('d.m.Y H:i', strtotime($sql[$key]['date_end']));
             }
             

@@ -12,6 +12,7 @@
                             <th class="table_id">ID</th>
                             <th class="table_name">Nazwa wyposażenia</th>
                             <th class="table_name_type">Typ wyposażenia</th>
+                            <th class="table_count">Ilość</th>
                             <th class="table_status">Status</th>
                             <th class="table_akcje">Akcje</th>
                         </tr>
@@ -25,6 +26,7 @@
                             <td class="table_id"><?php echo $item['id_soldier2equipments']; ?></td>
                             <td class="table_name"><?php echo $item['equipment_name']; ?></td>
                             <td class="table_name_type"><?php echo $item['equipment_name_type']; ?></td>
+                            <td class="table_count"><?php echo $item['equipment_count']; ?></td>
                             <td class="table_status"><?php echo $item['status_name']; ?></td>
                             <td class="table_akcje<?php echo $item['returned'] == '0' || $this->tpl_values['id_login_permission'] == '1' ? '' : ' returned'; ?>">
                                 

@@ -36,7 +36,7 @@
                         
                         <div class="btn-group-action">
                             <div class="btn-group">
-                                <a href="#" class="edit btn btn-primary" title="Podgląd">
+                                <a href="/zolnierze/podglad/<?php echo $item['id_soldier']; ?>" class="edit btn btn-primary" title="Podgląd">
                                     <span class="glyphicon glyphicon-zoom-in"></span>Podgląd
                                 </a>
                                 <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">

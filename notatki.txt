@@ -16,3 +16,13 @@ misje/szkolenia
     sprawdzanie czy zolnierz jest w rezerwie
     
 sprawdzenie czy podczas usuwania typu ekwipunku nie jest jakis ekwipunek z nia powiazany
+
+podglad zolnierza
+    prawo jazdy sprawdzanie czy data poczatku jest mniejsza niz data konca
+    w podgladzie zolnierza pobieranie praw jazdy ktore nie sa jeszcze zakonczone
+    
+stopien wojskowy
+    sprawdzanie kolidacji daty z istniejacymi juz stopniami
+    
+szkolenia i misje
+    podczas edycji czasu sprawdzanie czy nie sa powiazani z zolnierzami.

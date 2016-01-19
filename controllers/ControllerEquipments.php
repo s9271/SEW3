@@ -29,7 +29,7 @@
                     break;
                     case 'podglad':
                         // ladowanie strony z podgladem
-                        return $this->getPageView();
+                        // return $this->getPageView();
                     break;
                 }
             }
