@@ -26,3 +26,11 @@ stopien wojskowy
     
 szkolenia i misje
     podczas edycji czasu sprawdzanie czy nie sa powiazani z zolnierzami.
+    
+    
+    
+DODAC DO ZOLNIERZA JEDNOSTKE WOJSKOWA!!!
+
+jak bedzie czas
+    dodac date przydzialu i date oddelegowania do misji i szkolenia
+    dodac walidacje co do ilosci znakow

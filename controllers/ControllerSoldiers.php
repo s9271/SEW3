@@ -82,6 +82,9 @@
             // ladowanie statusow
             $this->tpl_values['soldier_statuses'] = ClassSoldierStatus::sqlGetAllItemsNameById(NULL, false, true);
             
+            // ladowanie jednostek
+            $this->tpl_values['form_militaries'] = ClassMilitary::getMilitariesWithGroups();
+            
             // zmienna ktora decyduje co formularz ma robic
             $this->tpl_values['sew_action'] = 'add';
             
@@ -132,6 +135,9 @@
             // ladowanie statusow
             $this->tpl_values['soldier_statuses'] = ClassSoldierStatus::sqlGetAllItemsNameById(NULL, false, true);
             
+            // ladowanie jednostek
+            $this->tpl_values['form_militaries'] = ClassMilitary::getMilitariesWithGroups();
+            
             // zmienna ktora decyduje co formularz ma robic
             $this->tpl_values['sew_action'] = 'edit';
             
@@ -163,9 +169,11 @@
                 'form_education_type'       => $item->id_education_type,
                 'form_wku'                  => $item->wku,
                 'form_health_category'      => $item->health_category,
+                'form_military'             => $item->id_military,
                 'form_injuries'             => $item->injuries,
                 'form_status'               => $item->id_status
             );
+            
             
             // przypisywanieszych zmiennych do zmiennych formularza
             $this->setValuesTemplateByArrayPost($array_form_class);
@@ -204,6 +212,9 @@
                 // zmienne ktore mozna uzyc: wstecz, title oraz alertow
                 return $this->loadTemplate('alert');
             }
+            
+            // css soldier print
+            $this->load_soldier_print = true;
             
             // tytul
             $this->tpl_title = 'Żołnierz: Podgląd';
@@ -274,6 +285,8 @@
                 'form_education_type'       => $item->id_education_type,
                 'form_wku'                  => $item->wku,
                 'form_health_category'      => $item->health_category,
+                'form_military'             => $item->id_military,
+                'military_name'             => $item->military_name,
                 'form_status'               => $item->id_status,
                 'status_name'               => $item->status_name
             );
@@ -395,6 +408,7 @@
             $item->id_education_type = ClassTools::getValue('form_education_type');
             $item->wku = ClassTools::getValue('form_wku');
             $item->health_category = ClassTools::getValue('form_health_category');
+            $item->id_military = ClassTools::getValue('form_military');
             $item->injuries = ClassTools::getValue('form_injuries');
             $item->id_status = ClassTools::getValue('form_status');
             $item->id_user = ClassAuth::getCurrentUserId();
@@ -484,6 +498,7 @@
             $item->id_education_type = ClassTools::getValue('form_education_type');
             $item->wku = ClassTools::getValue('form_wku');
             $item->health_category = ClassTools::getValue('form_health_category');
+            $item->id_military = ClassTools::getValue('form_military');
             $item->injuries = ClassTools::getValue('form_injuries');
             $item->id_status = ClassTools::getValue('form_status');
             $item->id_user = ClassAuth::getCurrentUserId();

@@ -407,6 +407,13 @@
         </div>
         
         <div class="row margin_top_15">
+            <div class="col-sm-3 text-right row_title">Jednostka wojskowa:</div>
+            <div class="col-sm-9">
+                <div class="row_content"><?php echo $this->tpl_values['military_name']; ?></div>
+            </div>
+        </div>
+        
+        <div class="row margin_top_15">
             <div class="col-sm-3 text-right row_title">Kategoria zdrowia:</div>
             <div class="col-sm-9">
                 <div class="row_content"><?php echo $this->tpl_values['form_health_category']; ?></div>
@@ -657,9 +664,126 @@
             <div class="col-sm-12">
                 <a href="/zolnierze/" class="btn btn-info mar_button"><span class="glyphicon glyphicon-chevron-left"></span>Powrót do listy żołnierzy</a>
                 
-                <a href="#" class="btn btn-primary pull-right mar_button"><span class="glyphicon glyphicon-print"></span>Drukuj</a>
+                <a href="javascript:window.print()" class="btn btn-primary pull-right mar_button"><span class="glyphicon glyphicon-print"></span>Drukuj</a>
             </div>
         </div>
         
     </div>
+</div>
+
+<div id="soldier_print" class="clearfix">
+    <h1>Karta Ewidencyjna</h1>
+    
+    <table class="table table-bordered">
+        <tr>
+            <td class="table_name">
+                <span class="title">Imię:</span>
+                <span class="desc"><?php echo $this->tpl_values['form_name']; ?></span>
+            </td>
+            <td class="table_name">
+                <span class="title">Drugie Imię:</span>
+                <span class="desc"><?php echo $this->tpl_values['form_second_name']; ?></span>
+            </td>
+            <td class="table_name">
+                <span class="title">Nazwisko:</span>
+                <span class="desc"><?php echo $this->tpl_values['form_surname']; ?></span>
+            </td>
+            <td class="table_name">
+                <span class="title">PESEL:</span>
+                <span class="desc"><?php echo $this->tpl_values['form_pesel']; ?></span>
+            </td>
+        </tr>
+        
+        <tr>
+            <td class="table_name">
+                <span class="title">Imię Ojca:</span>
+                <span class="desc"><?php echo $this->tpl_values['form_name_father']; ?></span>
+            </td>
+            <td class="table_name">
+                <span class="title">Nazwisko Ojca:</span>
+                <span class="desc"><?php echo $this->tpl_values['form_surname_father']; ?></span>
+            </td>
+            <td class="table_name">
+                <span class="title">Imię Matki:</span>
+                <span class="desc"><?php echo $this->tpl_values['form_name_mother']; ?></span>
+            </td>
+            <td class="table_name">
+                <span class="title">Nazwisko panieńskie Matki:</span>
+                <span class="desc"><?php echo $this->tpl_values['form_surname_mother']; ?></span>
+            </td>
+        </tr>
+        
+        <tr>
+            <td class="table_name">
+                <span class="title">Data i miejsce urodzenia:</span>
+                <span class="desc"><?php echo $this->tpl_values['form_date_birthday']; ?>, <?php echo $this->tpl_values['form_place_birthday']; ?></span>
+            </td>
+            <td class="table_name">
+                <span class="title">Seria i Nr dowodu osobistego:</span>
+                <span class="desc"><?php echo $this->tpl_values['form_identity_document']; ?></span>
+            </td>
+            <td class="table_name">
+                <span class="title">Narodowość:</span>
+                <span class="desc"><?php echo $this->tpl_values['form_nationality']; ?></span>
+            </td>
+            <td class="table_name">
+                <span class="title">Obywatelstwo:</span>
+                <span class="desc"><?php echo $this->tpl_values['form_citizenship']; ?></span>
+            </td>
+        </tr>
+        
+        <tr>
+            <td class="table_name" colspan="3">
+                <span class="title">Adres zmieszkania:</span>
+                <span class="desc">test</span>
+            </td>
+            <td class="table_name">
+                <span class="title">Wzrost:</span>
+                <span class="desc"><?php echo $this->tpl_values['form_height']; ?></span>
+            </td>
+        </tr>
+        
+        <tr>
+            <td class="table_name" colspan="3">
+                <span class="title">Adres zameldowania:</span>
+                <span class="desc">test</span>
+            </td>
+            <td class="table_name">
+                <span class="title">Waga:</span>
+                <span class="desc"><?php echo $this->tpl_values['form_weight']; ?></span>
+            </td>
+        </tr>
+        
+        <tr>
+            <td class="table_name" colspan="3">
+                <span class="title">Adres korespodencji:</span>
+                <span class="desc">test</span>
+            </td>
+            <td class="table_name">
+                <span class="title">Nr buta:</span>
+                <span class="desc"><?php echo $this->tpl_values['form_shoe_number']; ?></span>
+            </td>
+        </tr>
+    </table>
+    
+    <?php 
+    /* <div class="row print_1">
+        <div class="col-sm-3">
+            <h5>Imię:</h5>
+            <span><?php echo $this->tpl_values['form_name']; ?></span>
+        </div>
+        <div class="col-sm-3">
+            <h5>Drugie Imię:</h5>
+            <span><?php echo $this->tpl_values['form_second_name']; ?></span>
+        </div>
+        <div class="col-sm-3">
+            <h5>Nazwisko:</h5>
+            <span><?php echo $this->tpl_values['form_surname']; ?></span>
+        </div>
+        <div class="col-sm-3">
+            <h5>PESEL:</h5>
+            <span><?php echo $this->tpl_values['form_pesel']; ?></span>
+        </div>
+    </div> */
+     ?>
 </div>

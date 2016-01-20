@@ -83,6 +83,9 @@
         // kategoria zdrowia
         public $health_category;
         
+        // id jednostki wojskowej
+        public $id_military;
+        
         // Wypadki i urazy
         public $injuries;
         
@@ -106,6 +109,9 @@
         
         // Nazwa plci
         public $sex_name;
+        
+        // Nazwa jednostki wojskowej
+        public $military_name;
         
         // walidacja, primary id, tabela i kolumny
         public static $definition = array(
@@ -137,6 +143,7 @@
                 'id_education_type'     => array('required' => true, 'validate' => array('isInt'), 'name' => 'Poziom wyksztalcenia'),
                 'wku'                   => array('name' => 'Wojskowa Komenda Uzupełnień'),
                 'health_category'       => array('name' => 'Kategoria zdrowia'),
+                'id_military'           => array('required' => true, 'validate' => array('isInt'), 'name' => 'Jednostka wojskowa'),
                 'injuries'              => array('name' => 'Wypadki i urazy'),
                 'id_status'             => array('required' => true, 'validate' => array('isInt'), 'name' => 'Status'),
                 'id_user'               => array('required' => true, 'validate' => array('isInt'), 'name' => 'Użytkownik'),
@@ -162,9 +169,14 @@
                 
                 // nazwa plci
                 $this->sex_name = self::getSexName($this->sex);
+                
+                // nazwa jednostki wojskowej
+                $military = new ClassMilitary($this->id_military);
+                $this->military_name = $military->name.', '.$military->location;
             }
         }
         
+        // nazwa plci
         public static function getSexName($sex){
             if($sex == '0'){
                 return 'Mężczyzna';
@@ -203,6 +215,21 @@
             // sprawdza czy status zolnierza jest aktywny
             if($status->active != '1'){
                 $this->errors[] = "Status żołnierza nie jest aktywny.";
+                return false;
+            }
+            
+            // sprawdzanie czy jednostka wojskowa istnieje
+            $military = new ClassMilitary($this->id_military);
+            
+            // sprawdza czy klasa zostala poprawnie zaladowana
+            if(!$military->load_class){
+                $this->errors[] = "Jednostka wojskowa nie istnieje.";
+                return false;
+            }
+            
+            // sprawdza czy jednostka wojskowa jest aktywny
+            if($military->active != '1'){
+                $this->errors[] = "Jednostka wojskowa nie jest aktywna.";
                 return false;
             }
             

@@ -1,0 +1,46 @@
+@media print {
+    body > .navbar,
+    body > #sidebar-wrapper,
+    body > #soldier_equipments_view{
+        display: none;
+    }
+
+    #soldier_print{
+        display: block;
+    }
+}
+
+#soldier_print{
+    background-color: #ffffff;
+    position: relative;
+    z-index: 2000;
+}
+
+#soldier_print h1{
+    margin: 0;
+    padding: 0 0 20px;
+    text-align: center;
+}
+
+#soldier_print span{
+    display: block;
+    font-size: 10px;
+    line-height: normal;
+}
+
+#soldier_print span.desc{
+    font-size: 12px;
+    font-weight: bold;
+    word-wrap: break-word;
+}
+
+#soldier_print .table-bordered > tbody > tr > td{
+    border-color: black;
+    position: relative;
+    word-wrap: break-word;
+}
+
+#soldier_print table{
+    table-layout: fixed;
+    width: 100%;
+}

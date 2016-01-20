@@ -170,6 +170,27 @@
                     <label for="form_health_category">Kategoria zdrowia:</label>
                     <input name="form_health_category" type="text" class="form-control input-sm" id="form_health_category" placeholder="Kategoria zdrowia" value="<?php echo ((isset($this->tpl_values['form_health_category']) && $this->tpl_values['form_health_category'] != '') ? $this->tpl_values['form_health_category'] : ''); ?>" />
                 </div>
+                <div class="col-sm-4">
+                    <label for="form_military">*Jednostka wojskowa:</label>
+                    <select class="form-control input-sm jsselect" id="form_military" name="form_military" required="required">
+                        <option value="">Wybierz</option>
+                        <?php
+                           if (isset($this->tpl_values['form_militaries']) && $this->tpl_values['form_militaries']){
+                                foreach ($this->tpl_values['form_militaries'] as $group) {
+                                    echo '<optgroup label="'.$group['name'].'">';
+                                    
+                                    if (isset($group['childs']) && is_array($group['childs']) && count($group['childs']) > 0){
+                                        foreach ($group['childs'] as $key_type => $type) {
+                                            echo '<option value="'.$key_type.'"'.((isset($this->tpl_values['form_military']) && $this->tpl_values['form_military'] == $key_type) ? ' selected="selected"' : '').'>'.$type['name'].'</option>';
+                                        }
+                                    }
+                                    
+                                    echo '</optgroup>';
+                                }
+                            }
+                        ?>
+                    </select>
+                </div>
             </div>
 
             <div class="form-group">

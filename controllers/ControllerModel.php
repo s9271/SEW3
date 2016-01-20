@@ -21,6 +21,9 @@
         // wlasne przygotowane funkcje
         protected $load_js_functions = false;
         
+        // css soldier print
+        protected $load_soldier_print = false;
+        
         // vartosci uzywane w tpl
         protected $tpl_values = array();
         
@@ -92,6 +95,12 @@
             if($this->load_js_functions){
                 $this->scripts[] = '<!-- Własne funkcje -->';
                 $this->scripts[] = '<script src="/asset/js/funkcje.js"></script>';
+                $this->scripts[] = '';
+            }
+            
+            if($this->load_soldier_print){
+                $this->scripts[] = '<!-- Drukowanie zolnierza -->';
+                $this->scripts[] = '<link href="/asset/css/soldier-print.css" rel="stylesheet" />';
                 $this->scripts[] = '';
             }
             
