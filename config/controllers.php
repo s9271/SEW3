@@ -33,5 +33,6 @@
     $controllers['centra-szkolen']      = array('controller' => 'ControllerTrainingCenters', 'permissions' => array('1'));
     $controllers['typy-wyposazenia']    = array('controller' => 'ControllerEquipmentTypes', 'permissions' => array('1'));
     $controllers['rodzaje-jednostek']   = array('controller' => 'ControllerMilitaryTypes', 'permissions' => array('1'));
+    $controllers['rodzaje-misji']       = array('controller' => 'ControllerMissionTypes', 'permissions' => array('1'));
     $controllers['login']               = array('controller' => 'ControllerLogin');
 ?>

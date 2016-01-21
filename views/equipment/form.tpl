@@ -1,6 +1,6 @@
 <div id="equipments_form" class="new_admin_tpl">
 
-        <?php $this->getAlerts(false); ?>
+    <?php $this->getAlerts(false); ?>
     
     <form method="post" class="form-horizontal">
 

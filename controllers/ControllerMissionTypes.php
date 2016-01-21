@@ -1,11 +1,11 @@
 <?php
-    class ControllerEquipmentTypes extends ControllerCategoryModel{
+    class ControllerMissionTypes extends ControllerCategoryModel{
         protected $using_top_title = true;
-        protected $top_ico = 'shield';
+        protected $top_ico = 'question';
         
         public function __construct(){
             $this->breadcroumb = array(
-                array('name' => 'Typy wyposażenia', 'link' => '/typy-wyposazenia')
+                array('name' => 'Rodzaje misji', 'link' => '/rodzaje-misji')
             );
         }
         
@@ -47,18 +47,18 @@
             $this->actions();
             
             // tylul na pasku
-            $this->top_title = 'Lista typów wyposażenia';
+            $this->top_title = 'Lista rodzajów misji';
             
             // aktualna strona kategorii
             $page = ClassTools::getValue('page') ? ClassTools::getValue('page') : NULL;
             
             if($page !== NULL){
-                $equipment_type = new ClassEquipmentType($page);
-                $this->tpl_values['wstecz'] = '/typy-wyposazenia';
+                $equipment_type = new ClassMissionType($page);
+                $this->tpl_values['wstecz'] = '/rodzaje-misji';
             
                 // sprawdzanie czy klasa zostala poprawnie zaladowana
                 if(!$equipment_type->load_class){
-                    $this->alerts['danger'] = 'Typ wyposażenia nie istnieje.';
+                    $this->alerts['danger'] = 'Rodzaj misji nie istnieje.';
                     
                     // ladowanie strony do wyswietlania bledow
                     // zmienne ktore mozna uzyc: wstecz, title oraz alertow
@@ -74,51 +74,51 @@
                     return $this->loadTemplate('alert');
                 }
                 
-                $this->top_title = 'Lista typów wyposażenia: '.$equipment_type->name;
-                $this->breadcroumb[] = array('name' => htmlspecialchars($equipment_type->name), 'link' => "/typy-wyposazenia/podglad/{$page}");
-                $this->breadcroumb[] = array('name' => 'Lista', 'link' => "/typy-wyposazenia/{$page}");
+                $this->top_title = 'Lista rodzajów misji: '.$equipment_type->name;
+                $this->breadcroumb[] = array('name' => htmlspecialchars($equipment_type->name), 'link' => "/rodzaje-misji/podglad/{$page}");
+                $this->breadcroumb[] = array('name' => 'Lista', 'link' => "/rodzaje-misji/{$page}");
             }
             
             // strony
-            $this->controller_name = 'typy-wyposazenia';
+            $this->controller_name = 'rodzaje-misji';
             $this->using_pages = true;
-            $this->count_items = ClassEquipmentType::sqlGetCountItemsById($page);
+            $this->count_items = ClassMissionType::sqlGetCountItemsById($page);
             $this->current_page = ClassTools::getValue('number_page') ? ClassTools::getValue('number_page') : '1';
             // $this->items_on_page = 2;
             
             // tytul strony
-            $this->tpl_title = 'Typy wyposażenia: Lista';
+            $this->tpl_title = 'Rodzaje misji: Lista';
             
             // ladowanie funkcji
             $this->load_js_functions = true;
             
             // pobieranie wszystkich rekordow
-            $this->tpl_values['items'] = ClassEquipmentType::sqlGetAllItemsById($page, false, false, $this->using_pages, $this->current_page, $this->items_on_page);
+            $this->tpl_values['items'] = ClassMissionType::sqlGetAllItemsById($page, false, false, $this->using_pages, $this->current_page, $this->items_on_page);
             
             // dodatkowe zmienne dla listy kategorii
             $this->tpl_values['list_page'] = $page;
-            $this->tpl_values['list_page_name'] = $page === NULL ? '' : ' <b>'.ClassEquipmentType::sqlGetItemNameByIdParent($page).'</b>';
+            $this->tpl_values['list_page_name'] = $page === NULL ? '' : ' <b>'.ClassMissionType::sqlGetItemNameByIdParent($page).'</b>';
             
             // ladowanie strony z lista
-            return $this->loadTemplate('/equipment/types-list');
+            return $this->loadTemplate('/mission/types-list');
         }
         
         // strona dodawania
         protected function getPageAdd()
         {
             // tylul na pasku
-            $this->top_title = 'Dodaj typ wyposażenia';
+            $this->top_title = 'Dodaj rodzaj misji';
             
             // aktualna strona kategorii
             $page = ClassTools::getValue('page') ? ClassTools::getValue('page') : NULL;
             
             if($page !== NULL){
-                $equipment_type = new ClassEquipmentType($page);
-                $this->tpl_values['wstecz'] = '/typy-wyposazenia';
+                $equipment_type = new ClassMissionType($page);
+                $this->tpl_values['wstecz'] = '/rodzaje-misji';
             
                 // sprawdzanie czy klasa zostala poprawnie zaladowana
                 if(!$equipment_type->load_class){
-                    $this->alerts['danger'] = 'Typ wyposażenia nie istnieje.';
+                    $this->alerts['danger'] = 'Rodzaj misji nie istnieje.';
                     
                     // ladowanie strony do wyswietlania bledow
                     // zmienne ktore mozna uzyc: wstecz, title oraz alertow
@@ -138,14 +138,14 @@
             $this->actions();
             
             // tytul strony
-            $this->tpl_title = 'Typ wyposażenia: Dodaj';
+            $this->tpl_title = 'Rodzaj misji: Dodaj';
             
             // ladowanie pluginow
             $this->load_select2 = true;
             $this->load_js_functions = true;
             
             // ladowanie glownych kategorii
-            $this->tpl_values['parent_categories'] = ClassEquipmentType::sqlGetAllItemsById(NULL);
+            $this->tpl_values['parent_categories'] = ClassMissionType::sqlGetAllItemsById(NULL);
             
             // zmienna ktora decyduje co formularz ma robic
             $this->tpl_values['sew_action'] = 'add';
@@ -156,23 +156,23 @@
             $this->tpl_values['form_parent'] = $form_parent ? $form_parent : ($page === NULL ? false : $page);
             
             if($page !== NULL){
-                $name_page = ClassEquipmentType::sqlGetItemNameByIdParent($page);
-                $this->breadcroumb[] = array('name' => htmlspecialchars($name_page), 'link' => "/typy-wyposazenia/podglad/{$page}");
-                $this->breadcroumb[] = array('name' => 'Dodaj', 'link' => "/typy-wyposazenia/{$page}/dodaj");
+                $name_page = ClassMissionType::sqlGetItemNameByIdParent($page);
+                $this->breadcroumb[] = array('name' => htmlspecialchars($name_page), 'link' => "/rodzaje-misji/podglad/{$page}");
+                $this->breadcroumb[] = array('name' => 'Dodaj', 'link' => "/rodzaje-misji/{$page}/dodaj");
             }
             
             // ladowanie strony z formularzem
-            return $this->loadTemplate('/equipment/types-form');
+            return $this->loadTemplate('/mission/types-form');
         }
         
         // strona edycji
         protected function getPageEdit()
         {
             // tylul na pasku
-            $this->top_title = 'Edytuj typ wyposażenia';
+            $this->top_title = 'Edytuj rodzaj misji';
             
             // zmienne wyswietlania na wypadek gdy strona nie istnieje
-            $this->tpl_values['wstecz'] = '/typy-wyposazenia';
+            $this->tpl_values['wstecz'] = '/rodzaje-misji';
             
             // sprawdzanie czy id istnieje w linku
             if(!$id_item = ClassTools::getValue('id_item')){
@@ -186,11 +186,11 @@
             $this->actions();
             
             // ladowanie klasy
-            $item = new ClassEquipmentType($id_item);
+            $item = new ClassMissionType($id_item);
             
             // sprawdzanie czy klasa zostala poprawnie zaladowana
             if(!$item->load_class){
-                $this->tpl_values['wstecz'] = '/typy-wyposazenia';
+                $this->tpl_values['wstecz'] = '/rodzaje-misji';
                 $this->alerts['danger'] = 'Typ wyposażenia nie istnieje';
                 
                 // ladowanie strony do wyswietlania bledow
@@ -199,29 +199,29 @@
             }
             
             // tytul
-            $this->tpl_title = 'Typ wyposażenia: Edycja';
+            $this->tpl_title = 'Rodzaj misji: Edycja';
             
             // skrypty
             $this->load_select2 = true;
             $this->load_js_functions = true;
             
             // ladowanie glownych kategorii
-            $this->tpl_values['parent_categories'] = ClassEquipmentType::sqlGetAllItemsById(NULL, $item->id);
+            $this->tpl_values['parent_categories'] = ClassMissionType::sqlGetAllItemsById(NULL, $item->id);
             
             if($item->id_parent !== NULL){
-                $name_page = ClassEquipmentType::sqlGetItemNameByIdParent($item->id_parent);
-                $this->breadcroumb[] = array('name' => htmlspecialchars($name_page), 'link' => "/typy-wyposazenia/podglad/{$item->id_parent}");
+                $name_page = ClassMissionType::sqlGetItemNameByIdParent($item->id_parent);
+                $this->breadcroumb[] = array('name' => htmlspecialchars($name_page), 'link' => "/rodzaje-misji/podglad/{$item->id_parent}");
             }
             
-            $this->breadcroumb[] = array('name' => htmlspecialchars($item->name), 'link' => "/typy-wyposazenia/podglad/{$item->id}");
-            $this->breadcroumb[] = array('name' => 'Edytuj', 'link' => "/typy-wyposazenia/{$item->id_parent}/edytuj");
+            $this->breadcroumb[] = array('name' => htmlspecialchars($item->name), 'link' => "/rodzaje-misji/podglad/{$item->id}");
+            $this->breadcroumb[] = array('name' => 'Edytuj', 'link' => "/rodzaje-misji/{$item->id_parent}/edytuj");
             
             // zmienna ktora decyduje co formularz ma robic
             $this->tpl_values['sew_action'] = 'edit';
             
             // przypisanie zmiennych formularza do zmiennych klasy
             $array_form_class = array(
-                'id_equipment_type'     => $item->id,
+                'id_mission_type'       => $item->id,
                 'form_parent'           => $item->id_parent,
                 'form_name'             => $item->name,
                 'form_active'           => $item->active
@@ -234,17 +234,17 @@
             $this->tpl_values['list_page'] = $item->id_parent;
             
             // ladowanie strony z formularzem
-            return $this->loadTemplate('/equipment/types-form');
+            return $this->loadTemplate('/mission/types-form');
         }
         
         // strona podglądu
         protected function getPageView()
         {
             // tylul na pasku
-            $this->top_title = 'Podgląd typu wyposażenia';
+            $this->top_title = 'Podgląd rodzaju misji';
             
             // zmienne wyswietlania na wypadek gdy strona z odznaczeniem nie istnieje
-            $wstecz = '/typy-wyposazenia';
+            $wstecz = '/rodzaje-misji';
             $this->tpl_values['wstecz'] = $wstecz;
             
             // sprawdzanie czy id istnieje w linku
@@ -261,35 +261,35 @@
             $this->tpl_values['wstecz'] = $wstecz;
             
             // ladowanie klasy
-            $item = new ClassEquipmentType($id_item);
+            $item = new ClassMissionType($id_item);
             
             // sprawdzanie czy klasa zostala poprawnie zaladowana
             if(!$item->load_class){
-                $this->alerts['danger'] = 'Typ wyposażenia nie istnieje';
+                $this->alerts['danger'] = 'Rodzaj misji nie istnieje';
                 
                 // ladowanie strony do wyswietlania bledow
                 // zmienne ktore mozna uzyc: wstecz, title oraz alertow
                 return $this->loadTemplate('alert');
             }
             
-            $this->tpl_values['category_name'] = 'Typ wyposażenia jest kategorią główną';
+            $this->tpl_values['category_name'] = 'Rodzaj misji jest kategorią główną';
             
             if($item->id_parent !== NULL){
-                $name_page = ClassEquipmentType::sqlGetItemNameByIdParent($item->id_parent);
-                $this->breadcroumb[] = array('name' => htmlspecialchars($name_page), 'link' => "/typy-wyposazenia/podglad/{$item->id_parent}");
+                $name_page = ClassMissionType::sqlGetItemNameByIdParent($item->id_parent);
+                $this->breadcroumb[] = array('name' => htmlspecialchars($name_page), 'link' => "/rodzaje-misji/podglad/{$item->id_parent}");
                 $this->tpl_values['category_name'] = $name_page;
             }
             
-            $this->breadcroumb[] = array('name' => htmlspecialchars($item->name), 'link' => "/typy-wyposazenia/podglad/{$item->id}");
+            $this->breadcroumb[] = array('name' => htmlspecialchars($item->name), 'link' => "/rodzaje-misji/podglad/{$item->id}");
             
             // tytul
-            $this->tpl_title = 'Typ wyposażenia: Podgląd';
+            $this->tpl_title = 'Rodzaj misji: Podgląd';
             
             $this->tpl_values['active_name'] = $item->active_name;
             
             // przypisanie zmiennych formularza do zmiennych klasy
             $array_form_class = array(
-                'id_equipment_type'     => $item->id,
+                'id_mission_type'       => $item->id,
                 'form_parent'           => $item->id_parent,
                 'form_name'             => $item->name,
                 'form_active'           => $item->active
@@ -299,7 +299,7 @@
             $this->setValuesTemplateByArrayPost($array_form_class);
             
             // ladowanie strony z formularzem
-            return $this->loadTemplate('/equipment/types-view');
+            return $this->loadTemplate('/mission/types-view');
         }
         
         /* *************** AKCJE ************** */
@@ -311,20 +311,20 @@
                 return;
             }
             
-            // print_r($_POST);
+            print_r($_POST);
             
             // przypisanie zmiennych posta do zmiennych template
             $this->tpl_values = $this->setValuesTemplateByPost();
             // print_r($this->tpl_values);
             
             switch($_POST['form_action']){
-                case 'equipment_type_add':
+                case 'mission_type_add':
                     return $this->add(); // dodawanie
                 break;
-                case 'equipment_type_delete':
+                case 'mission_type_delete':
                     return $this->delete(); // usuwanie
                 break;
-                case 'equipment_type_save':
+                case 'mission_type_save':
                     return $this->edit(); // edycja
                 break;
             }
@@ -339,7 +339,7 @@
             $active = ClassTools::getValue('form_active');
             $form_parent = ClassTools::getValue('form_parent');
             
-            $item = new ClassEquipmentType();
+            $item = new ClassMissionType();
             $item->name = ClassTools::getValue('form_name');
             $item->id_parent = $form_parent != '' && is_numeric($form_parent) ? $form_parent : NULL;
             $item->id_user = ClassAuth::getCurrentUserId();
@@ -352,7 +352,7 @@
             }
             
             // komunikat sukcesu
-            $this->alerts['success'] = "Poprawnie dodano nowy typ wyposażenia: <b>{$item->name}</b>";
+            $this->alerts['success'] = "Poprawnie dodano nowy rodzaj misji: <b>{$item->name}</b>";
             
             // czyszczeie zmiennych wyswietlania
             $this->tpl_values = '';
@@ -364,14 +364,14 @@
         // usuwanie
         protected function delete(){
             // ladowanie klasy
-            $item = new ClassEquipmentType(ClassTools::getValue('id_equipment_type'));
+            $item = new ClassMissionType(ClassTools::getValue('id_mission_type'));
             
             // sprawdza czy klasa zostala poprawnie zaladowana
             if($item->load_class){
                 // usuwanie
                 if($item->delete()){
                     // komunikat
-                    $this->alerts['success'] = "Poprawnie usunięto typ wyposażenia: <b>{$item->name}</b>";
+                    $this->alerts['success'] = "Poprawnie usunięto rodzaj misji: <b>{$item->name}</b>";
                     return;
                 }else{
                     // bledy w przypadku problemow z usunieciem
@@ -390,11 +390,12 @@
         protected function edit()
         {
             // ladowanie klasy
-            $item = new ClassEquipmentType(ClassTools::getValue('id_equipment_type'));
+            $item = new ClassMissionType(ClassTools::getValue('id_mission_type'));
             
             // sprawdza czy klasa zostala poprawnie zaladowana
             if(!$item->load_class){
-                $this->alerts['danger'] = "Typ wyposażenia nie istnieje.";
+                $this->alerts['danger'] = "Rodzaj misji nie istnieje.";
+                return;
             }
             
             $active = ClassTools::getValue('form_active');
@@ -412,7 +413,7 @@
             }
             
             // komunikat
-            $this->alerts['success'] = "Poprawnie zaktualizowano typ wydażenia: <b>{$item->name}</b>";
+            $this->alerts['success'] = "Poprawnie zaktualizowano rodzaj misji: <b>{$item->name}</b>";
             
             // czyszczeie zmiennych wyswietlania
             $this->tpl_values = '';

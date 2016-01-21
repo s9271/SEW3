@@ -79,7 +79,9 @@
             parent::load();
             
             if($this->load_class){
-                $this->mission_type_name = self::sqlGetTypeNameId($this->id_mission_type);
+                // $this->mission_type_name = self::sqlGetTypeNameId($this->id_mission_type);
+                $this->mission_type_name = ClassMissionType::sqlGetItemNameByIdParent($this->id_mission_type);
+                
                 $this->date_end_name = self::getDateEndNameByDateEnd($this->date_end);
                 // $this->status = self::getStatusName($this->date_end, $this->active);
                 $this->status = self::getStatusMission($this->date_start, $this->date_end);
@@ -92,26 +94,26 @@
         }
         
         // pobieranie rodzajow misji
-        public static function getTypes(){
-            if(!$groups = self::sqlGetGroups()){
-                return false;
-            }
+        // public static function getTypes(){
+            // if(!$groups = self::sqlGetGroups()){
+                // return false;
+            // }
             
-            $array = array();
+            // $array = array();
             
-            foreach($groups as $group){
-                $array[$group['id_mission_group']]['name'] = $group['name'];
-                $array[$group['id_mission_group']]['childs'] = array();
+            // foreach($groups as $group){
+                // $array[$group['id_mission_group']]['name'] = $group['name'];
+                // $array[$group['id_mission_group']]['childs'] = array();
                 
-                if($types = self::sqlGetTypesByGroupId($group['id_mission_group'])){
-                    foreach($types as $type){
-                        $array[$group['id_mission_group']]['childs'][$type['id_mission_type']] = $type['name'];
-                    }
-                }
-            }
+                // if($types = self::sqlGetTypesByGroupId($group['id_mission_group'])){
+                    // foreach($types as $type){
+                        // $array[$group['id_mission_group']]['childs'][$type['id_mission_type']] = $type['name'];
+                    // }
+                // }
+            // }
             
-            return $array;
-        }
+            // return $array;
+        // }
         
         // sprawdzanie czy misja istnieje
         public static function isMission($id_mission){
@@ -130,6 +132,43 @@
                     $this->errors[] = "Data rozpoczęcia jest większa od daty zakończenia.";
                     return false;
                 }
+            }
+            
+            
+            // sprawdzanie czy kategoria ma jakies dziecii i czy glownej kategorii nie chce sie powiazac z inna kategorie glowna
+            $item = new ClassMissionType($this->id_mission_type);
+            
+            // sprawdza czy klasa zostala poprawnie zaladowana
+            if(!$item->load_class){
+                $this->errors[] = "Rodzaj misji nie istnieje.";
+                return false;
+            }
+            
+            // sprawdza czy typ wyposazenia jest aktywny
+            if($item->active != '1'){
+                $this->errors[] = "Rodzaj misji nie jest aktywny.";
+                return false;
+            }
+            
+            // sprawdza wyposazenie chce sie powiazac z kategoria glowna
+            if($item->id_parent === NULL){
+                $this->errors[] = "Misji nie można powiązać z kategorią główna rodzaju misji.";
+                return false;
+            }
+            
+            // sprawdzenie czy rodzic podkategorii nie jest wylaczony
+            $item_parent = new ClassMissionType($item->id_parent);
+            
+            // sprawdza czy klasa zostala poprawnie zaladowana
+            if(!$item_parent->load_class){
+                $this->errors[] = "Kategoria główna rodzaju misji nie istnieje.";
+                return false;
+            }
+            
+            // sprawdza czy typ wyposazenia jest aktywny
+            if($item_parent->active != '1'){
+                $this->errors[] = "Kategoria główna rodzaju misji nie jest aktywna.";
+                return false;
             }
             
             return true;
@@ -240,7 +279,8 @@
         public static function sqlGetAllItems($using_pages = false, $current_page = '1', $items_on_page = '5', $controller_search = ''){
             if($sql = parent::sqlGetAllItems($using_pages, $current_page, $items_on_page, $controller_search)){
                 foreach($sql as $key => $val){
-                    $sql[$key]['mission_type_name'] = self::sqlGetTypeNameId($val['id_mission_type']);
+                    // $sql[$key]['mission_type_name'] = self::sqlGetTypeNameId($val['id_mission_type']);
+                    $sql[$key]['mission_type_name'] = ClassMissionType::sqlGetItemNameByIdParent($val['id_mission_type']);
                     $sql[$key]['date_end_name'] = self::getDateEndNameByDateEnd($val['date_end']);
                     // $sql[$key]['status'] = self::getStatusName($val['date_end'], $val['active']);
                     $sql[$key]['status'] = self::getStatusMission($val['date_start'], $val['date_end']);

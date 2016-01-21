@@ -353,6 +353,7 @@
             // sprawdza czy klasa zostala poprawnie zaladowana
             if(!$item->load_class){
                 $this->alerts['danger'] = "Wyposażenie nie istnieje.";
+                return;
             }
             
             $active = ClassTools::getValue('form_active');

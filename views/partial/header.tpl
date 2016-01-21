@@ -149,6 +149,9 @@
                                     <li>
                                         <a href="/misje/dodaj">Dodaj Misje</a>
                                     </li>
+                                    <li>
+                                        <a href="/rodzaje-misji">Rodzaje Misji</a>
+                                    </li>
                                 </ul>
                             </li>
                             

@@ -271,13 +271,12 @@ button.btn.mar_button .glyphicon{
     clear: both;
 }
 
-#mission_view .sew_hint{
+/* #mission_view .sew_hint{
     margin-left: 16.6667%;
     padding: 0;
-}
+} */
 
 /* MISJE */
-#mission_list table select,
 #mission_list table .select2{
     width: 100% !important;
 }
@@ -1024,4 +1023,28 @@ table tr.form_search td.table_akcje{
 #equipment_type_list table tr .table_akcje,
 #equipments_list table tr .table_akcje{
     width: 150px;
+}
+
+/* MISJE */
+#mission_type_list table tr td.table_akcje,
+#mission_list table tr td.table_akcje{
+    text-align: center;
+}
+
+#mission_type_list table tr .table_akcje,
+#mission_list table tr .table_akcje{
+    width: 150px;
+}
+
+#mission_type_form .select2,
+#mission_form .select2{
+    width: 100% !important;
+}
+
+#mission_type_list table tr .table_id{
+    width: 60px;
+}
+
+#mission_type_list table tr .table_status{
+    width: 100px;
 }

@@ -1,9 +1,14 @@
 <?php
     class ControllerMissions extends ControllerModel{
         protected $search_controller = 'misje';
+        protected $using_top_title = true;
+        protected $top_ico = 'question';
         
         public function __construct(){
             $this->search_definition = $this->getSearchDefinition();
+            $this->breadcroumb = array(
+                array('name' => 'Misje', 'link' => '/misje')
+            );
         }
         
         // funkcja ktora jest pobierana w indexie, jest wymagana w kazdym kontrolerze!!!!!
@@ -42,6 +47,9 @@
             $this->searchActions();
             $this->actions();
             
+            // tylul na pasku
+            $this->top_title = 'Lista misji';
+            
             // strony
             $this->controller_name = 'misje';
             $this->using_pages = true;
@@ -69,13 +77,19 @@
             // tytul strony
             $this->tpl_title = 'Misja: Dodaj';
             
+            // tylul na pasku
+            $this->top_title = 'Dodaj misję';
+            
+            $this->breadcroumb[] = array('name' => 'Dodaj', 'link' => '/misje/dodaj');
+            
             // ladowanie pluginow
             $this->load_datetimepicker = true;
             $this->load_select2 = true;
             $this->load_js_functions = true;
             
             // ladowanie rodzajow misjii
-            $this->tpl_values['form_types'] = ClassMission::getTypes();
+            // $this->tpl_values['form_types'] = ClassMission::getTypes();
+            $this->tpl_values['form_types'] = ClassMissionType::getMissionTypes();
             
             // zmienna ktora decyduje co formularz ma robic
             $this->tpl_values['sew_action'] = 'add';
@@ -85,10 +99,13 @@
         }
         
         // strona edycji
-        protected function getPageEdit(){
+        protected function getPageEdit()
+        {
+            // tylul na pasku
+            $this->top_title = 'Edytuj misję';
+            
             // zmienne wyswietlania na wypadek gdy strona z misja nie istnieje
             $this->tpl_values['wstecz'] = '/misje';
-            $this->tpl_values['title'] = 'Edycja misji';
             
             // sprawdzanie czy id istnieje w linku
             if(!$id_item = ClassTools::getValue('id_item')){
@@ -100,6 +117,7 @@
             }
             
             $this->actions();
+            $this->tpl_values['wstecz'] = '/misje';
             
             // ladowanie klasy i misji
             $item = new ClassMission($id_item);
@@ -116,6 +134,9 @@
             // tytul
             $this->tpl_title = 'Misja: Edycja';
             
+            $this->breadcroumb[] = array('name' => htmlspecialchars($item->name), 'link' => "/misje/podglad/{$item->id}");
+            $this->breadcroumb[] = array('name' => 'Edytuj', 'link' => "/misje/edytuj/{$item->id}");
+            
             // skrypty
             $this->load_datetimepicker = true;
             $this->load_select2 = true;
@@ -125,7 +146,8 @@
             $this->tpl_values['sew_action'] = 'edit';
             
             // rodzaje misji
-            $this->tpl_values['form_types'] = ClassMission::getTypes();
+            // $this->tpl_values['form_types'] = ClassMission::getTypes();
+            $this->tpl_values['form_types'] = ClassMissionType::getMissionTypes();
             
             // przypisanie zmiennych formularza do zmiennych klasy
             $array_form_class = array(
@@ -147,7 +169,11 @@
         }
         
         // strona podgladu
-        protected function getPageView(){
+        protected function getPageView()
+        {
+            // tylul na pasku
+            $this->top_title = 'Podgląd misji';
+            
             // zmienne wyswietlania na wypadek gdy strona z misja nie istnieje
             $this->tpl_values['wstecz'] = '/misje';
             $this->tpl_values['title'] = 'Podgląd misji';
@@ -177,6 +203,8 @@
             
             // tytul
             $this->tpl_title = 'Misja: Podgląd';
+            
+            $this->breadcroumb[] = array('name' => htmlspecialchars($mission->name), 'link' => "/misje/podglad/{$mission->id}");
             
             // skrypty
             $this->load_js_functions = true;
@@ -210,7 +238,8 @@
         protected function getSearchDefinition()
         {
             // ladowanie rodzajow misjii
-            $types = ClassMission::getTypes();
+            // $types = ClassMission::getTypes();
+            $types = ClassMissionType::getMissionTypes();
             
             $form_values = array(
                 'class' => 'ClassMission',
@@ -260,7 +289,7 @@
                 return;
             }
             
-            // print_r($_POST);
+            print_r($_POST);
             
             // przypisanie zmiennych posta do zmiennych template
             $this->tpl_values = $this->setValuesTemplateByPost();
@@ -346,6 +375,7 @@
             // sprawdza czy klasa zostala poprawnie zaladowana
             if(!$item->load_class){
                 $this->alerts['danger'] = "Misja nie istnieje.";
+                return;
             }
             
             $active = ClassTools::getValue('form_active');
