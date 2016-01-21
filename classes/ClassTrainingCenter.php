@@ -57,7 +57,8 @@
         }
         
         // dodatkowe wlasne walidacje podczas usuwania
-        public function deleteCustomValidate(){
+        public function deleteCustomValidate()
+        {
             // sprawdzanie czy centrum szkolenia jest juz powiazane z jakims szkoleniem
             if(self::sqlCheckTrainingsHasCenterById($this->id)){
                 $this->errors = "Do Centrum szkolenia są przypisane szkolenia.";

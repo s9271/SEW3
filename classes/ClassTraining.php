@@ -113,6 +113,12 @@
                 }
             }
             
+            // maksymalna dlugosc kodu
+            if($this->code !== NULL && strlen($this->code) > 10){
+                $this->errors = "<b>Kod szkolenia</b>: Kod szkolenia nie może posiadać więcej niż 10 znaków.";
+                return false;
+            }
+            
             // ladowanie klasy
             $training_centre = new ClassTrainingCenter($this->id_training_centre);
             
@@ -161,7 +167,7 @@
         // pobieranie nazwy statusu szkolenia
         public static function getStatusTraining($date_start, $date_end, $color = true){
             // print_r($date_start);
-            print_r($date_end);
+            // print_r($date_end);
             if(strtotime($date_start) < strtotime("now") && (($date_end === NULL || $date_end == '0000-00-00 00:00:00') || strtotime($date_end) > strtotime("now"))){
                 return $color ? '<span class="sew_green">Aktywne</span>' : 'Aktywne';
             }

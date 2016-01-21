@@ -493,7 +493,6 @@ table tr.form_search td.table_akcje{
 }
 
 /* SZKOLENIA */
-#training_list table select,
 #training_list table .select2{
     width: 100% !important;
 }
@@ -541,10 +540,6 @@ table tr.form_search td.table_akcje{
 
 #training_view{
     text-align: left;
-}
-
-#training_list table tbody td.table_id{
-    text-align: center;
 }
 
 /* EKWIPUNEK */
@@ -1047,4 +1042,23 @@ table tr.form_search td.table_akcje{
 
 #mission_type_list table tr .table_status{
     width: 100px;
+}
+
+/* SZKOLENIA */
+#training_form .select2{
+    width: 100% !important;
+}
+
+#training_center_list table tr td.table_akcje,
+#training_list table tr td.table_akcje{
+    text-align: center;
+}
+
+#training_center_list table tr .table_akcje,
+#training_list table tr .table_akcje{
+    width: 150px;
+}
+
+#training_center_list table tr .table_id {
+    width: 60px;
 }

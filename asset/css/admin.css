@@ -227,20 +227,20 @@ a:focus {
 }
 
 #center_column .center_column_head .page_top.has_ico{
-    margin-left: 300px;
+    margin-left: 315px;
     padding-left: 10px;
 }
 
 #center_column .center_column_head .page_top.has_ico > i.fa{
     font-size: 60px;
     height: 60px;
-    left: -70px;
+    left: -85px;
     line-height: 60px;
     margin-top: -30px;
     position: absolute;
     text-align: center;
     top: 50%;
-    width: 70px;
+    width: 85px;
 }
 
 #center_column .center_column_head.red .page_top.has_ico{

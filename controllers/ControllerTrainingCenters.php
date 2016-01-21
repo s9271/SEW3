@@ -1,9 +1,15 @@
 <?php
     class ControllerTrainingCenters extends ControllerModel{
         protected $search_controller = 'centra-szkolen';
+        protected $using_top_title = true;
+        protected $top_ico = 'graduation-cap';
         
         public function __construct(){
             $this->search_definition = $this->getSearchDefinition();
+            
+            $this->breadcroumb = array(
+                array('name' => 'Cantra szkoleń', 'link' => '/centra-szkolen')
+            );
         }
         
         // funkcja ktora jest pobierana w indexie, jest wymagana w kazdym kontrolerze!!!!!
@@ -51,6 +57,9 @@
             // tytul strony
             $this->tpl_title = 'Centra szkoleń: Lista';
             
+            // tylul na pasku
+            $this->top_title = 'Lista centrów szkoleń';
+            
             // ladowanie funkcji
             $this->load_select2 = true;
             $this->load_js_functions = true;
@@ -63,11 +72,17 @@
         }
         
         // strona dodawania
-        protected function getPageAdd(){
+        protected function getPageAdd()
+        {
             $this->actions();
             
             // tytul strony
             $this->tpl_title = 'Centra szkoleń: Dodaj';
+            
+            // tylul na pasku
+            $this->top_title = 'Dodaj centrum szkolenia';
+            
+            $this->breadcroumb[] = array('name' => 'Dodaj', 'link' => '/centra-szkolen/dodaj');
             
             // ladowanie pluginow
             $this->load_select2 = true;
@@ -81,10 +96,13 @@
         }
         
         // strona edycji
-        protected function getPageEdit(){
+        protected function getPageEdit()
+        {
+            // tylul na pasku
+            $this->top_title = 'Edytuj centrum szkolenia';
+            
             // zmienne wyswietlania na wypadek gdy strona nie istnieje
             $this->tpl_values['wstecz'] = '/centra-szkolen';
-            $this->tpl_values['title'] = 'Edycja centrum szkolenia';
             
             // sprawdzanie czy id istnieje w linku
             if(!$id_item = ClassTools::getValue('id_item')){
@@ -102,6 +120,7 @@
             
             // sprawdzanie czy item zostal poprawnie zaladowany
             if(!$item->load_class){
+                $this->tpl_values['wstecz'] = '/centra-szkolen';
                 $this->alerts['danger'] = 'Centrum szkolenia nie istnieje';
                 
                 // ladowanie strony do wyswietlania bledow
@@ -119,12 +138,15 @@
             // zmienna ktora decyduje co formularz ma robic
             $this->tpl_values['sew_action'] = 'edit';
             
+            $this->breadcroumb[] = array('name' => htmlspecialchars($item->name), 'link' => "/centra-szkolen/podglad/{$item->id}");
+            $this->breadcroumb[] = array('name' => 'Edytuj', 'link' => "/centra-szkolen/edytuj/{$item->id}");
+            
             // przypisanie zmiennych formularza do zmiennych klasy
             $array_form_class = array(
-                'id_training_centre' => $item->id,
-                'form_name' => $item->name,
-                'form_location' => $item->location,
-                'form_active' => $item->active
+                'id_training_centre'        => $item->id,
+                'form_name'                 => $item->name,
+                'form_location'             => $item->location,
+                'form_active'               => $item->active
             );
             
             // przypisywanieszych zmiennych do zmiennych formularza
@@ -132,6 +154,64 @@
             
             // ladowanie strony z formularzem
             return $this->loadTemplate('/training/centres-form');
+        }
+        
+        // strona podgladu
+        protected function getPageView()
+        {
+            // tylul na pasku
+            $this->top_title = 'Podgląd centrum szkolenia';
+            
+            // zmienne wyswietlania na wypadek gdy strona nie istnieje
+            $this->tpl_values['wstecz'] = '/centra-szkolen';
+            
+            // sprawdzanie czy id istnieje w linku
+            if(!$id_item = ClassTools::getValue('id_item')){
+                $this->alerts['danger'] = 'Brak podanego id';
+                
+                // ladowanie strony do wyswietlania bledow
+                // zmienne ktore mozna uzyc: wstecz, title oraz alertow
+                return $this->loadTemplate('alert');
+            }
+            
+            $this->actions();
+            
+            // ladowanie klasy
+            $item = new ClassTrainingCenter($id_item);
+            
+            // sprawdzanie czy item zostal poprawnie zaladowany
+            if(!$item->load_class){
+                $this->tpl_values['wstecz'] = '/centra-szkolen';
+                $this->alerts['danger'] = 'Centrum szkolenia nie istnieje';
+                
+                // ladowanie strony do wyswietlania bledow
+                // zmienne ktore mozna uzyc: wstecz, title oraz alertow
+                return $this->loadTemplate('alert');
+            }
+            
+            $this->breadcroumb[] = array('name' => htmlspecialchars($item->name), 'link' => "/szkolenia/podglad/{$item->id}");
+            
+            // tytul
+            $this->tpl_title = 'Centra szkoleń: Podgląd';
+            
+            // skrypty
+            $this->load_js_functions = true;
+            
+            $this->tpl_values['active_name'] = $item->active_name;
+            
+            // przypisanie zmiennych formularza do zmiennych klasy
+            $array_form_class = array(
+                'id_training_centre'        => $item->id,
+                'form_name'                 => $item->name,
+                'form_location'             => $item->location,
+                'form_active'               => $item->active
+            );
+            
+            // przypisywanieszych zmiennych do zmiennych formularza
+            $this->setValuesTemplateByArrayPost($array_form_class);
+            
+            // ladowanie strony z formularzem
+            return $this->loadTemplate('/training/centres-view');
         }
         
         /* ************ WYSZUKIWARKA *********** */
@@ -265,6 +345,7 @@
             // sprawdza czy klasa zostala poprawnie zaladowana
             if(!$item->load_class){
                 $this->alerts['danger'] = "Centrum szkolenia nie istnieje.";
+                return;
             }
             
             $active = ClassTools::getValue('form_active');

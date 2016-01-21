@@ -1,7 +1,8 @@
 <div id="mission_form" class="new_admin_tpl">
-    <?php $this->getAlerts(true); ?>
 
-    <form method="post" action="" class="form-horizontal">
+    <?php $this->getAlerts(false); ?>
+
+    <form method="post" class="form-horizontal">
 
         <div class="form-group">
             <div class="col-sm-12 require_text">

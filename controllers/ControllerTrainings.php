@@ -1,9 +1,15 @@
 <?php
     class ControllerTrainings extends ControllerModel{
         protected $search_controller = 'szkolenia';
+        protected $using_top_title = true;
+        protected $top_ico = 'graduation-cap';
         
         public function __construct(){
             $this->search_definition = $this->getSearchDefinition();
+            
+            $this->breadcroumb = array(
+                array('name' => 'Szkolenia', 'link' => '/szkolenia')
+            );
         }
         
         // funkcja ktora jest pobierana w indexie, jest wymagana w kazdym kontrolerze!!!!!
@@ -51,6 +57,9 @@
             // tytul strony
             $this->tpl_title = 'Szkolenia: Lista';
             
+            // tylul na pasku
+            $this->top_title = 'Lista szkoleń';
+            
             // ladowanie funkcji
             $this->load_select2 = true;
             $this->load_js_functions = true;
@@ -69,6 +78,11 @@
             // tytul strony
             $this->tpl_title = 'Szkolenie: Dodaj';
             
+            // tylul na pasku
+            $this->top_title = 'Dodaj szkolenie';
+            
+            $this->breadcroumb[] = array('name' => 'Dodaj', 'link' => '/szkolenia/dodaj');
+            
             // ladowanie pluginow
             $this->load_datetimepicker = true;
             $this->load_select2 = true;
@@ -85,10 +99,13 @@
         }
         
         // strona edycji
-        protected function getPageEdit(){
+        protected function getPageEdit()
+        {
+            // tylul na pasku
+            $this->top_title = 'Edytuj szkolenie';
+            
             // zmienne wyswietlania na wypadek gdy strona nie istnieje
             $this->tpl_values['wstecz'] = '/szkolenia';
-            $this->tpl_values['title'] = 'Edycja szkolenia';
             
             // sprawdzanie czy id istnieje w linku
             if(!$id_item = ClassTools::getValue('id_item')){
@@ -106,6 +123,7 @@
             
             // sprawdzanie czy item zostal poprawnie zaladowany
             if(!$item->load_class){
+                $this->tpl_values['wstecz'] = '/szkolenia';
                 $this->alerts['danger'] = 'Szkolenie nie istnieje';
                 
                 // ladowanie strony do wyswietlania bledow
@@ -123,6 +141,9 @@
             
             // zmienna ktora decyduje co formularz ma robic
             $this->tpl_values['sew_action'] = 'edit';
+            
+            $this->breadcroumb[] = array('name' => htmlspecialchars($item->name), 'link' => "/szkolenia/podglad/{$item->id}");
+            $this->breadcroumb[] = array('name' => 'Edytuj', 'link' => "/szkolenia/edytuj/{$item->id}");
             
             // centra szkolen
             $this->tpl_values['training_centers'] = ClassTrainingCenter::sqlGetAllActiveItems();
@@ -147,10 +168,13 @@
         }
         
         // strona podgladu
-        protected function getPageView(){
+        protected function getPageView()
+        {
+            // tylul na pasku
+            $this->top_title = 'Podgląd szkolenia';
+            
             // zmienne wyswietlania na wypadek gdy strona nie istnieje
             $this->tpl_values['wstecz'] = '/szkolenia';
-            $this->tpl_values['title'] = 'Podgląd szkolenia';
             
             // sprawdzanie czy id istnieje w linku
             if(!$id_item = ClassTools::getValue('id_item')){
@@ -168,12 +192,15 @@
             
             // sprawdzanie czy item zostal poprawnie zaladowany
             if(!$item->load_class){
+                $this->tpl_values['wstecz'] = '/szkolenia';
                 $this->alerts['danger'] = 'Szkolenie nie istnieje';
                 
                 // ladowanie strony do wyswietlania bledow
                 // zmienne ktore mozna uzyc: wstecz, title oraz alertow
                 return $this->loadTemplate('alert');
             }
+            
+            $this->breadcroumb[] = array('name' => htmlspecialchars($item->name), 'link' => "/szkolenia/podglad/{$item->id}");
             
             // tytul
             $this->tpl_title = 'Szkolenie: Podgląd';
