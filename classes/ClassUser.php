@@ -63,6 +63,15 @@
         // nazwa profilu
         public $name_permission = '';
         
+        // nazwa jednoski
+        public $military_name = 'Nie przypisano';
+        
+        // nazwa statusu
+        public $status_name = '';
+        
+        // nazwa guard
+        public $guard_name = '';
+        
         // walidacja, primary id, tabela i kolumny
         public static $definition = array(
             'table' => 'users',
@@ -107,7 +116,20 @@
                 }
             }
             
+            // nazwa uprawnien
             $this->name_permission = $user['name_permission'];
+                
+            // nazwa jednostki wojskowej
+            if($this->id_military !== null){
+                $military = new ClassMilitary($this->id_military);
+                $this->military_name = $military->name.', '.$military->location;
+            }
+            
+            // nazwa statusu
+            $this->status_name = self::getNameStatus($this->active);
+            
+            // nazwa guard
+            $this->guard_name = self::getNameGuard($this->guard);
             
             $this->load_class = true;
             return true;
@@ -213,7 +235,14 @@
         /* ************************************ */
         
         // dodawanie
-        public function add($auto_date = true){
+        public function add($auto_date = true)
+        {
+            // sprawdzanie czy uzytkownik ma uprawnienia do akcji
+            if(!$this->checkHasPermissions()){
+                $this->errors[] = "Użytkownik nie ma uprawnień do dodawania w tym module.";
+                return false;
+            }
+            
             if (isset($this->id)) {
                 unset($this->id);
             }
@@ -264,7 +293,14 @@
         }
         
         // usuwanie
-        public function delete($auto_date = true){
+        public function delete($auto_date = true)
+        {
+            // sprawdzanie czy uzytkownik ma uprawnienia do akcji
+            if(!$this->checkHasPermissions()){
+                $this->errors[] = "Użytkownik nie ma uprawnień do usuwania w tym module.";
+                return false;
+            }
+            
             if(!isset($this->id)){
                 $this->errors = "Brak podanego id.";
                 return false;
@@ -272,6 +308,11 @@
             
             if(!isset($this->id_user_delete) || $this->id_user_delete === null || $this->id_user_delete == ''){
                 $this->errors = "Brak podanego id użytkownika.";
+                return false;
+            }
+            
+            if($this->id == $this->id_user_delete){
+                $this->errors = "Nie można siebie usunąć.";
                 return false;
             }
             
@@ -291,7 +332,14 @@
         }
         
         // aktualizacja
-        public function update($auto_date = true){
+        public function update($auto_date = true)
+        {
+            // sprawdzanie czy uzytkownik ma uprawnienia do akcji
+            if(!$this->checkHasPermissions()){
+                $this->errors[] = "Użytkownik nie ma uprawnień do edycji w tym module.";
+                return false;
+            }
+            
             if(!isset($this->id)){
                 $this->errors = "Brak podanego id.";
                 return false;
@@ -328,7 +376,14 @@
         }
         
         // zmiana hasla
-        public function passwordUpdate($new_password, $new_password_repeat){
+        public function passwordUpdate($new_password, $new_password_repeat)
+        {
+            // sprawdzanie czy uzytkownik ma uprawnienia do akcji
+            if(!$this->checkHasPermissions()){
+                $this->errors[] = "Użytkownik nie ma uprawnień do edycji w tym module.";
+                return false;
+            }
+            
             global $login;
             
             if(!isset($this->id)){

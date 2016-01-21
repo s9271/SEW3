@@ -180,10 +180,10 @@ a:focus {
 
 #center_column{
     margin-left: 230px;
-    padding: 80px 10px 0;
-    transition-duration: 0.4s;
+    /* transition-duration: 0.4s;
     transition-property: margin;
-    transition-timing-function: ease-out;
+    transition-timing-function: ease-out; */
+    padding: 80px 10px 0;
 }
 
 #center_column .center_column_head{
@@ -227,20 +227,20 @@ a:focus {
 }
 
 #center_column .center_column_head .page_top.has_ico{
-    margin-left: 290px;
+    margin-left: 300px;
     padding-left: 10px;
 }
 
 #center_column .center_column_head .page_top.has_ico > i.fa{
     font-size: 60px;
     height: 60px;
-    left: -60px;
+    left: -70px;
     line-height: 60px;
     margin-top: -30px;
     position: absolute;
     text-align: center;
     top: 50%;
-    width: 60px;
+    width: 70px;
 }
 
 #center_column .center_column_head.red .page_top.has_ico{
@@ -336,5 +336,5 @@ a:focus {
 
 #center_column .new_admin_tpl{
     padding: 30px 15px;
-    overflow: hidden;
+    /* overflow: hidden; */
 }

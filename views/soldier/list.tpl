@@ -143,7 +143,10 @@
     
     <div class="row">
         <div class="col-sm-12">
-            <a href="/zolnierze/dodaj" class="btn btn-info pull-right">Dodaj Żołnierza</a>
+            <a href="/zolnierze/dodaj" class="btn btn-info pull-right mar_button">
+                <i class="fa fa-plus"></i>
+                Dodaj Żołnierza
+            </a>
         </div>
     </div>
 </div>

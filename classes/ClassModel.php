@@ -95,7 +95,14 @@
         }
         
         // dodawanie
-        public function add($auto_date = true){
+        public function add($auto_date = true)
+        {
+            // sprawdzanie czy uzytkownik ma uprawnienia do akcji
+            if(!$this->checkHasPermissions()){
+                $this->errors[] = "Użytkownik nie ma uprawnień do dodawania w tym module.";
+                return false;
+            }
+            
             if (isset($this->id)) {
                 unset($this->id);
             }
@@ -130,7 +137,14 @@
         }
         
         // aktualizacja
-        public function update($auto_date = true){
+        public function update($auto_date = true)
+        {
+            // sprawdzanie czy uzytkownik ma uprawnienia do akcji
+            if(!$this->checkHasPermissions()){
+                $this->errors[] = "Użytkownik nie ma uprawnień do edycji w tym module.";
+                return false;
+            }
+            
             if(!isset($this->id)){
                 $this->errors = "Brak podanego id.";
                 return false;
@@ -161,6 +175,13 @@
         
         // usuwanie
         public function delete($auto_date = true){
+            // sprawdzanie czy uzytkownik ma uprawnienia do akcji
+            if(!$this->checkHasPermissions())
+            {
+                $this->errors[] = "Użytkownik nie ma uprawnień do usuwania w tym module.";
+                return false;
+            }
+            
             if(!isset($this->id)){
                 $this->errors[] = "Brak podanego id.";
                 return false;
@@ -251,6 +272,31 @@
         
         // dodatkowe wlasne walidacje podczas usuwania
         public function deleteCustomValidate(){
+            return true;
+        }
+        
+        // sprawdzanie czy uzytkownik ma uprawnienia do akcji
+        protected function checkHasPermissions()
+        {
+            global $login, $controller, $controllers;
+            
+            // sprawdzanie czy modul istnieje na liscie
+            if(!isset($controllers[$controller])){
+                $this->errors[] = "Błąd podczas sprawdzania uprawnień do modułu.";
+                return false;
+            }
+            
+            // sprawdzanie czy sa uprawnienia
+            if(!isset($controllers[$controller]['permissions'])){
+                return true;
+            }
+            
+            // sprawdzanie czy uprawnienie uzytkownika jest na liscie
+            if (!in_array($login->auth_user['id_permission'], $controllers[$controller]['permissions'])){
+                return false;
+            }
+            
+            // return false;
             return true;
         }
         

@@ -1,9 +1,15 @@
 <?php
     class ControllerUsers extends ControllerModel{
         protected $search_controller = 'users';
+        protected $using_top_title = true;
+        protected $top_ico = 'users';
         
         public function __construct(){
             $this->search_definition = $this->getSearchDefinition();
+            
+            $this->breadcroumb = array(
+                array('name' => 'Użytkownicy', 'link' => '/uzytkownicy')
+            );
         }
         
         // funkcja ktora jest pobierana w indexie, jest wymagana w kazdym kontrolerze!!!!!
@@ -34,6 +40,10 @@
                             return $this->getPageEdit();
                         }
                     break;
+                    case 'podglad':
+                        // ladowanie strony z podgladem
+                        return $this->getPageView();
+                    break;
                 }
             }
             
@@ -56,6 +66,9 @@
             // tytul strony
             $this->tpl_title = 'Użytkownicy: Lista';
             
+            // tylul na pasku
+            $this->top_title = 'Lista użytkowników';
+            
             // skrypty
             $this->load_select2 = true;
             $this->load_js_functions = true;
@@ -76,6 +89,11 @@
             // tytul strony
             $this->tpl_title = 'Użytkownicy: Dodaj';
             
+            // tylul na pasku
+            $this->top_title = 'Dodaj użytkownika';
+            
+            $this->breadcroumb[] = array('name' => 'Dodaj', 'link' => '/uzytkownicy/dodaj');
+            
             // ladowanie pluginow
             $this->load_select2 = true;
             $this->load_js_functions = true;
@@ -91,10 +109,13 @@
         }
         
         // strona edycji
-        protected function getPageEdit(){
+        protected function getPageEdit()
+        {
+            // tylul na pasku
+            $this->top_title = 'Edytuj użytkownika';
+            
             // zmienne wyswietlania na wypadek gdy strona z uzytkownikiem nie istnieje
             $this->tpl_values['wstecz'] = '/uzytkownicy';
-            $this->tpl_values['title'] = 'Edycja użytkownika';
             
             // sprawdzanie czy id istnieje w linku
             if(!$id_item = ClassTools::getValue('id_item')){
@@ -129,6 +150,9 @@
             // print_r($user);
             $this->tpl_values['id_user'] = $user->id;
             
+            $this->breadcroumb[] = array('name' => "{$user->name} {$user->surname}", 'link' => "/uzytkownicy/podglad/{$user->id}");
+            $this->breadcroumb[] = array('name' => 'Edytuj', 'link' => "/uzytkownicy/edytuj/{$user->id}");
+            
             // przypisanie zmiennych formularza do zmiennych klasy
             $array_form_class = array(
                 'form_login' => $user->login,
@@ -158,10 +182,13 @@
         }
         
         // ladowanie strony z edycji hasla
-        protected function getPageEditPassword(){
+        protected function getPageEditPassword()
+        {
+            // tylul na pasku
+            $this->top_title = 'Zmiana hasła';
+            
             // zmienne wyswietlania na wypadek gdy strona z uzytkownikiem nie istnieje
             $this->tpl_values['wstecz'] = '/uzytkownicy';
-            $this->tpl_values['title'] = 'Zmiana hasła';
             
             // sprawdzanie czy id istnieje w linku
             if(!$id_item = ClassTools::getValue('id_item')){
@@ -192,6 +219,10 @@
             // skrypty
             $this->load_js_functions = true;
             
+            $this->breadcroumb[] = array('name' => "{$user->name} {$user->surname}", 'link' => "/uzytkownicy/podglad/{$user->id}");
+            $this->breadcroumb[] = array('name' => 'Edytuj', 'link' => "/uzytkownicy/edytuj/{$user->id}");
+            $this->breadcroumb[] = array('name' => 'Zmień hasło', 'link' => "/uzytkownicy/edytuj/{$user->id}/haslo");
+            
             // przypisanie zmiennych formularza do zmiennych klasy
             $array_form_class = array(
                 'id_user' => $user->id,
@@ -204,6 +235,70 @@
             
             // ladowanie strony z formularzem
             return $this->loadTemplate('/user/password');
+        }
+        
+        // strona podglądu
+        protected function getPageView(){
+            // tylul na pasku
+            $this->top_title = 'Podgląd użytkownika';
+            
+            // zmienne wyswietlania na wypadek gdy strona z odznaczeniem nie istnieje
+            $wstecz = '/uzytkownicy';
+            $this->tpl_values['wstecz'] = $wstecz;
+            
+            // sprawdzanie czy id istnieje w linku
+            if(!$id_item = ClassTools::getValue('id_item')){
+                $this->alerts['danger'] = 'Brak podanego id';
+                
+                // ladowanie strony do wyswietlania bledow
+                // zmienne ktore mozna uzyc: wstecz, title oraz alertow
+                return $this->loadTemplate('alert');
+            }
+            
+            $this->actions();
+            
+            $this->tpl_values['wstecz'] = $wstecz;
+            
+            // ladowanie klasy
+            $user = new ClassUser($id_item);
+            
+            // sprawdzanie czy klasa zostala poprawnie zaladowana
+            if(!$user->load_class){
+                $this->alerts['danger'] = $user->errors;
+                
+                // ladowanie strony do wyswietlania bledow
+                // zmienne ktore mozna uzyc: wstecz, title oraz alertow
+                return $this->loadTemplate('alert');
+            }
+            
+            $this->breadcroumb[] = array('name' => "{$user->name} {$user->surname}", 'link' => "/uzytkownicy/podglad/{$user->id}");
+            
+            // tytul
+            $this->tpl_title = 'Użytkownik: Podgląd';
+            
+            
+            $this->tpl_values['form_active'] = $user->status_name;
+            $this->tpl_values['form_guard'] = $user->guard_name;
+            
+            // przypisanie zmiennych formularza do zmiennych klasy
+            $array_form_class = array(
+                'id_user'           => $user->id,
+                'form_login'        => $user->login,
+                'form_name'         => $user->name,
+                'form_surname'      => $user->surname,
+                'form_mail'         => $user->mail,
+                'form_phone'        => $user->phone,
+                'form_permission'   => $user->name_permission,
+                'form_military'     => $user->military_name,
+                // 'form_active'       => $user->status_name,
+                // 'form_guard'        => $user->guard_name
+            );
+            
+            // przypisywanieszych zmiennych do zmiennych formularza
+            $this->setValuesTemplateByArrayPost($array_form_class);
+            
+            // ladowanie strony z formularzem
+            return $this->loadTemplate('/user/view');
         }
         
         /* ************ WYSZUKIWARKA *********** */
@@ -352,7 +447,6 @@
             }
             
             $user->id_user_delete = ClassAuth::getCurrentUserId();
-            // $user->id_user_delete = '321';
             
             // usuwanie
             if(!$user->delete()){

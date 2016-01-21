@@ -40,7 +40,7 @@
         protected $count_items = '0';
         
         // ilosc rekordow na strone
-        protected $items_on_page = '5';
+        protected $items_on_page = '30';
         
         // aktualna strona
         protected $current_page = '1';
@@ -226,6 +226,10 @@
         
         // pobieranie stron bez praw
         public function getPageNoPermissions(){
+            $this->using_top_title = true;
+            $this->top_ico = 'exclamation-triangle';
+            $this->top_title = 'Brak uprawnień';
+            $this->breadcroumb[] = array('name' => 'Strona główna', 'link' => '/');
             return $this->loadTemplate('no_permissions');
         }
         
