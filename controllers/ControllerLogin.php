@@ -30,6 +30,10 @@
                         // ladowanie strony z formularzem do zmiany hasla
                         return $this->getPagePassword();
                     break;
+                    case 'logout':
+                        // wylogowanie
+                        return $this->prepareLogout();
+                    break;
                 }
             }
             
@@ -121,6 +125,13 @@
             }
             
             return;
+        }
+        
+        // wylogowanie;
+        protected function prepareLogout(){
+            global $login;
+            $login->prepareLogout();
+            exit;
         }
         
         // logowanie

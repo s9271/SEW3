@@ -1,11 +1,17 @@
 <?php
     class ControllerSoldiers extends ControllerModel{
         protected $search_controller = 'soldiers';
+        protected $using_top_title = true;
+        protected $top_ico = 'male';
         
         public function __construct(){
             // potrzebne do ajaxa i stronnicowania
             $this->controller_name = 'zolnierze';
             $this->search_definition = $this->getSearchDefinition();
+            
+            $this->breadcroumb = array(
+                array('name' => 'Żołnierze', 'link' => '/zolnierze')
+            );
         }
         
         // funkcja ktora jest pobierana w indexie, jest wymagana w kazdym kontrolerze!!!!!
@@ -53,6 +59,12 @@
             // tytul strony
             $this->tpl_title = 'Żołnierze: Lista';
             
+            // tylul na pasku
+            $this->top_title = 'Lista żołnierzy';
+            
+            // link dodawania w pasku na gorze
+            // $this->top_add_button = array('name' => 'Dodaj żołnierza', 'link' => '/zolnierze/dodaj');
+            
             // ladowanie funkcji
             $this->load_select2 = true;
             $this->load_js_functions = true;
@@ -70,6 +82,11 @@
             
             // tytul strony
             $this->tpl_title = 'Żołnierz: Dodaj';
+            
+            // tylul na pasku
+            $this->top_title = 'Dodaj żołnierza';
+            
+            $this->breadcroumb[] = array('name' => 'Dodaj', 'link' => '/zolnierze/dodaj');
             
             // ladowanie pluginow
             $this->load_select2 = true;
@@ -140,6 +157,12 @@
             
             // zmienna ktora decyduje co formularz ma robic
             $this->tpl_values['sew_action'] = 'edit';
+            
+            // tylul na pasku
+            $this->top_title = 'Edytuj żołnierza';
+            
+            $this->breadcroumb[] = array('name' => "{$item->name} {$item->surname}", 'link' => "/zolnierze/podglad/{$item->id}");
+            $this->breadcroumb[] = array('name' => 'Edytuj', 'link' => "/zolnierze/edytuj/{$item->id}");
             
             // przypisanie zmiennych formularza do zmiennych klasy
             $array_form_class = array(
@@ -212,6 +235,11 @@
                 // zmienne ktore mozna uzyc: wstecz, title oraz alertow
                 return $this->loadTemplate('alert');
             }
+            
+            // tylul na pasku
+            $this->top_title = 'Podgląd żołnierza';
+            
+            $this->breadcroumb[] = array('name' => "{$item->name} {$item->surname}", 'link' => "/zolnierze/podglad/{$item->id}");
             
             // css soldier print
             $this->load_soldier_print = true;
@@ -355,7 +383,7 @@
                 return;
             }
             
-            print_r($_POST);
+            // print_r($_POST);
             
             // przypisanie zmiennych posta do zmiennych template
             $this->tpl_values = $this->setValuesTemplateByPost();

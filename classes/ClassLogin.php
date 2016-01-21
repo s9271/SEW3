@@ -54,6 +54,12 @@
         /* *************** OGOLNE ************** */
         /* ************************************* */
         
+        // wylogowanie ze sprawdzeniem czy zalogowany
+        public function prepareLogout(){
+            $this->getUserByAuthKey();
+            $this->logout();
+        }
+        
         // pobieranie info o zalogowanym uzytkowniku
         public function getUserByAuthKey($go_home = false, $go_guard = false){
             // sprawdzanie czy istnieje wgl sesja

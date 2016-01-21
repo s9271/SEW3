@@ -12,6 +12,9 @@
         // wyglad
         protected $load_bootstrap = true;
         
+        // wyglad
+        protected $load_font_awesome = true;
+        
         // data i czas
         protected $load_datetimepicker = false;
         
@@ -42,14 +45,40 @@
         // aktualna strona
         protected $current_page = '1';
         
+        // zmienne do top title
+        // czy uzyc top title
+        protected $using_top_title = false;
+        
+        // breadcroumb
+        protected $breadcroumb = array();
+        
+        // tytul
+        protected $top_title = '';
+        
+        // nazwa danej podstrony danego modulu
+        protected $top_name = array();
+        
+        // nazwa ikony do wyswietlenia
+        protected $top_ico = false;
+        
+        // przycisk dodawania
+        protected $top_add_button = false;
+        
         // ladowanie template
         protected function loadTemplate($page_name){
             if($page_name && file_exists($_SERVER['DOCUMENT_ROOT'].'/views/'.$page_name.'.tpl')){
                 $this->loadScripts();
                 
+                // pobieranie usera
+                global $login;
+                $user = ClassUser::sqlGetNameSurnameById($login->auth_user['id_user']);
+                $user_name = $user['name'];
+                $user_surname = $user['surname'];
+                $user_name_surname = $user['name'].' '.$user['surname'];
+                
                 ob_start();
                     include_once 'views/partial/header.tpl';
-                    include_once 'views/partial/top-nav.php';
+                    // include_once 'views/partial/top-nav.php';
                     include_once 'views/'.$page_name.'.tpl';
                     include_once 'views/partial/footer.php';
                     $content = ob_get_contents();
@@ -72,6 +101,12 @@
                 $this->scripts[] = '<!-- Bootstrap 3.3.5 -->';
                 $this->scripts[] = '<link href="/asset/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" />';
                 $this->scripts[] = '<script src="/asset/bootstrap/3.3.5/js/bootstrap.min.js"></script>';
+                $this->scripts[] = '';
+            }
+            
+            if($this->load_font_awesome){
+                $this->scripts[] = '<!-- Font Awesome 4.5.0 -->';
+                $this->scripts[] = '<link href="/asset/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" />';
                 $this->scripts[] = '';
             }
             
@@ -197,6 +232,30 @@
         
         protected function myHtmlspecialchars($value){
             return is_array($value) ? array_map("htmlspecialchars", $value) : htmlspecialchars($value);
+        }
+        
+        // pobieranie breadcrumb do strony
+        protected function getBreadcrumb(){
+            if(!$this->breadcroumb || !is_array($this->breadcroumb) || count($this->breadcroumb) < 1){
+                return '';
+            }
+            
+            $first = true;
+            $o = '<div class="breadcroumb">';
+            
+            foreach($this->breadcroumb as $item){
+                if($first){
+                    $first = false;
+                }else{
+                    $o .= ' / ';
+                }
+                
+                $o .= '<a href="'.$item['link'].'" title="'.$item['name'].'">'.$item['name'].'</a>';
+            }
+            
+            $o .= '</div>';
+            
+            return $o;
         }
     }
 ?>
