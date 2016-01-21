@@ -77,7 +77,7 @@
         /* ************************************ */
         
         // pobieranie liczby wszystkich rekordow
-        public static function sqlGetCountItemsById($id_page){
+        public static function sqlGetCountItemsById($id_page, $controller_search = ''){
             global $DB;
             $table_name = (static::$use_prefix ? static::$prefix : '').static::$definition['table'];
             $id = static::$definition['primary'];
@@ -93,6 +93,10 @@
                 $where = " AND `deleted` = '0'";
             }
             
+            if(static::$is_search && $controller_search != '' && $where_search = self::generateWhereList($controller_search)){
+                $where .= " AND ".$where_search;
+            }
+            
             $zapytanie = "SELECT COUNT(*) as count_items
                 FROM `{$table_name}`
                 WHERE `id_parent` {$id_page}
@@ -100,6 +104,12 @@
             ;";
             
             $sql = $DB->pdo_fetch($zapytanie, true);
+            
+            if(($sql === false || !is_array($sql)) && (static::$is_search && $controller_search != '' && isset($_SESSION['search'][$controller_search]))){
+                if(static::$is_search && isset($_SESSION['search'][$controller_search])){
+                    $_SESSION['search'][$controller_search] = array();
+                }
+            }
             
             if(!$sql || !is_array($sql) || count($sql) < 1){
                 return false;
@@ -109,7 +119,7 @@
         }
         
         // pobieranie wszystkich rekordow
-        public static function sqlGetAllItemsById($id_page, $without_id = false, $active = false, $using_pages = false, $current_page = '1', $items_on_page = '5'){
+        public static function sqlGetAllItemsById($id_page, $without_id = false, $active = false, $using_pages = false, $current_page = '1', $items_on_page = '5', $controller_search = ''){
             global $DB;
             $table_name = (static::$use_prefix ? static::$prefix : '').static::$definition['table'];
             $id = static::$definition['primary'];
@@ -135,6 +145,10 @@
                 $where .= " AND `{$id}` != '{$without_id}'";
             }
             
+            if(static::$is_search && $controller_search != '' && $where_search = self::generateWhereList($controller_search)){
+                $where .= " AND ".$where_search;
+            }
+            
             if($using_pages){
                 $limit_start = ($current_page-1)*$items_on_page;
                 $limit = " LIMIT {$limit_start}, {$items_on_page}";
@@ -149,6 +163,12 @@
             ;";
             
             $sql = $DB->pdo_fetch_all($zapytanie, true);
+            
+            if(($sql === false || !is_array($sql)) && (static::$is_search && $controller_search != '' && isset($_SESSION['search'][$controller_search]))){
+                if(static::$is_search && isset($_SESSION['search'][$controller_search])){
+                    $_SESSION['search'][$controller_search] = array();
+                }
+            }
             
             if(!$sql || !is_array($sql) || count($sql) < 1){
                 return false;

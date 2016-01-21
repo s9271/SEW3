@@ -387,7 +387,12 @@ button.btn.mar_button .glyphicon{
 
 /* JEDNOSTKI */
 #military_list table .table_akcje{
-    width: 130px;
+    width: 150px;
+}
+
+#military_list table tr.form_search th.table_akcje,
+#military_list table tr td.table_akcje{
+    text-align: center !important;
 }
 
 #military_list table .table_id{
@@ -611,7 +616,7 @@ table tr.form_search td.table_akcje{
 }
 
 #soldier_list table .table_akcje{
-    width: 145px;
+    width: 150px;
 }
 
 #soldier_list table .table_status{
@@ -994,4 +999,18 @@ table tr.form_search td.table_akcje{
 .view_dropdown ul.dropdown-menu > li > a:focus span,
 .view_dropdown ul.dropdown-menu > li > a:hover span{
     opacity: 0.6;
+}
+
+/* TYPY JEDNOSTEK WOJSKOWYCH */
+#military_type_list table tr .table_id{
+    width: 50px;
+}
+
+#military_type_list table tr .table_akcje,
+#military_type_list table tr .table_status{
+    width: 150px;
+}
+
+#military_type_list table tr td.table_akcje{
+    text-align: center;
 }

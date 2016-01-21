@@ -131,7 +131,11 @@
             // pobiera pierwsza kolumne jako klucz arraya + druga kolumne jako wartosc
             // zwracanie: array([pierwsza_kolumna_value] => druga_kolumna_value, [pierwsza_kolumna_value] => druga_kolumna_value, ...)
             public function pdo_fetch_all_group_column($sql, $reset = true){
-                $statement = $this->pdo->query($sql);
+                if(!$statement = $this->pdoSelect($sql)){
+                    return false;
+                }
+                // print_r($sql);
+                // $statement = $this->pdo->query($sql);
                 $row = $statement->fetchAll(PDO::FETCH_COLUMN|PDO::FETCH_ASSOC|PDO::FETCH_GROUP);
                 
                 if($reset){

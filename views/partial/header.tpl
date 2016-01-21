@@ -111,6 +111,9 @@
                                     <li>
                                         <a href="/jednostki/dodaj">Dodaj Jednostkę Wojskową</a>
                                     </li>
+                                    <li>
+                                        <a href="/rodzaje-jednostek">Rodzaje Jednostek Wojskowych</a>
+                                    </li>
                                 </ul>
                             </li>
                             

@@ -410,7 +410,8 @@
             $user->mail = ClassTools::getValue('form_mail');
             $user->password = ClassTools::getValue('form_password');
             $user->id_permission = ClassTools::getValue('form_permission');
-            $user->id_military = $military == '0' ? null : $military;
+            $user->id_military = !$military || $military == '0' || $military == '' ? NULL : $military;
+            // $user->id_military = $military == '0' ? null : $military;
             $user->active = ($active && $active == '1') ? '1' : '0';
             $user->guard = ($guard && $guard == '1') ? '1' : '0';
             
@@ -476,7 +477,7 @@
             $user->login = ClassTools::getValue('form_login');
             $user->mail = ClassTools::getValue('form_mail');
             $user->id_permission = ClassTools::getValue('form_permission');
-            $user->id_military = $military == '0' ? null : $military;
+            $user->id_military = !$military || $military == '0' || $military == '' ? NULL : $military;
             $user->active = ($active && $active == '1') ? '1' : '0';
             $user->guard = ($guard && $guard == '1') ? '1' : '0';
             

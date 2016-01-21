@@ -279,6 +279,22 @@
                 $this->errors[] = "<b>{$name}</b>: Użytkownik z tym mailem już istnieje.";
             }
             
+            // sprawdzanie czy item istnieje i jest aktywna
+            if($this->id_military !== NULL)
+            {
+                $item = new ClassMilitary($this->id_military);
+                
+                if(!$item->load_class){
+                    $this->errors = "Jednostka wojskowa nie istnieje.";
+                    return false;
+                }
+                
+                if($item->active != '1'){
+                    $this->errors = "Jednostka wojskowa jest wyłączona.";
+                    return false;
+                }
+            }
+            
             if($this->errors && count($this->errors) > 0){
                 return false;
             }
@@ -365,6 +381,22 @@
             if($this->sqlCheckUserMailExists($this->mail)){
                 $this->errors = "Użytkownik o takim adresie e-mail już istnieje.";
                 return false;
+            }
+            
+            // sprawdzanie czy item istnieje i jest aktywna
+            if($this->id_military !== NULL)
+            {
+                $item = new ClassMilitary($this->id_military);
+                
+                if(!$item->load_class){
+                    $this->errors = "Jednostka wojskowa nie istnieje.";
+                    return false;
+                }
+                
+                if($item->active != '1'){
+                    $this->errors = "Jednostka wojskowa jest wyłączona.";
+                    return false;
+                }
             }
             
             if (!$this->sqlUpdate(static::$definition['table'], $values, static::$definition['primary'].' = '.$this->id)){

@@ -9,7 +9,7 @@
         public $id = false;
         
         // Rodzaj jednostki
-        public $id_military_group;
+        public $id_military_type;
         
         // Numer jednostki
         public $number;
@@ -43,7 +43,7 @@
             'table' => 'militaries',
             'primary' => 'id_military',
             'fields' => array(
-                'id_military_group' =>    array('required' => true, 'validate' => array('isInt'), 'name' => 'Rodzaj jednostki'),
+                'id_military_type' =>     array('required' => true, 'validate' => array('isInt'), 'name' => 'Rodzaj jednostki'),
                 'number' =>               array('required' => true, 'validate' => array('isInt'), 'name' => 'Numer jednostki'),
                 'name' =>                 array('required' => true, 'name' => 'Nazwa jednostki'),
                 'location' =>             array('required' => true, 'name' => 'Lokalizacja jednostki'),
@@ -61,7 +61,8 @@
             if($this->load_class)
             {
                 // Rodzaj jednostki nazwa
-                $this->military_group_name = self::sqlGetGroupNameById($this->id_military_group);
+                // $this->military_group_name = self::sqlGetGroupNameById($this->id_military_group);
+                $this->military_group_name = ClassMilitaryType::sqlGetItemNameByIdParent($this->id_military_type);
                 
                 // Nazwa statusu
                 $this->active_name = ClassUser::getNameStatus($this->active);
@@ -80,6 +81,19 @@
                 return false;
             }
             
+            // sprawdzanie czy item istnieje i jest aktywna
+            $item = new ClassMilitaryType($this->id_military_type);
+            
+            if(!$item->load_class){
+                $this->errors = "Rodzaj jednostki wojskowej nie istnieje.";
+                return false;
+            }
+            
+            if($item->active != '1'){
+                $this->errors = "Rodzaj jednostki wojskowej jest wyłączony.";
+                return false;
+            }
+            
             // if(self::sqlCheckExistsNumber(false, $this->number)){
                 // $this->errors = "Jednostka o numerze <b>{$this->number}</b> już istnieje.";
                 // return false;
@@ -95,6 +109,19 @@
                 return false;
             }
             
+            // sprawdzanie czy item istnieje i jest aktywna
+            $item = new ClassMilitaryType($this->id_military_type);
+            
+            if(!$item->load_class){
+                $this->errors = "Rodzaj jednostki wojskowej nie istnieje.";
+                return false;
+            }
+            
+            if($item->active != '1'){
+                $this->errors = "Rodzaj jednostki wojskowej jest wyłączony.";
+                return false;
+            }
+            
             // if(self::sqlCheckExistsNumber($this->id, $this->number)){
                 // $this->errors = "Jednostka o numerze <b>{$this->number}</b> już istnieje.";
                 // return false;
@@ -105,7 +132,11 @@
         
         // pobieranie rodzajow jednostek wraz z jednostkami
         public static function getMilitariesWithGroups(){
-            if(!$groups = self::sqlGetGroups()){
+            // if(!$groups = self::sqlGetGroups()){
+                // return false;
+            // }
+            
+            if(!$groups = ClassMilitaryType::sqlGetAllItemsNameById(NULL)){
                 return false;
             }
             
@@ -123,6 +154,25 @@
             }
             
             return $array;
+        }
+        
+        
+        // dodatkowe wlasne walidacje podczas usuwania
+        public function deleteCustomValidate()
+        {
+            // sprawdzanie czy item jest powiazany z jakims zolnierzem
+            if(self::checkSoldierHasItem($this->id)){
+                $this->errors = "Do tej jednostki powiązani są żołnierze.";
+                return false;
+            }
+            
+            // sprawdzanie czy item jest powiazany z jakims uzytkownikiem
+            if(self::checkUserHasItem($this->id)){
+                $this->errors = "Do tej jednostki powiązani są użytkownicy.";
+                return false;
+            }
+            
+            return true;
         }
         
         /* **************** SQL *************** */
@@ -167,7 +217,8 @@
                 foreach($sql as $key => $val)
                 {
                     // Rodzaj jednostki nazwa
-                    $sql[$key]['military_group_name'] = self::sqlGetGroupNameById($val['id_military_group']);
+                    // $sql[$key]['military_group_name'] = self::sqlGetGroupNameById($val['id_military_group']);
+                    $sql[$key]['military_group_name'] = ClassMilitaryType::sqlGetItemNameByIdParent($val['id_military_type']);
                     
                     // Nazwa statusu
                     $sql[$key]['active_name'] = ClassUser::getNameStatus($val['active']);
@@ -178,13 +229,13 @@
         }
         
         // pobieranie wszystkich jednostek powiazanych z dana grupa
-        public static function sqlGetMilitariesByGroupId($id_military_group){
+        public static function sqlGetMilitariesByGroupId($id_military_type){
             global $DB;
             $table_name = (self::$use_prefix ? self::$prefix : '').self::$definition['table'];
             
             $zapytanie = "SELECT `id_military`, `name`, `location`
                 FROM `{$table_name}`
-                WHERE `id_military_group` = '{$id_military_group}'
+                WHERE `id_military_type` = '{$id_military_type}'
                     AND `deleted` = '0'
                     AND `active` = '1'
             ;";
@@ -215,6 +266,44 @@
             $sql = $DB->pdo_fetch($zapytanie);
             
             if(!$sql || !is_array($sql) || count($sql) < 1){
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // sprawdzanie czy item jest powiazany z jakims zolnierzem
+        public static function checkSoldierHasItem($id_military){
+            global $DB;
+            
+            $zapytanie = "SELECT COUNT(*) as count_item
+                FROM `sew_soldiers`
+                WHERE `deleted` = '0'
+                    AND `id_military` = '{$id_military}'
+            ;";
+            
+            $sql = $DB->pdo_fetch($zapytanie);
+            
+            if(!$sql || !is_array($sql) || count($sql) < 1 || $sql['count_item'] < 1){
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // sprawdzanie czy item jest powiazany z jakims uzytkownikiem
+        public static function checkUserHasItem($id_military){
+            global $DB;
+            
+            $zapytanie = "SELECT COUNT(*) as count_item
+                FROM `sew_users`
+                WHERE `deleted` = '0'
+                    AND `id_military` = '{$id_military}'
+            ;";
+            
+            $sql = $DB->pdo_fetch($zapytanie);
+            
+            if(!$sql || !is_array($sql) || count($sql) < 1 || $sql['count_item'] < 1){
                 return false;
             }
             

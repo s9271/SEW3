@@ -25,12 +25,13 @@
         'dzieci'        => array('controller' => 'ControllerSoldierChildrens', 'permissions' => array('1', '2')),
         'adresy'        => array('controller' => 'ControllerSoldierAddresses', 'permissions' => array('1', '2')),
     ));
-    $controllers['wyposazenie']      = array('controller' => 'ControllerEquipments', 'permissions' => array('1'));
-    $controllers['misje']            = array('controller' => 'ControllerMissions', 'permissions' => array('1'));
-    $controllers['szkolenia']        = array('controller' => 'ControllerTrainings', 'permissions' => array('1'));
-    $controllers['odznaczenia']      = array('controller' => 'ControllerBadges', 'permissions' => array('1'));
-    $controllers['404']              = array('controller' => 'Controller404', 'permissions' => array('1', '2'));
-    $controllers['centra-szkolen']   = array('controller' => 'ControllerTrainingCenters', 'permissions' => array('1'));
-    $controllers['typy-wyposazenia'] = array('controller' => 'ControllerEquipmentTypes', 'permissions' => array('1'));
-    $controllers['login']            = array('controller' => 'ControllerLogin');
+    $controllers['wyposazenie']         = array('controller' => 'ControllerEquipments', 'permissions' => array('1'));
+    $controllers['misje']               = array('controller' => 'ControllerMissions', 'permissions' => array('1'));
+    $controllers['szkolenia']           = array('controller' => 'ControllerTrainings', 'permissions' => array('1'));
+    $controllers['odznaczenia']         = array('controller' => 'ControllerBadges', 'permissions' => array('1'));
+    $controllers['404']                 = array('controller' => 'Controller404', 'permissions' => array('1', '2'));
+    $controllers['centra-szkolen']      = array('controller' => 'ControllerTrainingCenters', 'permissions' => array('1'));
+    $controllers['typy-wyposazenia']    = array('controller' => 'ControllerEquipmentTypes', 'permissions' => array('1'));
+    $controllers['rodzaje-jednostek']   = array('controller' => 'ControllerMilitaryTypes', 'permissions' => array('1'));
+    $controllers['login']               = array('controller' => 'ControllerLogin');
 ?>

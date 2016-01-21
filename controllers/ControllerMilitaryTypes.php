@@ -1,6 +1,6 @@
 <?php
-    class ControllerMilitaries extends ControllerModel{
-        protected $search_controller = 'militaries';
+    class ControllerMilitaryTypes extends ControllerCategoryModel{
+        protected $search_controller = 'military-types';
         protected $using_top_title = true;
         protected $top_ico = 'map-marker';
         
@@ -8,7 +8,7 @@
             $this->search_definition = $this->getSearchDefinition();
             
             $this->breadcroumb = array(
-                array('name' => 'Jednostki Wojskowe', 'link' => '/jednostki')
+                array('name' => 'Rodzaje jednostek wojskowych', 'link' => '/rodzaje-jednostek')
             );
         }
         
@@ -22,6 +22,7 @@
         
         // pobieranie strony
         protected function getPage(){
+            // print_r($_GET);
             // sprawdzanie czy jest sie na podstronie
             if($page_action = ClassTools::getValue('page_action')){
                 switch($page_action){
@@ -49,26 +50,27 @@
             $this->actions();
             
             // strony
-            $this->controller_name = 'jednostki';
+            $this->controller_name = 'rodzaje-jednostek';
             $this->using_pages = true;
-            $this->count_items = ClassMilitary::sqlGetCountItems($this->search_controller);
+            // $this->items_on_page = 2;
+            $this->count_items = ClassMilitaryType::sqlGetCountItemsById(NULL, $this->search_controller);
             $this->current_page = ClassTools::getValue('number_page') ? ClassTools::getValue('number_page') : '1';
             
             // tytul strony
-            $this->tpl_title = 'Jednostki: Lista';
+            $this->tpl_title = 'Rodzaje jednostek wojskowych: Lista';
             
             // tylul na pasku
-            $this->top_title = 'Lista jednostek wojskowych';
+            $this->top_title = 'Lista rodzajów jednostek wojskowych';
             
             // ladowanie funkcji
             $this->load_select2 = true;
             $this->load_js_functions = true;
             
             // pobieranie wszystkich rekordow
-            $this->tpl_values = ClassMilitary::sqlGetAllItems($this->using_pages, $this->current_page, $this->items_on_page, $this->search_controller);
+            $this->tpl_values['items'] = ClassMilitaryType::sqlGetAllItemsById(NULL, false, false, $this->using_pages, $this->current_page, $this->items_on_page, $this->search_controller);
             
             // ladowanie strony z lista
-            return $this->loadTemplate('/military/list');
+            return $this->loadTemplate('/military/types-list');
         }
         
         // strona dodawania
@@ -76,36 +78,30 @@
             $this->actions();
             
             // tytul strony
-            $this->tpl_title = 'Jednostka Wojskowa: Dodaj';
+            $this->tpl_title = 'Rodzaj jednoski wojskowej: Dodaj';
             
             // tylul na pasku
-            $this->top_title = 'Dodaj jednostkę wojskową';
+            $this->top_title = 'Dodaj rodzaj jednoski wojskowej';
             
-            $this->breadcroumb[] = array('name' => 'Dodaj', 'link' => '/jednostki/dodaj');
+            $this->breadcroumb[] = array('name' => 'Dodaj', 'link' => '/rodzaje-jednostek/dodaj');
             
             // ladowanie pluginow
-            $this->load_select2 = true;
             $this->load_js_functions = true;
-            
-            // ladowanie rodzajow
-            // $this->tpl_values['form_groups'] = ClassMilitary::getGroups();
-            $this->tpl_values['form_groups'] = ClassMilitaryType::sqlGetAllItemsNameById(NULL, false, true);
             
             // zmienna ktora decyduje co formularz ma robic
             $this->tpl_values['sew_action'] = 'add';
             
             // ladowanie strony z formularzem
-            return $this->loadTemplate('/military/form');
+            return $this->loadTemplate('/military/types-form');
         }
         
         // strona edycji
-        protected function getPageEdit()
-        {
+        protected function getPageEdit(){
             // tylul na pasku
-            $this->top_title = 'Edytuj jednostki wojskowej';
+            $this->top_title = 'Edytuj rodzaj jednostki wojskowej';
             
-            // zmienne wyswietlania na wypadek gdy strona z jednostka nie istnieje
-            $this->tpl_values['wstecz'] = '/jednostki';
+            // zmienne wyswietlania na wypadek gdy strona nie istnieje
+            $this->tpl_values['wstecz'] = '/rodzaje-jednostek';
             
             // sprawdzanie czy id istnieje w linku
             if(!$id_item = ClassTools::getValue('id_item')){
@@ -119,11 +115,11 @@
             $this->actions();
             
             // ladowanie klasy
-            $military = new ClassMilitary($id_item);
+            $item = new ClassMilitaryType($id_item);
             
-            // sprawdzanie czy jednostka zostala poprawnie zaladowana
-            if(!$military->load_class){
-                $this->alerts['danger'] = 'Jednostka nie istnieje';
+            // sprawdzanie czy klasa zostala poprawnie zaladowana
+            if(!$item->load_class){
+                $this->alerts['danger'] = 'Rodzaj jednoski wojskowej nie istnieje';
                 
                 // ladowanie strony do wyswietlania bledow
                 // zmienne ktore mozna uzyc: wstecz, title oraz alertow
@@ -131,46 +127,38 @@
             }
             
             // tytul
-            $this->tpl_title = 'Jednostka Wojskowa: Edycja';
+            $this->tpl_title = 'Rodzaj jednoski wojskowej: Edycja';
+            
+            $this->breadcroumb[] = array('name' => htmlspecialchars($item->name), 'link' => "/rodzaje-jednostek/podglad/{$item->id}");
+            $this->breadcroumb[] = array('name' => 'Edytuj', 'link' => "/rodzaje-jednostek/edytuj/{$item->id}");
             
             // skrypty
-            $this->load_select2 = true;
             $this->load_js_functions = true;
-            
-            $this->breadcroumb[] = array('name' => htmlspecialchars($military->name), 'link' => "/jednostki/podglad/{$military->id}");
-            $this->breadcroumb[] = array('name' => 'Edytuj', 'link' => "/jednostki/edytuj/{$military->id}");
-            
-            // ladowanie rodzajow
-            // $this->tpl_values['form_groups'] = ClassMilitary::getGroups();
-            $this->tpl_values['form_groups'] = ClassMilitaryType::sqlGetAllItemsNameById(NULL, false, true);
             
             // zmienna ktora decyduje co formularz ma robic
             $this->tpl_values['sew_action'] = 'edit';
             
             // przypisanie zmiennych formularza do zmiennych klasy
             $array_form_class = array(
-                'id_military'       => $military->id,
-                'form_name'         => $military->name,
-                'form_number'       => $military->number,
-                'form_group'        => $military->id_military_type,
-                'form_location'     => $military->location,
-                'form_active'       => $military->active
+                'id_military_type'      => $item->id,
+                'form_name'             => $item->name,
+                'form_active'           => $item->active
             );
             
             // przypisywanieszych zmiennych do zmiennych formularza
             $this->setValuesTemplateByArrayPost($array_form_class);
             
             // ladowanie strony z formularzem
-            return $this->loadTemplate('/military/form');
+            return $this->loadTemplate('/military/types-form');
         }
         
         // strona podglądu
         protected function getPageView(){
             // tylul na pasku
-            $this->top_title = 'Podgląd jednostki wojskowej';
+            $this->top_title = 'Podgląd rodzaju jednostki wojskowej';
             
             // zmienne wyswietlania na wypadek gdy strona z odznaczeniem nie istnieje
-            $wstecz = '/jednostki';
+            $wstecz = '/rodzaje-jednostek';
             $this->tpl_values['wstecz'] = $wstecz;
             
             // sprawdzanie czy id istnieje w linku
@@ -187,41 +175,37 @@
             $this->tpl_values['wstecz'] = $wstecz;
             
             // ladowanie klasy
-            $military = new ClassMilitary($id_item);
+            $item = new ClassMilitaryType($id_item);
             
             // sprawdzanie czy klasa zostala poprawnie zaladowana
-            if(!$military->load_class){
-                $this->alerts['danger'] = 'Jednostka nie istnieje';
+            if(!$item->load_class){
+                $this->alerts['danger'] = 'Rodzaj jednoski wojskowej nie istnieje';
                 
                 // ladowanie strony do wyswietlania bledow
                 // zmienne ktore mozna uzyc: wstecz, title oraz alertow
                 return $this->loadTemplate('alert');
             }
             
-            $this->breadcroumb[] = array('name' => htmlspecialchars($military->name), 'link' => "/jednostki/podglad/{$military->id}");
+            $this->breadcroumb[] = array('name' => htmlspecialchars($item->name), 'link' => "/jednostki/podglad/{$item->id}");
             
             // tytul
-            $this->tpl_title = 'Jednostka Wojskowa: Podgląd';
+            $this->tpl_title = 'Rodzaj Jednostki Wojskowej: Podgląd';
             
             
-            $this->tpl_values['active_name'] = $military->active_name;
+            $this->tpl_values['active_name'] = $item->active_name;
             
             // przypisanie zmiennych formularza do zmiennych klasy
             $array_form_class = array(
-                'id_military'           => $military->id,
-                'form_name'             => $military->name,
-                'form_number'           => $military->number,
-                'form_group'            => $military->id_military_type,
-                'form_location'         => $military->location,
-                'military_group_name'   => $military->military_group_name,
-                'form_active'           => $military->active_name
+                'id_military_type'      => $item->id,
+                'form_name'             => $item->name,
+                'form_active'           => $item->active
             );
             
             // przypisywanieszych zmiennych do zmiennych formularza
             $this->setValuesTemplateByArrayPost($array_form_class);
             
             // ladowanie strony z formularzem
-            return $this->loadTemplate('/military/view');
+            return $this->loadTemplate('/military/types-view');
         }
         
         /* ************ WYSZUKIWARKA *********** */
@@ -229,30 +213,16 @@
         
         protected function getSearchDefinition(){
             $form_values = array(
-                'class' => 'ClassMilitary',
+                'class' => 'ClassMilitaryType',
                 'controller' => $this->search_controller,
                 'form' => array(
-                    'id_military' => array(
+                    'id_military_type' => array(
                         'class' => 'table_id',
-                        'type' => 'text'
-                    ),
-                    'number' => array(
-                        'class' => 'table_number',
                         'type' => 'text'
                     ),
                     'name' => array(
                         'class' => 'table_name',
                         'type' => 'text'
-                    ),
-                    'location' => array(
-                        'class' => 'table_lokalizacja',
-                        'type' => 'text'
-                    ),
-                    'id_military_type' => array(
-                        'class' => 'table_rodzaj',
-                        'type' => 'select',
-                        // 'options' => ClassMilitary::getGroups()
-                        'options' => ClassMilitaryType::sqlGetAllItemsNameById(NULL)
                     ),
                     'active' => array(
                         'class' => 'table_status',
@@ -280,17 +250,19 @@
                 return;
             }
             
+            print_r($_POST);
+            
             // przypisanie zmiennych posta do zmiennych template
             $this->tpl_values = $this->setValuesTemplateByPost();
             
             switch($_POST['form_action']){
-                case 'military_add':
+                case 'military_type_add':
                     return $this->add(); // dodawanie
                 break;
-                case 'military_delete':
+                case 'military_type_delete':
                     return $this->delete(); // usuwanie
                 break;
-                case 'military_save':
+                case 'military_type_save':
                     return $this->edit(); // edycja
                 break;
             }
@@ -303,22 +275,19 @@
         {
             $active = ClassTools::getValue('form_active');
             
-            $military = new ClassMilitary();
-            $military->id_military_type = ClassTools::getValue('form_group');
-            $military->number = ClassTools::getValue('form_number');
-            $military->name = ClassTools::getValue('form_name');
-            $military->location = ClassTools::getValue('form_location');
-            $military->id_user = ClassAuth::getCurrentUserId();
-            $military->active = ($active && $active == '1') ? '1' : '0';
+            $item = new ClassMilitaryType();
+            $item->name = ClassTools::getValue('form_name');
+            $item->id_user = ClassAuth::getCurrentUserId();
+            $item->active = ($active && $active == '1') ? '1' : '0';
             
             // komunikaty bledu
-            if(!$military->add()){
-                $this->alerts['danger'] = $military->errors;
+            if(!$item->add()){
+                $this->alerts['danger'] = $item->errors;
                 return;
             }
             
             // komunikat sukcesu
-            $this->alerts['success'] = "Poprawnie dodano nową jednostkę: <b>{$military->name}</b>";
+            $this->alerts['success'] = "Poprawnie dodano nowy rodzaj jednostki wojskowej: <b>".htmlspecialchars($item->name)."</b>";
             
             // czyszczeie zmiennych wyswietlania
             $this->tpl_values = '';
@@ -330,27 +299,23 @@
         // usuwanie
         protected function delete(){
             // ladowanie klasy
-            $military = new ClassMilitary(ClassTools::getValue('id_military'));
+            $item = new ClassMilitaryType(ClassTools::getValue('id_military_type'));
             
             // sprawdza czy klasa zostala poprawnie zaladowana
-            if($military->load_class)
-            {
+            if($item->load_class){
                 // usuwanie
-                if($military->delete())
-                {
+                if($item->delete()){
                     // komunikat
-                    $this->alerts['success'] = "Poprawnie usunięto jednostkę: <b>{$military->name}</b>.";
+                    $this->alerts['success'] = "Poprawnie usunięto rodzaj jednoski wojskowej: <b>".htmlspecialchars($item->name)."</b>";
                     return;
-                }
-                else
-                {
+                }else{
                     // bledy w przypadku problemow z usunieciem
-                    $this->alerts['danger'] = $military->errors;
+                    $this->alerts['danger'] = $item->errors;
                     return;
                 }
             }
             
-            $this->alerts['danger'] = 'Jednostka nie istnieje.';
+            $this->alerts['danger'] = 'Rodzaj jednoski wojskowej nie istnieje';
             $_POST = array();
             
             return;
@@ -360,30 +325,28 @@
         protected function edit()
         {
             // ladowanie klasy
-            $military = new ClassMilitary(ClassTools::getValue('id_military'));
+            $item = new ClassMilitaryType(ClassTools::getValue('id_military_type'));
             
             // sprawdza czy klasa zostala poprawnie zaladowana
-            if(!$military->load_class){
-                $this->alerts['danger'] = "Jednostka nie istnieje.";
+            if(!$item->load_class){
+                $this->alerts['danger'] = 'Rodzaj jednoski wojskowej nie istnieje';
+                return;
             }
             
             $active = ClassTools::getValue('form_active');
             
-            $military->id_military_type = ClassTools::getValue('form_group');
-            $military->number = ClassTools::getValue('form_number');
-            $military->name = ClassTools::getValue('form_name');
-            $military->location = ClassTools::getValue('form_location');
-            $military->id_user = ClassAuth::getCurrentUserId();
-            $military->active = ($active && $active == '1') ? '1' : '0';
+            $item->name = ClassTools::getValue('form_name');
+            $item->id_user = ClassAuth::getCurrentUserId();
+            $item->active = ($active && $active == '1') ? '1' : '0';
             
             // komunikaty bledu
-            if(!$military->update()){
-                $this->alerts['danger'] = $military->errors;
+            if(!$item->update()){
+                $this->alerts['danger'] = $item->errors;
                 return;
             }
             
             // komunikat
-            $this->alerts['success'] = "Poprawnie zaktualizowano jednostkę: <b>{$military->name}</b>";
+            $this->alerts['success'] = "Poprawnie zaktualizowano rodzaj jednoski wojskowej: <b>".htmlspecialchars($item->name)."</b>";
             
             // czyszczeie zmiennych wyswietlania
             $this->tpl_values = '';

@@ -110,10 +110,13 @@
         }
         
         // strona edycji
-        protected function getPageEdit(){
+        protected function getPageEdit()
+        {
+            // tylul na pasku
+            $this->top_title = 'Edytuj żołnierza';
+            
             // zmienne wyswietlania na wypadek gdy strona z odznaczeniem nie istnieje
             $this->tpl_values['wstecz'] = '/zolnierze';
-            $this->tpl_values['title'] = 'Edycja Żołnierza';
             
             // sprawdzanie czy id istnieje w linku
             if(!$id_item = ClassTools::getValue('id_item')){
@@ -131,6 +134,7 @@
             
             // sprawdzanie czy klasa zostala poprawnie zaladowana
             if(!$item->load_class){
+                $this->tpl_values['wstecz'] = '/zolnierze';
                 $this->alerts['danger'] = 'Żołnierz nie istnieje';
                 
                 // ladowanie strony do wyswietlania bledow
@@ -157,9 +161,6 @@
             
             // zmienna ktora decyduje co formularz ma robic
             $this->tpl_values['sew_action'] = 'edit';
-            
-            // tylul na pasku
-            $this->top_title = 'Edytuj żołnierza';
             
             $this->breadcroumb[] = array('name' => "{$item->name} {$item->surname}", 'link' => "/zolnierze/podglad/{$item->id}");
             $this->breadcroumb[] = array('name' => 'Edytuj', 'link' => "/zolnierze/edytuj/{$item->id}");
@@ -206,12 +207,15 @@
         }
         
         // strona podglądu
-        protected function getPageView(){
+        protected function getPageView()
+        {
+            // tylul na pasku
+            $this->top_title = 'Podgląd żołnierza';
+            
             global $login;
             
             // zmienne wyswietlania na wypadek gdy strona z odznaczeniem nie istnieje
             $this->tpl_values['wstecz'] = '/zolnierze';
-            $this->tpl_values['title'] = 'Podgląd Żołnierza';
             
             // sprawdzanie czy id istnieje w linku
             if(!$id_item = ClassTools::getValue('id_item')){
@@ -229,15 +233,13 @@
             
             // sprawdzanie czy klasa zostala poprawnie zaladowana
             if(!$item->load_class){
+                $this->tpl_values['wstecz'] = '/zolnierze';
                 $this->alerts['danger'] = 'Żołnierz nie istnieje';
                 
                 // ladowanie strony do wyswietlania bledow
                 // zmienne ktore mozna uzyc: wstecz, title oraz alertow
                 return $this->loadTemplate('alert');
             }
-            
-            // tylul na pasku
-            $this->top_title = 'Podgląd żołnierza';
             
             $this->breadcroumb[] = array('name' => "{$item->name} {$item->surname}", 'link' => "/zolnierze/podglad/{$item->id}");
             
