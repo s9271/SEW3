@@ -1,5 +1,14 @@
 <?php
     class ControllerEquipmentTypes extends ControllerCategoryModel{
+        protected $using_top_title = true;
+        protected $top_ico = 'shield';
+        
+        public function __construct(){
+            $this->breadcroumb = array(
+                array('name' => 'Typy wyposażenia', 'link' => '/typy-wyposazenia')
+            );
+        }
+        
         // funkcja ktora jest pobierana w indexie, jest wymagana w kazdym kontrolerze!!!!!
         public function getContent(){
             return $this->getPage();
@@ -22,6 +31,10 @@
                         // ladowanie strony z formularzem
                         return $this->getPageEdit();
                     break;
+                    case 'podglad':
+                        // ladowanie strony z podgladem
+                        return $this->getPageView();
+                    break;
                 }
             }
             
@@ -33,14 +46,45 @@
             $this->searchActions();
             $this->actions();
             
+            // tylul na pasku
+            $this->top_title = 'Lista typów wyposażenia';
+            
             // aktualna strona kategorii
             $page = ClassTools::getValue('page') ? ClassTools::getValue('page') : NULL;
+            
+            if($page !== NULL){
+                $equipment_type = new ClassEquipmentType($page);
+                $this->tpl_values['wstecz'] = '/typy-wyposazenia';
+            
+                // sprawdzanie czy klasa zostala poprawnie zaladowana
+                if(!$equipment_type->load_class){
+                    $this->alerts['danger'] = 'Typ wyposażenia nie istnieje.';
+                    
+                    // ladowanie strony do wyswietlania bledow
+                    // zmienne ktore mozna uzyc: wstecz, title oraz alertow
+                    return $this->loadTemplate('alert');
+                }
+            
+                // sprawdzanie czy jest parentem
+                if($equipment_type->id_parent !== NULL){
+                    $this->alerts['danger'] = 'Podkategoria nie może posiadać własnych podkategorii.';
+                    
+                    // ladowanie strony do wyswietlania bledow
+                    // zmienne ktore mozna uzyc: wstecz, title oraz alertow
+                    return $this->loadTemplate('alert');
+                }
+                
+                $this->top_title = 'Lista typów wyposażenia: '.$equipment_type->name;
+                $this->breadcroumb[] = array('name' => htmlspecialchars($equipment_type->name), 'link' => "/typy-wyposazenia/podglad/{$page}");
+                $this->breadcroumb[] = array('name' => 'Lista', 'link' => "/typy-wyposazenia/{$page}");
+            }
             
             // strony
             $this->controller_name = 'typy-wyposazenia';
             $this->using_pages = true;
             $this->count_items = ClassEquipmentType::sqlGetCountItemsById($page);
             $this->current_page = ClassTools::getValue('number_page') ? ClassTools::getValue('number_page') : '1';
+            // $this->items_on_page = 2;
             
             // tytul strony
             $this->tpl_title = 'Typy wyposażenia: Lista';
@@ -60,7 +104,11 @@
         }
         
         // strona dodawania
-        protected function getPageAdd(){
+        protected function getPageAdd()
+        {
+            // tylul na pasku
+            $this->top_title = 'Dodaj typ wyposażenia';
+            
             // aktualna strona kategorii
             $page = ClassTools::getValue('page') ? ClassTools::getValue('page') : NULL;
             
@@ -84,15 +132,24 @@
             $this->tpl_values['list_page'] = $page;
             $this->tpl_values['form_parent'] = $form_parent ? $form_parent : ($page === NULL ? false : $page);
             
+            if($page !== NULL){
+                $name_page = ClassEquipmentType::sqlGetItemNameByIdParent($page);
+                $this->breadcroumb[] = array('name' => htmlspecialchars($name_page), 'link' => "/typy-wyposazenia/podglad/{$page}");
+                $this->breadcroumb[] = array('name' => 'Dodaj', 'link' => "/typy-wyposazenia/{$page}/dodaj");
+            }
+            
             // ladowanie strony z formularzem
             return $this->loadTemplate('/equipment/types-form');
         }
         
         // strona edycji
-        protected function getPageEdit(){
+        protected function getPageEdit()
+        {
+            // tylul na pasku
+            $this->top_title = 'Edytuj typ wyposażenia';
+            
             // zmienne wyswietlania na wypadek gdy strona nie istnieje
             $this->tpl_values['wstecz'] = '/typy-wyposazenia';
-            $this->tpl_values['title'] = 'Edycja typu wyposażenia';
             
             // sprawdzanie czy id istnieje w linku
             if(!$id_item = ClassTools::getValue('id_item')){
@@ -110,6 +167,7 @@
             
             // sprawdzanie czy klasa zostala poprawnie zaladowana
             if(!$item->load_class){
+                $this->tpl_values['wstecz'] = '/typy-wyposazenia';
                 $this->alerts['danger'] = 'Typ wyposażenia nie istnieje';
                 
                 // ladowanie strony do wyswietlania bledow
@@ -126,6 +184,14 @@
             
             // ladowanie glownych kategorii
             $this->tpl_values['parent_categories'] = ClassEquipmentType::sqlGetAllItemsById(NULL, $item->id);
+            
+            if($item->id_parent !== NULL){
+                $name_page = ClassEquipmentType::sqlGetItemNameByIdParent($item->id_parent);
+                $this->breadcroumb[] = array('name' => htmlspecialchars($name_page), 'link' => "/typy-wyposazenia/podglad/{$item->id_parent}");
+            }
+            
+            $this->breadcroumb[] = array('name' => htmlspecialchars($item->name), 'link' => "/typy-wyposazenia/podglad/{$item->id}");
+            $this->breadcroumb[] = array('name' => 'Edytuj', 'link' => "/typy-wyposazenia/{$item->id_parent}/edytuj");
             
             // zmienna ktora decyduje co formularz ma robic
             $this->tpl_values['sew_action'] = 'edit';
@@ -146,6 +212,71 @@
             
             // ladowanie strony z formularzem
             return $this->loadTemplate('/equipment/types-form');
+        }
+        
+        // strona podglądu
+        protected function getPageView()
+        {
+            // tylul na pasku
+            $this->top_title = 'Podgląd typu wyposażenia';
+            
+            // zmienne wyswietlania na wypadek gdy strona z odznaczeniem nie istnieje
+            $wstecz = '/typy-wyposazenia';
+            $this->tpl_values['wstecz'] = $wstecz;
+            
+            // sprawdzanie czy id istnieje w linku
+            if(!$id_item = ClassTools::getValue('id_item')){
+                $this->alerts['danger'] = 'Brak podanego id';
+                
+                // ladowanie strony do wyswietlania bledow
+                // zmienne ktore mozna uzyc: wstecz, title oraz alertow
+                return $this->loadTemplate('alert');
+            }
+            
+            $this->actions();
+            
+            $this->tpl_values['wstecz'] = $wstecz;
+            
+            // ladowanie klasy
+            $item = new ClassEquipmentType($id_item);
+            
+            // sprawdzanie czy klasa zostala poprawnie zaladowana
+            if(!$item->load_class){
+                $this->alerts['danger'] = 'Typ wyposażenia nie istnieje';
+                
+                // ladowanie strony do wyswietlania bledow
+                // zmienne ktore mozna uzyc: wstecz, title oraz alertow
+                return $this->loadTemplate('alert');
+            }
+            
+            $this->tpl_values['category_name'] = 'Typ wyposażenia jest kategorią główną';
+            
+            if($item->id_parent !== NULL){
+                $name_page = ClassEquipmentType::sqlGetItemNameByIdParent($item->id_parent);
+                $this->breadcroumb[] = array('name' => htmlspecialchars($name_page), 'link' => "/typy-wyposazenia/podglad/{$item->id_parent}");
+                $this->tpl_values['category_name'] = $name_page;
+            }
+            
+            $this->breadcroumb[] = array('name' => htmlspecialchars($item->name), 'link' => "/typy-wyposazenia/podglad/{$item->id}");
+            
+            // tytul
+            $this->tpl_title = 'Typ wyposażenia: Podgląd';
+            
+            $this->tpl_values['active_name'] = $item->active_name;
+            
+            // przypisanie zmiennych formularza do zmiennych klasy
+            $array_form_class = array(
+                'id_equipment_type'     => $item->id,
+                'form_parent'           => $item->id_parent,
+                'form_name'             => $item->name,
+                'form_active'           => $item->active
+            );
+            
+            // przypisywanieszych zmiennych do zmiennych formularza
+            $this->setValuesTemplateByArrayPost($array_form_class);
+            
+            // ladowanie strony z formularzem
+            return $this->loadTemplate('/equipment/types-view');
         }
         
         /* *************** AKCJE ************** */

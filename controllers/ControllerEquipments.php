@@ -1,9 +1,15 @@
 <?php
     class ControllerEquipments extends ControllerModel{
         protected $search_controller = 'equipments';
+        protected $using_top_title = true;
+        protected $top_ico = 'shield';
         
         public function __construct(){
             $this->search_definition = $this->getSearchDefinition();
+            
+            $this->breadcroumb = array(
+                array('name' => 'Wyposażenie', 'link' => '/wyposazenie')
+            );
         }
         
         // funkcja ktora jest pobierana w indexie, jest wymagana w kazdym kontrolerze!!!!!
@@ -29,7 +35,7 @@
                     break;
                     case 'podglad':
                         // ladowanie strony z podgladem
-                        // return $this->getPageView();
+                        return $this->getPageView();
                     break;
                 }
             }
@@ -51,6 +57,9 @@
             // tytul strony
             $this->tpl_title = 'Wyposażenie: Lista';
             
+            // tylul na pasku
+            $this->top_title = 'Lista wyposażenia';
+            
             // ladowanie funkcji
             $this->load_select2 = true;
             $this->load_js_functions = true;
@@ -69,6 +78,11 @@
             // tytul strony
             $this->tpl_title = 'Wyposażenie: Dodaj';
             
+            // tylul na pasku
+            $this->top_title = 'Dodaj wyposażenie';
+            
+            $this->breadcroumb[] = array('name' => 'Dodaj', 'link' => '/wyposazenie/dodaj');
+            
             // ladowanie pluginow
             $this->load_select2 = true;
             $this->load_js_functions = true;
@@ -85,9 +99,11 @@
         
         // strona edycji
         protected function getPageEdit(){
+            // tylul na pasku
+            $this->top_title = 'Edytuj wyposażenie';
+            
             // zmienne wyswietlania na wypadek gdy strona z odznaczeniem nie istnieje
             $this->tpl_values['wstecz'] = '/wyposazenie';
-            $this->tpl_values['title'] = 'Edycja Wyposażenia';
             
             // sprawdzanie czy id istnieje w linku
             if(!$id_item = ClassTools::getValue('id_item')){
@@ -105,6 +121,7 @@
             
             // sprawdzanie czy klasa zostala poprawnie zaladowana
             if(!$item->load_class){
+                $this->tpl_values['wstecz'] = '/wyposazenie';
                 $this->alerts['danger'] = 'Wyposażenie nie istnieje';
                 
                 // ladowanie strony do wyswietlania bledow
@@ -125,6 +142,9 @@
             // zmienna ktora decyduje co formularz ma robic
             $this->tpl_values['sew_action'] = 'edit';
             
+            $this->breadcroumb[] = array('name' => htmlspecialchars($item->name), 'link' => "/wyposazenie/podglad/{$item->id}");
+            $this->breadcroumb[] = array('name' => 'Edytuj', 'link' => "/wyposazenie/edytuj/{$item->id}");
+            
             // przypisanie zmiennych formularza do zmiennych klasy
             $array_form_class = array(
                 'id_equipment'      => $item->id,
@@ -139,6 +159,64 @@
             
             // ladowanie strony z formularzem
             return $this->loadTemplate('/equipment/form');
+        }
+        
+        // strona podglądu
+        protected function getPageView()
+        {
+            // tylul na pasku
+            $this->top_title = 'Podgląd wyposażenia';
+            
+            // zmienne wyswietlania na wypadek gdy strona z odznaczeniem nie istnieje
+            $wstecz = '/wyposazenie';
+            $this->tpl_values['wstecz'] = $wstecz;
+            
+            // sprawdzanie czy id istnieje w linku
+            if(!$id_item = ClassTools::getValue('id_item')){
+                $this->alerts['danger'] = 'Brak podanego id';
+                
+                // ladowanie strony do wyswietlania bledow
+                // zmienne ktore mozna uzyc: wstecz, title oraz alertow
+                return $this->loadTemplate('alert');
+            }
+            
+            $this->actions();
+            
+            $this->tpl_values['wstecz'] = $wstecz;
+            
+            // ladowanie klasy
+            $item = new ClassEquipment($id_item);
+            
+            // sprawdzanie czy klasa zostala poprawnie zaladowana
+            if(!$item->load_class){
+                $this->alerts['danger'] = 'Wyposażenie nie istnieje';
+                
+                // ladowanie strony do wyswietlania bledow
+                // zmienne ktore mozna uzyc: wstecz, title oraz alertow
+                return $this->loadTemplate('alert');
+            }
+            
+            $this->breadcroumb[] = array('name' => htmlspecialchars($item->name), 'link' => "/wyposazenie/podglad/{$item->id}");
+            
+            // tytul
+            $this->tpl_title = 'Wyposażenie: Podgląd';
+            
+            $this->tpl_values['active_name'] = $item->active_name;
+            $this->tpl_values['description'] = ClassTools::nl2br($item->description);
+            
+            // przypisanie zmiennych formularza do zmiennych klasy
+            $array_form_class = array(
+                'id_equipment'          => $item->id,
+                'form_name'             => $item->name,
+                'equipment_type_name'   => $item->equipment_type_name,
+                'form_active'           => $item->active
+            );
+            
+            // przypisywanieszych zmiennych do zmiennych formularza
+            $this->setValuesTemplateByArrayPost($array_form_class);
+            
+            // ladowanie strony z formularzem
+            return $this->loadTemplate('/equipment/view');
         }
         
         /* ************ WYSZUKIWARKA *********** */
@@ -189,7 +267,7 @@
                 return;
             }
             
-            print_r($_POST);
+            // print_r($_POST);
             
             // przypisanie zmiennych posta do zmiennych template
             $this->tpl_values = $this->setValuesTemplateByPost();

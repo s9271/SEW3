@@ -565,10 +565,10 @@ table tr.form_search td.table_akcje{
     width: 60px;
 }
 
-#equipment_type_list table tbody td.table_akcje,
+/* #equipment_type_list table tbody td.table_akcje,
 #equipment_type_list table tbody td.table_id{
     text-align: center;
-}
+} */
 
 #equipment_type_list table .table_status{
     width: 100px;
@@ -1013,4 +1013,15 @@ table tr.form_search td.table_akcje{
 
 #military_type_list table tr td.table_akcje{
     text-align: center;
+}
+
+/* WYPOSAZENIE */
+#equipment_type_list table tr td.table_akcje,
+#equipments_list table tr td.table_akcje{
+    text-align: center;
+}
+
+#equipment_type_list table tr .table_akcje,
+#equipments_list table tr .table_akcje{
+    width: 150px;
 }

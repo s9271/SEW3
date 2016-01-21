@@ -42,10 +42,20 @@
         // dodatkowe wlasne walidacje podczas dodawania
         public function addCustomValidate()
         {
-            // sprawdzanie czy parent istnieje
-            if($this->id_parent !== NULL && !self::sqlCategoryItemExists($this->id_parent, true)){
-                $this->errors[] = "Kategoria wybrana z listy nie istnieje.";
-                return false;
+            // sprawdzanie czy item istnieje i jest aktywna
+            if($this->id_parent !== NULL)
+            {
+                $item = new ClassEquipmentType($this->id_parent);
+                
+                if(!$item->load_class){
+                    $this->errors = "Kategoria główna nie istnieje.";
+                    return false;
+                }
+                
+                if($item->active != '1'){
+                    $this->errors = "Kategoria główna jest wyłączona.";
+                    return false;
+                }
             }
             
             return true;

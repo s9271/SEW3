@@ -82,6 +82,27 @@
                 return false;
             }
             
+            // sprawdza wyposazenie chce sie powiazac z kategoria glowna
+            if($item->id_parent === NULL){
+                $this->errors[] = "Wyposażenia nie można powiązać z kategorią główna typu wyposażenia.";
+                return false;
+            }
+            
+            // sprawdzenie czy rodzic podkategorii nie jest wylaczony
+            $item_parent = new ClassEquipmentType($item->id_parent);
+            
+            // sprawdza czy klasa zostala poprawnie zaladowana
+            if(!$item_parent->load_class){
+                $this->errors[] = "Kategoria główna typu wyposażenia nie istnieje.";
+                return false;
+            }
+            
+            // sprawdza czy typ wyposazenia jest aktywny
+            if($item_parent->active != '1'){
+                $this->errors[] = "Kategoria główna typu wyposażenia nie jest aktywna.";
+                return false;
+            }
+            
             return true;
         }
         
@@ -94,10 +115,10 @@
         public function deleteCustomValidate()
         {
             // sprawdzanie czy jakis zolnierz ma ten ekwipunek
-            // if(self::checkSoldierHasEquipment($this->id)){
-                // $this->errors = "Do wyposażenia powiązani są żołnierze.";
-                // return false;
-            // }
+            if(self::checkSoldierHasEquipment($this->id)){
+                $this->errors = "Do wyposażenia powiązani są żołnierze.";
+                return false;
+            }
             
             return true;
         }
