@@ -1,5 +1,14 @@
 <?php
     class ControllerSoldierAddresses extends ControllerModel{
+        protected $using_top_title = true;
+        protected $top_ico = 'home';
+        
+        public function __construct(){
+            $this->breadcroumb = array(
+                array('name' => 'Żołnierze', 'link' => '/zolnierze')
+            );
+        }
+        
         // funkcja ktora jest pobierana w indexie, jest wymagana w kazdym kontrolerze!!!!!
         public function getContent(){
             return $this->getPage();
@@ -11,17 +20,24 @@
         // pobieranie strony
         protected function getPage()
         {
+            // tylul na pasku
+            $this->top_title = 'Lista adresów żołnierza';
+            
             // ladowanie klasy
             $item = new ClassSoldier(ClassTools::getValue('id_item'));
             
             // sprawdzanie czy klasa zostala poprawnie zaladowana
             if(!$item->load_class){
+                $this->tpl_values['wstecz'] = '/zolnierze';
                 $this->alerts['danger'] = 'Żołnierz nie istnieje';
                 
                 // ladowanie strony do wyswietlania bledow
                 // zmienne ktore mozna uzyc: wstecz, title oraz alertow
                 return $this->loadTemplate('alert');
             }
+            
+            $this->breadcroumb[] = array('name' => "{$item->name} {$item->surname}", 'link' => "/zolnierze/podglad/{$item->id}");
+            $this->breadcroumb[] = array('name' => "Adresy", 'link' => "/zolnierze/{$item->id}/adresy");
             
             // sprawdzanie czy jest sie na podstronie
             if($page_action = ClassTools::getValue('page_action')){
@@ -70,7 +86,11 @@
         }
         
         // strona dodawania
-        protected function getPageAdd($item){
+        protected function getPageAdd($item)
+        {
+            // tylul na pasku
+            $this->top_title = 'Dodaj adres żołnierza';
+            
             $this->actions();
             
             // tytul strony
@@ -79,6 +99,8 @@
             // ladowanie pluginow
             $this->load_select2 = true;
             $this->load_js_functions = true;
+            
+            $this->breadcroumb[] = array('name' => "Dodaj", 'link' => "/zolnierze/{$item->id}/adresy/dodaj");
             
             // pobieranie typow adresu
             $this->tpl_values['address_types'] = ClassAddressType::sqlGetAllItemsNameById(NULL, false, true);
@@ -97,10 +119,13 @@
         }
         
         // strona edycji
-        protected function getPageEdit($soldier){
+        protected function getPageEdit($soldier)
+        {
+            // tylul na pasku
+            $this->top_title = 'Edytuj adres żołnierza';
+            
             // zmienne wyswietlania na wypadek gdy strona z odznaczeniem nie istnieje
             $this->tpl_values['wstecz'] = "/zolnierze/{$soldier->id}/adresy";
-            $this->tpl_values['title'] = "{$soldier->name} {$soldier->surname}: Adresy: Edycja";
             
             // sprawdzanie czy id istnieje w linku
             if(!$id_child_item = ClassTools::getValue('id_child_item')){
@@ -112,6 +137,7 @@
             }
             
             $this->actions();
+            $this->tpl_values['wstecz'] = "/zolnierze/{$soldier->id}/adresy";
             
             // ladowanie klasy
             $item = new ClassSoldierAddress($id_child_item);
@@ -136,6 +162,9 @@
             
             // tytul
             $this->tpl_title = "{$soldier->name} {$soldier->surname}: Adresy: Edycja";
+            
+            $this->breadcroumb[] = array('name' => htmlspecialchars($item->street), 'link' => "/zolnierze/{$soldier->id}/adresy/podglad/{$item->id}");
+            $this->breadcroumb[] = array('name' => "Edytuj", 'link' => "/zolnierze/{$soldier->id}/adresy/edytuj/{$item->id}");
             
             // skrypty
             $this->load_select2 = true;
