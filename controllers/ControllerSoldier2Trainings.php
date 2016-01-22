@@ -269,7 +269,11 @@
         }
         
         // strona odeslania
-        protected function getPageReturn($soldier){
+        protected function getPageReturn($soldier)
+        {
+            // tylul na pasku
+            $this->top_title = 'Odeślij żołnierza ze szkolenia';
+            
             // zmienne wyswietlania na wypadek gdy strona z odznaczeniem nie istnieje
             $this->tpl_values['wstecz'] = "/zolnierze/{$soldier->id}/szkolenia";
             
@@ -318,6 +322,9 @@
             
             // tytul
             $this->tpl_title = "{$soldier->name} {$soldier->surname}: Szkolenia: Odesłanie";
+            
+            $this->breadcroumb[] = array('name' => htmlspecialchars($item->training_name), 'link' => "/zolnierze/{$soldier->id}/szkolenia/podglad/{$item->id}");
+            $this->breadcroumb[] = array('name' => "Odeślij", 'link' => "/zolnierze/{$soldier->id}/szkolenia/odeslij/{$item->id}");
             
             // skrypty
             $this->load_datetimepicker = true;
