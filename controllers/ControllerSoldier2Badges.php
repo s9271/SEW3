@@ -1,5 +1,14 @@
 <?php
     class ControllerSoldier2Badges extends ControllerModel{
+        protected $using_top_title = true;
+        protected $top_ico = 'trophy';
+        
+        public function __construct(){
+            $this->breadcroumb = array(
+                array('name' => 'Żołnierze', 'link' => '/zolnierze')
+            );
+        }
+        
         // funkcja ktora jest pobierana w indexie, jest wymagana w kazdym kontrolerze!!!!!
         public function getContent(){
             return $this->getPage();
@@ -11,17 +20,24 @@
         // pobieranie strony
         protected function getPage()
         {
+            // tylul na pasku
+            $this->top_title = 'Lista odznaczeń żołnierza';
+            
             // ladowanie klasy
             $item = new ClassSoldier(ClassTools::getValue('id_item'));
             
             // sprawdzanie czy klasa zostala poprawnie zaladowana
             if(!$item->load_class){
+                $this->tpl_values['wstecz'] = '/zolnierze';
                 $this->alerts['danger'] = 'Żołnierz nie istnieje';
                 
                 // ladowanie strony do wyswietlania bledow
                 // zmienne ktore mozna uzyc: wstecz, title oraz alertow
                 return $this->loadTemplate('alert');
             }
+            
+            $this->breadcroumb[] = array('name' => "{$item->name} {$item->surname}", 'link' => "/zolnierze/podglad/{$item->id}");
+            $this->breadcroumb[] = array('name' => "Odznaczenia", 'link' => "/zolnierze/{$item->id}/odznaczenia");
             
             // sprawdzanie czy jest sie na podstronie
             if($page_action = ClassTools::getValue('page_action')){
@@ -79,37 +95,46 @@
         }
         
         // strona dodawania
-        protected function getPageAdd($item){
-            $this->actions($item);
+        protected function getPageAdd($soldier){
+            $this->actions($soldier);
+            
+            
+            // tylul na pasku
+            $this->top_title = 'Dodaj odznaczenie żołnierza';
             
             // tytul strony
-            $this->tpl_title = "{$item->name} {$item->surname}: Odznaczenia: Dodaj";
+            $this->tpl_title = "{$soldier->name} {$soldier->surname}: Odznaczenia: Dodaj";
             
             // ladowanie pluginow
             $this->load_select2 = true;
             $this->load_datetimepicker = true;
             $this->load_js_functions = true;
             
+            $this->breadcroumb[] = array('name' => "Dodaj", 'link' => "/zolnierze/{$soldier->id}/odznaczenia/dodaj");
+            
             // pobieranie odznaczen
             $this->tpl_values['form_badges'] = ClassBadge::sqlGetBadgesWithRanks();
+            // $this->tpl_values['form_badges'] = ClassBadgeType::getAllItemsNameWhithChild();
             
             // id zolnierza
-            $this->tpl_values['id_soldier'] = $item->id;
+            $this->tpl_values['id_soldier'] = $soldier->id;
             
             // ladowanie strony z formularzem
             return $this->loadTemplate('/soldier/badges-add');
         }
         
         // strona edycji
-        protected function getPageEdit($soldier){
+        protected function getPageEdit($soldier)
+        {
+            // tylul na pasku
+            $this->top_title = 'Edycja odznaczenia żołnierza';
+            
             // zmienne wyswietlania na wypadek gdy strona z odznaczeniem nie istnieje
             $wstecz = "/zolnierze/{$soldier->id}/odznaczenia";
-            $title = "{$soldier->name} {$soldier->surname}: Odznaczenia: Edycja";
             
             // sprawdzanie czy id istnieje w linku
             if(!$id_child_item = ClassTools::getValue('id_child_item')){
                 $this->tpl_values['wstecz'] = $wstecz;
-                $this->tpl_values['title'] = $title;
                 $this->alerts['danger'] = 'Brak podanego id';
                 
                 // ladowanie strony do wyswietlania bledow
@@ -119,7 +144,6 @@
             
             $this->actions();
             $this->tpl_values['wstecz'] = $wstecz;
-            $this->tpl_values['title'] = $title;
             
             // ladowanie klasy
             $item = new ClassSoldier2Badge($id_child_item);
@@ -142,8 +166,20 @@
                 return $this->loadTemplate('alert');
             }
             
+            // sprawdzanie czy szkolenie nie jest odeslany
+            if($item->received == '1'){
+                $this->alerts['danger'] = 'Nie można edytować odebranych odznaczeń żołnierza.';
+                
+                // ladowanie strony do wyswietlania bledow
+                // zmienne ktore mozna uzyc: wstecz, title oraz alertow
+                return $this->loadTemplate('alert');
+            }
+            
             // tytul
             $this->tpl_title = "{$soldier->name} {$soldier->surname}: Odznaczenia: Edycja";
+            
+            $this->breadcroumb[] = array('name' => htmlspecialchars($item->badge_name), 'link' => "/zolnierze/{$soldier->id}/odznaczenia/podglad/{$item->id}");
+            $this->breadcroumb[] = array('name' => "Edytuj", 'link' => "/zolnierze/{$soldier->id}/odznaczenia/edytuj/{$item->id}");
             
             // skrypty
             $this->load_select2 = true;
@@ -174,15 +210,18 @@
         }
         
         // strona odeslania
-        protected function getPageReceive($soldier){
+        protected function getPageReceive($soldier)
+        {
+            
+            // tylul na pasku
+            $this->top_title = 'Odbierz odznaczenie żołnierza';
+            
             // zmienne wyswietlania na wypadek gdy strona z odznaczeniem nie istnieje
             $wstecz = "/zolnierze/{$soldier->id}/odznaczenia";
-            $title = "{$soldier->name} {$soldier->surname}: Odznaczenia: Odbierz";
             
             // sprawdzanie czy id istnieje w linku
             if(!$id_child_item = ClassTools::getValue('id_child_item')){
                 $this->tpl_values['wstecz'] = $wstecz;
-                $this->tpl_values['title'] = $title;
                 $this->alerts['danger'] = 'Brak podanego id.';
                 
                 // ladowanie strony do wyswietlania bledow
@@ -192,7 +231,6 @@
             
             $this->actions();
             $this->tpl_values['wstecz'] = $wstecz;
-            $this->tpl_values['title'] = $title;
             
             // ladowanie klasy
             $item = new ClassSoldier2Badge($id_child_item);
@@ -220,10 +258,6 @@
             if($item->received == '1' && (!isset($this->alerts['success']) || $this->alerts['success'] == '')){
                 $this->alerts['danger'] = 'Żołnierzowi odebrano odzaczenie.';
                 
-                // zmienne wyswietlania na wypadek gdy strona z odznaczeniem nie istnieje
-                // $this->tpl_values['wstecz'] = "/zolnierze/{$soldier->id}/szkolenia";
-                // $this->tpl_values['title'] = "{$soldier->name} {$soldier->surname}: Szkolenia: Odesłanie";
-                
                 // ladowanie strony do wyswietlania bledow
                 // zmienne ktore mozna uzyc: wstecz, title oraz alertow
                 return $this->loadTemplate('alert');
@@ -231,6 +265,9 @@
             
             // tytul
             $this->tpl_title = "{$soldier->name} {$soldier->surname}: Odznaczenia: Odbierz";
+            
+            $this->breadcroumb[] = array('name' => htmlspecialchars($item->badge_name), 'link' => "/zolnierze/{$soldier->id}/odznaczenia/podglad/{$item->id}");
+            $this->breadcroumb[] = array('name' => "Odbierz", 'link' => "/zolnierze/{$soldier->id}/odznaczenia/odbierz/{$item->id}");
             
             // skrypty
             $this->load_datetimepicker = true;
@@ -431,6 +468,7 @@
             // sprawdza czy klasa zostala poprawnie zaladowana
             if(!$item->load_class){
                 $this->alerts['danger'] = "Odznaczenie żołnierza nie istnieje.";
+                return;
             }
             
             $item->id_badge = ClassTools::getValue('id_badge');
@@ -465,6 +503,7 @@
             // sprawdza czy klasa zostala poprawnie zaladowana
             if(!$item->load_class){
                 $this->alerts['danger'] = "Odznaczenie żołnierza nie istnieje.";
+                return;
             }
             
             $item->description_receive = ClassTools::getValue('form_description_receive');

@@ -70,19 +70,19 @@
         // pobieranie odznaczen wraz ze stopniami
         public static function sqlGetBadgesWithRanks()
         {
-            if(!$ranks = self::sqlGetRanks()){
+            if(!$ranks = ClassBadgeType::sqlGetAllItemsNameById(NULL, false, true)){
                 return false;
             }
             
             $array = array();
             
-            foreach($ranks as $rank){
-                $array[$rank['id_badge_rank']]['name'] = $rank['name'];
+            foreach($ranks as $key => $rank){
+                $array[$key]['name'] = $rank;
                 
-                if($types = self::sqlGetBadgesByRankId($rank['id_badge_rank']))
+                if($types = self::sqlGetBadgesByRankId($key))
                 {
                     foreach($types as $type){
-                        $array[$rank['id_badge_rank']]['childs'][$type['id_badge']] = $type['name'];
+                        $array[$key]['childs'][$type['id_badge']] = $type['name'];
                     }
                 }
             }
@@ -130,20 +130,20 @@
         /* ************************************ */
         
         // pobieranie wszystkich stopni
-        public static function sqlGetRanks(){
-            global $DB;
-            $table_name = (self::$use_prefix ? self::$prefix : '').'badge_ranks';
+        // public static function sqlGetRanks(){
+            // global $DB;
+            // $table_name = (self::$use_prefix ? self::$prefix : '').'badge_types';
             
-            $zapytanie = "SELECT * FROM {$table_name}";
+            // $zapytanie = "SELECT * FROM `{$table_name}`";
             
-            $sql = $DB->pdo_fetch_all($zapytanie);
+            // $sql = $DB->pdo_fetch_all($zapytanie);
             
-            if(!$sql || !is_array($sql) || count($sql) < 1){
-                return false;
-            }
+            // if(!$sql || !is_array($sql) || count($sql) < 1){
+                // return false;
+            // }
             
-            return $sql;
-        }
+            // return $sql;
+        // }
         
         // pobieranie nazw ilosci stopni
         public static function sqlGetRankNameById($id_badge_rank){
@@ -179,13 +179,13 @@
         }
         
         // pobieranie wszystkich odznak danej grupy
-        public static function sqlGetBadgesByRankId($id_badge_rank){
+        public static function sqlGetBadgesByRankId($id_badge_type){
             global $DB;
             $table_name = (self::$use_prefix ? self::$prefix : '').'badges';
             
             $zapytanie = "SELECT *
                 FROM `{$table_name}`
-                WHERE `id_badge_rank` = '{$id_badge_rank}'
+                WHERE `id_badge_type` = '{$id_badge_type}'
                     AND `active` = '1'
                     AND `deleted` = '0'
             ;";

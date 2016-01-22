@@ -1166,3 +1166,12 @@ table tr.form_search td.table_akcje{
 #soldier_trainings_list table.table_list tr .table_id{
     width: 60px;
 }
+
+/* ODZNACZENIA ZOLNIERZA */
+#soldier_badges_list table.table_list tr td.table_akcje{
+    text-align: center;
+}
+
+#soldier_badges_list table.table_list tr .table_akcje{
+    width: 150px;
+}

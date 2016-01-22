@@ -148,6 +148,12 @@
                 return false;
             }
             
+            // sprawdzenie czy data zwrotu nie jest mniejsza niz data przyznania
+            if($this->received == '1' && strtotime($this->date_receive) <= strtotime($this->date_grant)){
+                $this->errors = "Data odebrania jest mniejsza lub równa dacie przyznania.";
+                return false;
+            }
+            
             $this->date_grant = date('Y-m-d', strtotime($this->date_grant));
             
             return true;
@@ -278,11 +284,11 @@
             }
             
             $zapytanie = "SELECT sb.`id_soldier2badges`, sb.`id_soldier`, sb.`id_badge`, sb.`badge_type`, sb.`date_grant`, sb.`description`, sb.`description_receive`, sb.`received`, b.`name` as badge_name, br.`name` as badge_rank_name
-                FROM `sew_soldier2badges` as sb, `sew_badges` as b, `sew_badge_ranks` as br
+                FROM `sew_soldier2badges` as sb, `sew_badges` as b, `sew_badge_types` as br
                 WHERE sb.`deleted` = '0'
                     AND b.`deleted` = '0'
                     AND sb.`id_badge` = b.`id_badge`
-                    AND b.`id_badge_rank` = br.`id_badge_rank`
+                    AND b.`id_badge_type` = br.`id_badge_type`
                     AND sb.`id_soldier` = '{$id_soldier}'
                     {$where}
                 ORDER BY `".static::$definition['primary']."`
