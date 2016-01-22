@@ -23,6 +23,12 @@
         // opic podczas oddelegowania
         public $description_detach = '';
         
+        // data przypisania
+        public $date_add;
+        
+        // data oddelegowania
+        public $date_detach = NULL;
+        
         // Użytkownik
         public $id_user;
         
@@ -62,6 +68,8 @@
                 'id_mission'            => array('required' => true, 'validate' => array('isInt'), 'name' => 'Id misji'),
                 'description'           => array('name' => 'Opis'),
                 'description_detach'    => array('name' => 'Opis oddelegowania'),
+                'date_add'              => array('required' => true, 'validate' => array('isDateTime'), 'name' => 'Data przypisania'),
+                'date_detach'           => array('required' => true, 'validate' => array('isDateTime'), 'name' => 'Data oddelegowania'),
                 'id_user'               => array('required' => true, 'validate' => array('isInt'), 'name' => 'Użytkownik'),
                 'date_update'           => array('required' => true, 'validate' => array('isDateTime'), 'name' => 'Data aktualizacji'),
                 'detached'              => array('validate' => array('isBool'), 'name' => 'Oddelegowany'),
@@ -85,6 +93,7 @@
                 // nazwa statusu misji
                 $item = new ClassMission($this->id_mission);
                 $this->status_name = self::getStatusMission($item->date_start, $item->date_end, $this->detached);
+                $this->mission_name = $item->name;
                 
                 // data rozpoczęcia
                 $this->date_start = date('d.m.Y H:i', strtotime($item->date_start));
@@ -92,6 +101,9 @@
                 // data zakonczenia
                 $this->date_end_tmp  = $this->date_end;
                 $this->date_end  = $this->date_end  === NULL || $this->date_end  == '0000-00-00 00:00:00' ? 'Niezdefiniowano' : date('d.m.Y H:i', strtotime($item->date_end));
+                
+                $this->date_add = date('d.m.Y H:i', strtotime($this->date_add));
+                $this->date_detach  = $this->date_detach  === NULL || $this->date_detach  == '0000-00-00 00:00:00' ? NULL : date('d.m.Y H:i', strtotime($this->date_detach));
             }
         }
         
@@ -152,6 +164,9 @@
                 }
             }
             
+            $this->date_add = date('Y-m-d H:i:s', strtotime($this->date_add));
+            
+            // return false;
             return true;
         }
         
@@ -292,6 +307,26 @@
                 return false;
             }
             
+            // sprawdzanie czy podano date oddelegowania
+            if($this->date_detach === NULL){
+                $this->errors = "Proszę podać datę oddelegowania.";
+                return false;
+            }
+            
+            // sprawdzanie data oddelegowania nie jest mniejsza od daty dodania
+            if(strtotime($this->date_detach) < strtotime($this->date_add)){
+                $this->errors = "Data oddelegowania jest większa niż data dodania do misji. Żołnierza dodano do misji <b>{$this->date_add}</b>.";
+                return false;
+            }
+            
+            // sprawdzanie data oddelegowania jest większa niz dzisiejsza data
+            if(strtotime($this->date_detach) > strtotime("now")){
+                $this->errors = "Data oddelegowania jest większa niż dzisiejsza data.";
+                return false;
+            }
+            
+            $this->date_detach = date('Y-m-d H:i:s', strtotime($this->date_detach));
+            
             if (!$this->sqlDetach(static::$definition['table'], $this->id)){
                 $this->errors[] = "Oddelegowanie: Błąd aktualizacji rekordu w bazie.";
                 return false;
@@ -338,7 +373,7 @@
                 $limit = " LIMIT {$limit_start}, {$items_on_page}";
             }
             
-            $zapytanie = "SELECT sm.`id_soldier2missions`, sm.`id_soldier`, sm.`id_mission`, sm.`description`, sm.`description_detach`, sm.`detached`, s.`name`, s.`date_start`, s.`date_end`
+            $zapytanie = "SELECT sm.`id_soldier2missions`, sm.`id_soldier`, sm.`id_mission`, sm.`description`, sm.`description_detach`, sm.`date_add`, sm.`date_detach`, sm.`detached`, s.`name`, s.`date_start`, s.`date_end`
                 FROM `sew_soldier2missions` as sm, `sew_missions` as s
                 WHERE sm.`deleted` = '0'
                     AND s.`deleted` = '0'
@@ -374,6 +409,10 @@
                 // data zakonczenia
                 $sql[$key]['date_end_tmp'] = $sql[$key]['date_end'];
                 $sql[$key]['date_end'] = $sql[$key]['date_end'] === NULL || $sql[$key]['date_end'] == '0000-00-00 00:00:00' ? 'Niezdefiniowano' : date('d.m.Y H:i', strtotime($sql[$key]['date_end']));
+                
+                // data dodania i oddelegowania
+                $sql[$key]['date_add'] = date('d.m.Y H:i', strtotime($sql[$key]['date_add']));
+                $sql[$key]['date_detach'] = $sql[$key]['date_detach'] === NULL || $sql[$key]['date_detach'] == '0000-00-00 00:00:00' ? NULL : date('d.m.Y H:i', strtotime($sql[$key]['date_detach']));
             }
             
             return $sql;
@@ -402,6 +441,7 @@
             $data = array(
                 'description_detach'    => $this->description_detach,
                 'id_user'               => $this->id_user,
+                'date_detach'           => $this->date_detach,
                 'detached'              => '1',
             );
             

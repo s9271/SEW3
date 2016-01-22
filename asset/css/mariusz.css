@@ -1108,3 +1108,32 @@ table tr.form_search td.table_akcje{
 #soldier_child_list table tr .table_akcje{
     width: 150px;
 }
+
+/* MISJE ZOLNIERZA */
+#soldier_missions_list table.table_add tr .table_date_add{
+    width: 250px;
+}
+
+#soldier_missions_list table.table_list tr td.table_akcje{
+    text-align: center;
+}
+
+#soldier_missions_list table.table_list tr .table_akcje{
+    width: 150px;
+}
+
+#soldier_missions_list table.table_list tr .table_status{
+    width: 150px;
+}
+
+#soldier_missions_list table.table_list tr .table_date_start{
+    width: 150px;
+}
+
+#soldier_missions_list table.table_list tr .table_date_end{
+    width: 150px;
+}
+
+#soldier_missions_list table.table_list tr .table_id{
+    width: 60px;
+}

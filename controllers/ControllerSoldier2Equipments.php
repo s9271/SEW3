@@ -37,6 +37,7 @@
             }
             
             $this->breadcroumb[] = array('name' => "{$item->name} {$item->surname}", 'link' => "/zolnierze/podglad/{$item->id}");
+            $this->breadcroumb[] = array('name' => "Wyposażenie", 'link' => "/zolnierze/{$item->id}/wyposazenie");
             
             // sprawdzanie czy jest sie na podstronie
             if($page_action = ClassTools::getValue('page_action')){

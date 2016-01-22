@@ -37,6 +37,7 @@
             }
             
             $this->breadcroumb[] = array('name' => "{$item->name} {$item->surname}", 'link' => "/zolnierze/podglad/{$item->id}");
+            $this->breadcroumb[] = array('name' => "Dzieci", 'link' => "/zolnierze/{$item->id}/dzieci");
             
             return $this->getPageList($item);
         }
