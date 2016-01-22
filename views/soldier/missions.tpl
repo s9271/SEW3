@@ -22,7 +22,7 @@
                                 </select>
                                 
                             </td>
-                            <td class="table_akcje">
+                            <td class="table_date_add">
                                 <input name="form_date" type="text" class="form-control input-sm jsdatetime" id="form_date" placeholder="Data przypisania do misj" required="required" value="<?php echo ((isset($this->tpl_values['form_date']) && $this->tpl_values['form_date'] != '') ? $this->tpl_values['form_date'] : ''); ?>" />
                             </td>
                             <td class="table_akcje">

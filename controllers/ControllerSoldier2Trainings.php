@@ -1,5 +1,14 @@
 <?php
     class ControllerSoldier2Trainings extends ControllerModel{
+        protected $using_top_title = true;
+        protected $top_ico = 'graduation-cap';
+        
+        public function __construct(){
+            $this->breadcroumb = array(
+                array('name' => 'Żołnierze', 'link' => '/zolnierze')
+            );
+        }
+        
         // funkcja ktora jest pobierana w indexie, jest wymagana w kazdym kontrolerze!!!!!
         public function getContent(){
             return $this->getPage();
@@ -11,17 +20,24 @@
         // pobieranie strony
         protected function getPage()
         {
+            // tylul na pasku
+            $this->top_title = 'Lista szkoleń żołnierza';
+            
             // ladowanie klasy
             $item = new ClassSoldier(ClassTools::getValue('id_item'));
             
             // sprawdzanie czy klasa zostala poprawnie zaladowana
             if(!$item->load_class){
+                $this->tpl_values['wstecz'] = '/zolnierze';
                 $this->alerts['danger'] = 'Żołnierz nie istnieje';
                 
                 // ladowanie strony do wyswietlania bledow
                 // zmienne ktore mozna uzyc: wstecz, title oraz alertow
                 return $this->loadTemplate('alert');
             }
+            
+            $this->breadcroumb[] = array('name' => "{$item->name} {$item->surname}", 'link' => "/zolnierze/podglad/{$item->id}");
+            $this->breadcroumb[] = array('name' => "Szkolenia", 'link' => "/zolnierze/{$item->id}/szkolenia");
             
             // sprawdzanie czy jest sie na podstronie
             if($page_action = ClassTools::getValue('page_action')){
@@ -45,7 +61,8 @@
         }
         
         // strona lista
-        protected function getPageList($item){
+        protected function getPageList($item)
+        {
             global $login;
             
             $this->actions($item);
@@ -61,6 +78,7 @@
             
             // ladowanie funkcji
             $this->load_select2 = true;
+            $this->load_datetimepicker = true;
             $this->load_js_functions = true;
             
             // pobieranie wszystkich rekordow
@@ -91,10 +109,13 @@
         }
         
         // strona edycji
-        protected function getPageEdit($soldier){
+        protected function getPageEdit($soldier)
+        {
+            // tylul na pasku
+            $this->top_title = 'Edycja szkolenia żołnierza';
+            
             // zmienne wyswietlania na wypadek gdy strona z odznaczeniem nie istnieje
             $this->tpl_values['wstecz'] = "/zolnierze/{$soldier->id}/szkolenia";
-            $this->tpl_values['title'] = "{$soldier->name} {$soldier->surname}: Szkolenia: Edycja";
             
             // sprawdzanie czy id istnieje w linku
             if(!$id_child_item = ClassTools::getValue('id_child_item')){
@@ -109,10 +130,11 @@
             
             // ladowanie klasy
             $item = new ClassSoldier2Training($id_child_item);
+            $this->tpl_values['wstecz'] = "/zolnierze/{$soldier->id}/szkolenia";
             
             // sprawdzanie czy klasa zostala poprawnie zaladowana
             if(!$item->load_class){
-                $this->alerts['danger'] = 'Szkolenie nie istnieje.';
+                $this->alerts['danger'] = 'Przypisanie szkolenia do żołnierza nie istnieje';
                 
                 // ladowanie strony do wyswietlania bledow
                 // zmienne ktore mozna uzyc: wstecz, title oraz alertow
@@ -140,7 +162,11 @@
             // tytul
             $this->tpl_title = "{$soldier->name} {$soldier->surname}: Szkolenia: Edycja";
             
+            $this->breadcroumb[] = array('name' => htmlspecialchars($item->training_name), 'link' => "/zolnierze/{$soldier->id}/szkolenia/podglad/{$item->id}");
+            $this->breadcroumb[] = array('name' => "Edytuj", 'link' => "/zolnierze/{$soldier->id}/szkolenia/edytuj/{$item->id}");
+            
             // skrypty
+            $this->load_datetimepicker = true;
             $this->load_js_functions = true;
             
             // przypisanie zmiennych formularza do zmiennych klasy
@@ -148,6 +174,7 @@
                 'id_soldier2trainings'      => $item->id,
                 'id_soldier'                => $soldier->id,
                 'id_training'               => $item->id_training,
+                'form_date'                 => $item->date_training_add,
                 'form_description'          => $item->description
             );
             
@@ -162,14 +189,15 @@
         protected function getPageView($soldier){
             global $login;
             
+            // tylul na pasku
+            $this->top_title = 'Podgląd szkolenia żołnierza';
+            
             // zmienne wyswietlania na wypadek gdy strona z odznaczeniem nie istnieje
             $wstecz = "/zolnierze/{$soldier->id}/szkolenia";
-            $title = "{$soldier->name} {$soldier->surname}: Szkolenia: Podgląd";
             
             // sprawdzanie czy id istnieje w linku
             if(!$id_child_item = ClassTools::getValue('id_child_item')){
                 $this->tpl_values['wstecz'] = $wstecz;
-                $this->tpl_values['title'] = $title;
                 $this->alerts['danger'] = 'Brak podanego id.';
                 
                 // ladowanie strony do wyswietlania bledow
@@ -183,11 +211,10 @@
             $item = new ClassSoldier2Training($id_child_item);
             
             $this->tpl_values['wstecz'] = $wstecz;
-            $this->tpl_values['title'] = $title;
             
             // sprawdzanie czy klasa zostala poprawnie zaladowana
             if(!$item->load_class){
-                $this->alerts['danger'] = 'Przypisanie szkolenia nie istnieje.';
+                $this->alerts['danger'] = 'Przypisanie szkolenia do żołnierza nie istnieje';
                 
                 // ladowanie strony do wyswietlania bledow
                 // zmienne ktore mozna uzyc: wstecz, title oraz alertow
@@ -219,6 +246,8 @@
             // ladowanie szkolenia
             $this->tpl_values['training'] = new ClassTraining($item->id_training);
             
+            $this->breadcroumb[] = array('name' => htmlspecialchars($this->tpl_values['training']->name), 'link' => "/zolnierze/{$soldier->id}/szkolenia/podglad/{$item->id}");
+            
             
             // prawa zalogowanego uzytkownika
             $this->tpl_values['id_login_permission'] = $login->auth_user['id_permission'];
@@ -227,6 +256,8 @@
             $array_form_class = array(
                 'id_soldier2trainings'      => $item->id,
                 'id_soldier'                => $soldier->id,
+                'date_training_add'         => $item->date_training_add,
+                'date_training_return'      => $item->date_training_return,
                 'id_training'               => $item->id_training
             );
             
@@ -241,7 +272,6 @@
         protected function getPageReturn($soldier){
             // zmienne wyswietlania na wypadek gdy strona z odznaczeniem nie istnieje
             $this->tpl_values['wstecz'] = "/zolnierze/{$soldier->id}/szkolenia";
-            $this->tpl_values['title'] = "{$soldier->name} {$soldier->surname}: Szkolenia: Odesłanie";
             
             // sprawdzanie czy id istnieje w linku
             if(!$id_child_item = ClassTools::getValue('id_child_item')){
@@ -254,12 +284,14 @@
             
             $this->actions();
             
+            $this->tpl_values['wstecz'] = "/zolnierze/{$soldier->id}/szkolenia";
+            
             // ladowanie klasy
             $item = new ClassSoldier2Training($id_child_item);
             
             // sprawdzanie czy klasa zostala poprawnie zaladowana
             if(!$item->load_class){
-                $this->alerts['danger'] = 'Szkolenie nie istnieje';
+                $this->alerts['danger'] = 'Przypisanie szkolenia do żołnierza nie istnieje';
                 
                 // ladowanie strony do wyswietlania bledow
                 // zmienne ktore mozna uzyc: wstecz, title oraz alertow
@@ -279,10 +311,6 @@
             if($item->returned == '1' && (!isset($this->alerts['success']) || $this->alerts['success'] == '')){
                 $this->alerts['danger'] = 'Żołnierz został odesłany od tego szkolenia.';
                 
-                // zmienne wyswietlania na wypadek gdy strona z odznaczeniem nie istnieje
-                $this->tpl_values['wstecz'] = "/zolnierze/{$soldier->id}/szkolenia";
-                $this->tpl_values['title'] = "{$soldier->name} {$soldier->surname}: Szkolenia: Odesłanie";
-                
                 // ladowanie strony do wyswietlania bledow
                 // zmienne ktore mozna uzyc: wstecz, title oraz alertow
                 return $this->loadTemplate('alert');
@@ -292,6 +320,7 @@
             $this->tpl_title = "{$soldier->name} {$soldier->surname}: Szkolenia: Odesłanie";
             
             // skrypty
+            $this->load_datetimepicker = true;
             $this->load_js_functions = true;
             
             // przypisanie zmiennych formularza do zmiennych klasy
@@ -299,6 +328,7 @@
                 'id_soldier2trainings'      => $item->id,
                 'id_soldier'                => $soldier->id,
                 'id_training'               => $item->id_training,
+                'form_date'                 => $item->date_training_return,
                 'description_return'        => $item->description_return
             );
             
@@ -349,6 +379,7 @@
             $item->id_training = ClassTools::getValue('form_training');
             $item->description = ClassTools::getValue('form_description');
             $item->id_soldier = ClassTools::getValue('id_soldier');
+            $item->date_training_add = ClassTools::getValue('form_date');
             $item->id_user = ClassAuth::getCurrentUserId();
             
             // komunikaty bledu
@@ -375,6 +406,7 @@
             // sprawdza czy klasa zostala poprawnie zaladowana
             if(!$item->load_class){
                 $this->alerts['danger'] = "Szkolenie żołnierza nie istnieje.";
+                return;
             }
             
             $item->id_soldier = ClassTools::getValue('id_soldier');
@@ -410,10 +442,12 @@
             // sprawdza czy klasa zostala poprawnie zaladowana
             if(!$item->load_class){
                 $this->alerts['danger'] = "Szkolenie żołnierza nie istnieje.";
+                return;
             }
             
             $item->id_soldier = ClassTools::getValue('id_soldier');
             $item->id_training = ClassTools::getValue('id_training');
+            $item->date_training_add = ClassTools::getValue('form_date');
             $item->description = ClassTools::getValue('form_description');
             $item->id_user = ClassAuth::getCurrentUserId();
             
@@ -442,11 +476,13 @@
             // sprawdza czy klasa zostala poprawnie zaladowana
             if(!$item->load_class){
                 $this->alerts['danger'] = "Szkolenie żołnierza nie istnieje.";
+                return;
             }
             
             $item->id_soldier = ClassTools::getValue('id_soldier');
             $item->id_training = ClassTools::getValue('id_training');
             $item->description_return = ClassTools::getValue('form_description_return');
+            $item->date_training_return = ClassTools::getValue('form_date');
             $item->id_user = ClassAuth::getCurrentUserId();
             
             // komunikaty bledu

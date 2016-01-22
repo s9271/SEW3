@@ -183,6 +183,13 @@
                 return false;
             }
             
+            if($this->detached == '1'){
+                $this->errors = "Nie można edytowac oddelegowanych żołnierzy z misji.";
+                return false;
+            }
+            
+            $this->date_add = date('Y-m-d H:i:s', strtotime($this->date_add));
+            
             return true;
         }
         

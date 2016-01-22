@@ -26,6 +26,12 @@
         // opic podczas odsylania
         public $description_return = '';
         
+        // data przypisania
+        public $date_training_add;
+        
+        // data odeslania
+        public $date_training_return = NULL;
+        
         // Użytkownik
         public $id_user;
         
@@ -62,6 +68,8 @@
                 'id_training'           => array('required' => true, 'validate' => array('isInt'), 'name' => 'Id szkolenia'),
                 'description'           => array('name' => 'Opis'),
                 'description_return'    => array('name' => 'Opis odesłania'),
+                'date_training_add'     => array('required' => true, 'validate' => array('isDateTime'), 'name' => 'Data dodania'),
+                'date_training_return'  => array('required' => true, 'validate' => array('isDateTime'), 'name' => 'Data odesłania'),
                 'id_user'               => array('required' => true, 'validate' => array('isInt'), 'name' => 'Użytkownik'),
                 'date_update'           => array('required' => true, 'validate' => array('isDateTime'), 'name' => 'Data aktualizacji'),
                 'returned'              => array('validate' => array('isBool'), 'name' => 'Odesłany'),
@@ -86,6 +94,7 @@
                 // $sql[$key]['status_name'] = self::getStatusTraining($val['date_start'], $val['date_end'], $val['returned']);
                 // $this->status_name = self::getStatusName($item->date_end, $this->returned);
                 $this->status_name = self::getStatusTraining($item->date_start, $item->date_end, $this->returned);
+                $this->training_name = $item->name;
                 
                 // data rozpoczęcia
                 $this->date_start = date('d.m.Y H:i', strtotime($item->date_start));
@@ -93,6 +102,9 @@
                 // data zakonczenia
                 $this->date_end_tmp = $item->date_end;
                 $this->date_end = $item->date_end  === NULL || $item->date_end  == '0000-00-00 00:00:00' ? 'Niezdefiniowano' : date('d.m.Y H:i', strtotime($item->date_end));
+                
+                $this->date_training_add = date('d.m.Y H:i', strtotime($this->date_training_add));
+                $this->date_training_return  = $this->date_training_return  === NULL || $this->date_training_return  == '0000-00-00 00:00:00' ? NULL : date('d.m.Y H:i', strtotime($this->date_training_return));
             }
         }
         
@@ -153,6 +165,8 @@
                 }
             }
             
+            $this->date_training_add = date('Y-m-d H:i:s', strtotime($this->date_training_add));
+            
             return true;
         }
         
@@ -168,6 +182,13 @@
                 $this->errors = "Niepoprawne szkolenie.";
                 return false;
             }
+            
+            if($this->returned == '1'){
+                $this->errors = "Nie można edytowac odeslanych żołnierzy ze szkolenia.";
+                return false;
+            }
+            
+            $this->date_training_add = date('Y-m-d H:i:s', strtotime($this->date_training_add));
             
             return true;
         }
@@ -293,6 +314,27 @@
                 return false;
             }
             
+            // sprawdzanie czy podano date oddelegowania
+            if($this->date_training_return === NULL){
+                $this->errors = "Proszę podać datę odesłania.";
+                return false;
+            }
+            
+            // sprawdzanie data oddelegowania nie jest mniejsza od daty dodania
+            if(strtotime($this->date_training_return) < strtotime($this->date_training_add)){
+                $this->errors = "Data odesłania jest większa niż data dodania do szkolenia. Żołnierza dodano do szkolenia <b>{$this->date_training_add}</b>.";
+                return false;
+            }
+            
+            // sprawdzanie data oddelegowania jest większa niz dzisiejsza data
+            if(strtotime($this->date_training_return) > strtotime("now")){
+                $this->errors = "Data odesłania jest większa niż dzisiejsza data.";
+                return false;
+            }
+            
+            $this->date_training_return = date('Y-m-d H:i:s', strtotime($this->date_training_return));
+            
+            
             if (!$this->sqlReturn(static::$definition['table'], $this->id)){
                 $this->errors[] = "Odesłanie: Błąd aktualizacji rekordu w bazie.";
                 return false;
@@ -339,7 +381,7 @@
                 $limit = " LIMIT {$limit_start}, {$items_on_page}";
             }
             
-            $zapytanie = "SELECT sm.`id_soldier2trainings`, sm.`id_soldier`, sm.`id_training`, sm.`description`, sm.`description_return`, sm.`returned`, s.`name`, s.`date_start`, s.`date_end`
+            $zapytanie = "SELECT sm.`id_soldier2trainings`, sm.`id_soldier`, sm.`id_training`, sm.`description`, sm.`description_return`, sm.`returned`, sm.`date_training_add`, sm.`date_training_return`, s.`name`, s.`date_start`, s.`date_end`
                 FROM `sew_soldier2trainings` as sm, `sew_trainings` as s
                 WHERE sm.`deleted` = '0'
                     AND s.`deleted` = '0'
@@ -375,6 +417,9 @@
                 // data zakonczenia
                 $sql[$key]['date_end_tmp'] = $sql[$key]['date_end'];
                 $sql[$key]['date_end'] = $sql[$key]['date_end'] === NULL || $sql[$key]['date_end'] == '0000-00-00 00:00:00' ? 'Niezdefiniowano' : date('d.m.Y H:i', strtotime($sql[$key]['date_end']));
+                
+                $sql[$key]['date_training_add'] = date('d.m.Y H:i', strtotime($sql[$key]['date_training_add']));
+                $sql[$key]['date_training_return'] = $sql[$key]['date_training_return'] === NULL || $sql[$key]['date_training_return'] == '0000-00-00 00:00:00' ? NULL : date('d.m.Y H:i', strtotime($sql[$key]['date_training_return']));
             }
             
             return $sql;
@@ -403,6 +448,7 @@
             $data = array(
                 'description_return'    => $this->description_return,
                 'id_user'               => $this->id_user,
+                'date_training_return'  => $this->date_training_return,
                 'returned'              => '1',
             );
             
