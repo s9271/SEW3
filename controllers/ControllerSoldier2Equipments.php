@@ -1,5 +1,14 @@
 <?php
     class ControllerSoldier2Equipments extends ControllerModel{
+        protected $using_top_title = true;
+        protected $top_ico = 'shield';
+        
+        public function __construct(){
+            $this->breadcroumb = array(
+                array('name' => 'Żołnierze', 'link' => '/zolnierze')
+            );
+        }
+        
         // funkcja ktora jest pobierana w indexie, jest wymagana w kazdym kontrolerze!!!!!
         public function getContent(){
             return $this->getPage();
@@ -11,17 +20,23 @@
         // pobieranie strony
         protected function getPage()
         {
+            // tylul na pasku
+            $this->top_title = 'Lista wyposażenia żołnierza';
+            
             // ladowanie klasy
             $item = new ClassSoldier(ClassTools::getValue('id_item'));
             
             // sprawdzanie czy klasa zostala poprawnie zaladowana
             if(!$item->load_class){
+                $this->tpl_values['wstecz'] = '/zolnierze';
                 $this->alerts['danger'] = 'Żołnierz nie istnieje';
                 
                 // ladowanie strony do wyswietlania bledow
                 // zmienne ktore mozna uzyc: wstecz, title oraz alertow
                 return $this->loadTemplate('alert');
             }
+            
+            $this->breadcroumb[] = array('name' => "{$item->name} {$item->surname}", 'link' => "/zolnierze/podglad/{$item->id}");
             
             // sprawdzanie czy jest sie na podstronie
             if($page_action = ClassTools::getValue('page_action')){
@@ -79,11 +94,16 @@
         }
         
         // strona dodawania
-        protected function getPageAdd($item){
-            $this->actions($item);
+        protected function getPageAdd($soldier){
+            $this->actions($soldier);
+            
+            // tylul na pasku
+            $this->top_title = 'Dodaj wyposażenie żołnierza';
+            
+            $this->breadcroumb[] = array('name' => "Dodaj", 'link' => "/zolnierze/{$soldier->id}/wyposazenie/dodaj");
             
             // tytul strony
-            $this->tpl_title = "{$item->name} {$item->surname}: Wyposażenie: Dodaj";
+            $this->tpl_title = "{$soldier->name} {$soldier->surname}: Wyposażenie: Dodaj";
             
             // ladowanie pluginow
             $this->load_select2 = true;
@@ -106,22 +126,24 @@
             }
             
             // id zolnierza
-            $this->tpl_values['id_soldier'] = $item->id;
+            $this->tpl_values['id_soldier'] = $soldier->id;
             
             // ladowanie strony z formularzem
             return $this->loadTemplate('/soldier/equipments-add');
         }
         
         // strona edycji
-        protected function getPageEdit($soldier){
+        protected function getPageEdit($soldier)
+        {
+            // tylul na pasku
+            $this->top_title = 'Edytuj wyposażenie żołnierza';
+            
             // zmienne wyswietlania na wypadek gdy strona z odznaczeniem nie istnieje
             $wstecz = "/zolnierze/{$soldier->id}/wyposazenie";
-            $title = "{$soldier->name} {$soldier->surname}: Wyposażenie: Edycja";
             
             // sprawdzanie czy id istnieje w linku
             if(!$id_child_item = ClassTools::getValue('id_child_item')){
                 $this->tpl_values['wstecz'] = $wstecz;
-                $this->tpl_values['title'] = $title;
                 $this->alerts['danger'] = 'Brak podanego id';
                 
                 // ladowanie strony do wyswietlania bledow
@@ -131,7 +153,6 @@
             
             $this->actions();
             $this->tpl_values['wstecz'] = $wstecz;
-            $this->tpl_values['title'] = $title;
             
             // ladowanie klasy
             $item = new ClassSoldier2Equipment($id_child_item);
@@ -156,6 +177,9 @@
             
             // tytul
             $this->tpl_title = "{$soldier->name} {$soldier->surname}: Wyposażenie: Edycja";
+            
+            $this->breadcroumb[] = array('name' => htmlspecialchars($item->equipment_name), 'link' => "/zolnierze/{$soldier->id}/wyposazenie/podglad/{$item->id}");
+            $this->breadcroumb[] = array('name' => "Edytuj", 'link' => "/zolnierze/{$soldier->id}/wyposazenie/edytuj/{$item->id}");
             
             // skrypty
             $this->load_datetimepicker = true;
@@ -182,7 +206,11 @@
         }
         
         // strona odeslania
-        protected function getPageReturn($soldier){
+        protected function getPageReturn($soldier)
+        {
+            // tylul na pasku
+            $this->top_title = 'Zwróć wyposażenie żołnierza';
+            
             // zmienne wyswietlania na wypadek gdy strona z odznaczeniem nie istnieje
             $wstecz = "/zolnierze/{$soldier->id}/wyposazenie";
             $title = "{$soldier->name} {$soldier->surname}: Wyposażenie: Zwróć";
@@ -240,6 +268,9 @@
             // tytul
             $this->tpl_title = "{$soldier->name} {$soldier->surname}: Wyposażenie: Zwróć";
             
+            $this->breadcroumb[] = array('name' => htmlspecialchars($item->equipment_name), 'link' => "/zolnierze/{$soldier->id}/wyposazenie/podglad/{$item->id}");
+            $this->breadcroumb[] = array('name' => "Zwróć", 'link' => "/zolnierze/{$soldier->id}/wyposazenie/zwroc/{$item->id}");
+            
             // skrypty
             $this->load_datetimepicker = true;
             $this->load_js_functions = true;
@@ -264,14 +295,15 @@
         protected function getPageView($soldier){
             global $login;
             
+            // tylul na pasku
+            $this->top_title = 'Podgląd wyposażenia żołnierza';
+            
             // zmienne wyswietlania na wypadek gdy strona z odznaczeniem nie istnieje
             $wstecz = "/zolnierze/{$soldier->id}/wyposażenie";
-            $title = "{$soldier->name} {$soldier->surname}: Wyposażenie: Podgląd";
             
             // sprawdzanie czy id istnieje w linku
             if(!$id_child_item = ClassTools::getValue('id_child_item')){
                 $this->tpl_values['wstecz'] = $wstecz;
-                $this->tpl_values['title'] = $title;
                 $this->alerts['danger'] = 'Brak podanego id.';
                 
                 // ladowanie strony do wyswietlania bledow
@@ -285,7 +317,6 @@
             $item = new ClassSoldier2Equipment($id_child_item);
             
             $this->tpl_values['wstecz'] = $wstecz;
-            $this->tpl_values['title'] = $title;
             
             // sprawdzanie czy klasa zostala poprawnie zaladowana
             if(!$item->load_class){
@@ -307,6 +338,8 @@
             
             // tytul
             $this->tpl_title = "{$soldier->name} {$soldier->surname}: Wyposażenie: Podgląd";
+            
+            $this->breadcroumb[] = array('name' => htmlspecialchars($item->equipment_name), 'link' => "/zolnierze/{$soldier->id}/wyposazenie/podglad/{$item->id}");
             
             // skrypty
             $this->load_js_functions = true;
@@ -443,6 +476,7 @@
             // sprawdza czy klasa zostala poprawnie zaladowana
             if(!$item->load_class){
                 $this->alerts['danger'] = "Wyposażenie żołnierza nie istnieje.";
+                return;
             }
             
             $item->id_equipment = ClassTools::getValue('id_equipment');
@@ -477,6 +511,7 @@
             // sprawdza czy klasa zostala poprawnie zaladowana
             if(!$item->load_class){
                 $this->alerts['danger'] = "Wyposażenie żołnierza nie istnieje.";
+                return;
             }
             
             $item->id_soldier = ClassTools::getValue('id_soldier');

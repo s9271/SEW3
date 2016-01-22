@@ -21,7 +21,7 @@
         protected function getPage()
         {
             // tylul na pasku
-            $this->top_title = 'Lista stopni wojskowych';
+            $this->top_title = 'Lista stopni wojskowych żołnierza';
             
             // ladowanie klasy
             $item = new ClassSoldier(ClassTools::getValue('id_item'));

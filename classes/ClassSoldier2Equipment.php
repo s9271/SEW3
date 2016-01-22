@@ -130,6 +130,12 @@
                 return false;
             }
             
+            // sprawdzanie dlugosci znakow w ilosci
+            if(strlen($this->equipment_count) > 10){
+                $this->errors = "<b>Ilość</b>: Ilość nie może posiadać więcej niż 10 znaków.";
+                return false;
+            }
+            
             $this->date_equipment_add = date('Y-m-d H:i:s', strtotime($this->date_equipment_add));
             $this->equipment_name = $item->name;
             
@@ -152,6 +158,12 @@
             // sprawdzenie czy data zwrotu nie jest mniejsza niz data przyznania
             if($this->returned == '1' && strtotime($this->date_return) <= strtotime($this->date_equipment_add)){
                 $this->errors = "Data zwrotu jest mniejsza lub równa dacie przyznania.";
+                return false;
+            }
+            
+            // sprawdzanie dlugosci znakow w ilosci
+            if(strlen($this->equipment_count) > 10){
+                $this->errors = "<b>Ilość</b>: Ilość nie może posiadać więcej niż 10 znaków.";
                 return false;
             }
             
