@@ -32,6 +32,9 @@
         // Usunięty
         public $deleted = '0';
         
+        // data urodzenia zolnierza
+        public $soldier_birthday;
+        
         // walidacja, primary id, tabela i kolumny
         public static $definition = array(
             'table' => 'soldier_childrens',
@@ -68,6 +71,12 @@
             // sprawdzenie czy data narodzin dziecka jest wyzdza niz data dzisiejsza
             if(strtotime($this->date_birthday) > strtotime(date('Y-m-d'))){
                 $this->errors[] = "Data urodzenia jest wieksza niż aktualna data.";
+                return false;
+            }
+            
+            // sprawdzanie czy dziecko jest starsze od zolnierza
+            if(strtotime($this->date_birthday) < strtotime($this->soldier_birthday)){
+                $this->errors[] = "Data urodzenia dziecka jest większa niż data urodzenia żołnierza.";
                 return false;
             }
             

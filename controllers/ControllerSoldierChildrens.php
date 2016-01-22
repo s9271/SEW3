@@ -1,5 +1,14 @@
 <?php
     class ControllerSoldierChildrens extends ControllerModel{
+        protected $using_top_title = true;
+        protected $top_ico = 'child';
+        
+        public function __construct(){
+            $this->breadcroumb = array(
+                array('name' => 'Żołnierze', 'link' => '/zolnierze')
+            );
+        }
+        
         // funkcja ktora jest pobierana w indexie, jest wymagana w kazdym kontrolerze!!!!!
         public function getContent(){
             return $this->getPage();
@@ -11,11 +20,15 @@
         // pobieranie strony
         protected function getPage()
         {
+            // tylul na pasku
+            $this->top_title = 'Lista dzieci żołnierza';
+            
             // ladowanie klasy
             $item = new ClassSoldier(ClassTools::getValue('id_item'));
             
             // sprawdzanie czy klasa zostala poprawnie zaladowana
             if(!$item->load_class){
+                $this->tpl_values['wstecz'] = '/zolnierze';
                 $this->alerts['danger'] = 'Żołnierz nie istnieje';
                 
                 // ladowanie strony do wyswietlania bledow
@@ -23,12 +36,14 @@
                 return $this->loadTemplate('alert');
             }
             
+            $this->breadcroumb[] = array('name' => "{$item->name} {$item->surname}", 'link' => "/zolnierze/podglad/{$item->id}");
+            
             return $this->getPageList($item);
         }
         
         // strona lista
         protected function getPageList($item){
-            $this->actions();
+            $this->actions($item);
             
             // strony
             $this->controller_name = 'dzieci';
@@ -55,7 +70,7 @@
         /* *************** AKCJE ************** */
         /* ************************************ */
         
-        protected function actions(){
+        protected function actions($soldier){
             // sprawdzenie czy zostala wykonana jakas akcja zwiazana z formularzem
             if(!isset($_POST['form_action'])){
                 return;
@@ -68,7 +83,7 @@
             
             switch($_POST['form_action']){
                 case 'children_add':
-                    return $this->add(); // dodawanie
+                    return $this->add($soldier); // dodawanie
                 break;
                 case 'children_delete':
                     return $this->delete(); // usuwanie
@@ -79,13 +94,14 @@
         }
         
         // dodawanie
-        protected function add()
+        protected function add($soldier)
         {
             $item = new ClassSoldierChildren();
             $item->name = ClassTools::getValue('form_name');
             $item->surname = ClassTools::getValue('form_surname');
             $item->date_birthday = ClassTools::getValue('form_birthday');
             $item->id_soldier = ClassTools::getValue('id_soldier');
+            $item->soldier_birthday = $soldier->date_birthday;
             $item->id_user = ClassAuth::getCurrentUserId();
             
             // komunikaty bledu

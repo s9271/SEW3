@@ -1082,3 +1082,29 @@ table tr.form_search td.table_akcje{
 #badge_type_list table tr .table_status {
     width: 150px;
 }
+
+/* STOPNIE ZOLNIERZA */
+#soldier_ranks_list table tr .table_id {
+    width: 60px;
+}
+
+#soldier_ranks_list table tr td.table_akcje{
+    text-align: center;
+}
+
+#soldier_ranks_list table tr .table_akcje{
+    width: 150px;
+}
+
+/* DZIECI ZOLNIERZA */
+#soldier_child_list table tr .table_id {
+    width: 60px;
+}
+
+#soldier_child_list table tr td.table_akcje{
+    text-align: center;
+}
+
+#soldier_child_list table tr .table_akcje{
+    width: 150px;
+}

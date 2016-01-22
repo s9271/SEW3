@@ -34,3 +34,8 @@ DODAC DO ZOLNIERZA JEDNOSTKE WOJSKOWA!!!
 jak bedzie czas
     dodac date przydzialu i date oddelegowania do misji i szkolenia
     dodac walidacje co do ilosci znakow
+dzieci
+    sprawdzenie czy nie jest przypadkiem starsze od zolnierza
+
+
+
