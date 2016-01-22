@@ -167,6 +167,7 @@
             
             $this->date_training_add = date('Y-m-d H:i:s', strtotime($this->date_training_add));
             
+            return false;
             return true;
         }
         
@@ -206,21 +207,21 @@
             
             if($date_end2 === NULL && $date_end1 !== NULL)
             {
-                if ($date_start2 < $date_end1){
+                if ($date_start2 <= $date_end1){
                     return true;
                 }
             }
             
             if($date_end2 !== NULL && $date_end1 === NULL)
             {
-                if ($date_start1 < $date_end2){
+                if ($date_start1 <= $date_end2){
                     return true;
                 }
             }
             
             if($date_end1 !== NULL && $date_end2 !== NULL)
             {
-                if (($date_start2 > $date_start1 && $date_start2 < $date_end1) || ($date_end2 > $date_start1 && $date_end2 < $date_end1)){
+                if (($date_start2 >= $date_start1 && $date_start2 <= $date_end1) || ($date_end2 >= $date_start1 && $date_end2 <= $date_end1)){
                     return true;
                 }
             }

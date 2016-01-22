@@ -87,7 +87,7 @@
                 $this->status = self::getStatusMission($this->date_start, $this->date_end);
                 
                 $this->date_end_name_pl = self::getDateEndNameByDateEnd($this->date_end, true);
-                $this->date_start_pl = date('d.m.Y H:i:s', strtotime($this->date_start));
+                $this->date_start_pl = date('d.m.Y H:i', strtotime($this->date_start));
                 
                 $this->active_name = ClassUser::getNameStatus($this->active);
             }

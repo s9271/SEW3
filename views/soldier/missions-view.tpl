@@ -14,7 +14,7 @@
     <div class="row margin_top_15">
         <div class="col-sm-3 text-right row_title">Data przypisania do misji:</div>
         <div class="col-sm-9">
-            <div class="row_content"><?php echo $this->tpl_values['date_add']; ?></div>
+            <div class="row_content"><?php echo $this->tpl_values['date_mission_add']; ?></div>
         </div>
     </div>
     
@@ -30,7 +30,7 @@
     <div class="row margin_top_15">
         <div class="col-sm-3 text-right row_title">Data oddelegowania:</div>
         <div class="col-sm-9">
-            <div class="row_content"><?php echo $this->tpl_values['date_detach']; ?></div>
+            <div class="row_content"><?php echo $this->tpl_values['date_mission_detach']; ?></div>
         </div>
     </div>
     

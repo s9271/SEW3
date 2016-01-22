@@ -175,7 +175,7 @@
                 'id_soldier2missions'       => $item->id,
                 'id_soldier'                => $soldier->id,
                 'id_mission'                => $item->id_mission,
-                'form_date'                 => $item->date_add,
+                'form_date'                 => $item->date_mission_add,
                 'form_description'          => $item->description
             );
             
@@ -259,8 +259,8 @@
                 'id_soldier2missions'       => $item->id,
                 'id_soldier'                => $soldier->id,
                 'id_mission'                => $item->id_mission,
-                'date_add'                  => $item->date_add,
-                'date_detach'               => $item->date_detach
+                'date_mission_add'          => $item->date_mission_add,
+                'date_mission_detach'       => $item->date_mission_detach
             );
             
             // przypisywanieszych zmiennych do zmiennych formularza
@@ -337,7 +337,7 @@
                 'id_soldier2missions'       => $item->id,
                 'id_soldier'                => $soldier->id,
                 'id_mission'                => $item->id_mission,
-                'form_date'                 => $item->date_detach,
+                'form_date'                 => $item->date_mission_detach,
                 'description_detach'        => $item->description_detach
             );
             
@@ -388,7 +388,7 @@
             $item->id_mission = ClassTools::getValue('form_mission');
             $item->description = ClassTools::getValue('form_description');
             $item->id_soldier = ClassTools::getValue('id_soldier');
-            $item->date_add = ClassTools::getValue('form_date');
+            $item->date_mission_add = ClassTools::getValue('form_date');
             $item->id_user = ClassAuth::getCurrentUserId();
             
             // komunikaty bledu
@@ -457,7 +457,7 @@
             $item->id_soldier = ClassTools::getValue('id_soldier');
             $item->id_mission = ClassTools::getValue('id_mission');
             $item->description = ClassTools::getValue('form_description');
-            $item->date_add = ClassTools::getValue('form_date');
+            $item->date_mission_add = ClassTools::getValue('form_date');
             $item->id_user = ClassAuth::getCurrentUserId();
             
             // komunikaty bledu
@@ -491,7 +491,7 @@
             $item->id_soldier = ClassTools::getValue('id_soldier');
             $item->id_mission = ClassTools::getValue('id_mission');
             $item->description_detach = ClassTools::getValue('form_description_detach');
-            $item->date_detach = ClassTools::getValue('form_date');
+            $item->date_mission_detach = ClassTools::getValue('form_date');
             $item->id_user = ClassAuth::getCurrentUserId();
             
             // komunikaty bledu
