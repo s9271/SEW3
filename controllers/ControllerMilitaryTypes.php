@@ -186,7 +186,7 @@
                 return $this->loadTemplate('alert');
             }
             
-            $this->breadcroumb[] = array('name' => htmlspecialchars($item->name), 'link' => "/jednostki/podglad/{$item->id}");
+            $this->breadcroumb[] = array('name' => htmlspecialchars($item->name), 'link' => "/rodzaje-jednostek/podglad/{$item->id}");
             
             // tytul
             $this->tpl_title = 'Rodzaj Jednostki Wojskowej: Podgląd';

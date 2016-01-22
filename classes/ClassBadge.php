@@ -11,7 +11,7 @@
         public $id = false;
         
         // Ilosc stopni
-        public $id_badge_rank;
+        public $id_badge_type;
         
         // Nazwa jednostki
         public $name;
@@ -39,7 +39,7 @@
             'table' => 'badges',
             'primary' => 'id_badge',
             'fields' => array(
-                'id_badge_rank' =>        array('required' => true, 'validate' => array('isInt'), 'name' => 'Ilość stopni'),
+                'id_badge_type' =>        array('required' => true, 'validate' => array('isInt'), 'name' => 'Rodzaj odznaczenia'),
                 'name' =>                 array('required' => true, 'name' => 'Nazwa odznaczenia'),
                 'id_user' =>              array('required' => true, 'validate' => array('isInt'), 'name' => 'Użytkownik'),
                 'date_update' =>          array('required' => true, 'validate' => array('isDateTime'), 'name' => 'Data aktualizacji'),
@@ -55,7 +55,7 @@
             if($this->load_class)
             {
                 // Ilosc stopni nazwa
-                $this->badge_rank_name = self::sqlGetRankNameById($this->id_badge_rank);
+                $this->badge_rank_name = ClassBadgeType::sqlGetItemNameByIdParent($this->id_badge_type);
                 
                 // Nazwa statusu
                 $this->active_name = ClassUser::getNameStatus($this->active);
@@ -90,6 +90,41 @@
             return $array;
         }
         
+        // dodatkowe wlasne walidacje podczas dodawania
+        public function addCustomValidate()
+        {
+            // sprawdzanie czy item istnieje i jest aktywna
+            $item = new ClassBadgeType($this->id_badge_type);
+            
+            if(!$item->load_class){
+                $this->errors = "Rodzaj odznaczenia nie istnieje.";
+                return false;
+            }
+            
+            if($item->active != '1'){
+                $this->errors = "Rodzaj odznaczenia jest wyłączony.";
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // dodatkowe wlasne walidacje podczas aktualizowania
+        public function updateCustomValidate(){
+            return $this->addCustomValidate();
+        }
+        
+        // dodatkowe wlasne walidacje podczas usuwania
+        public function deleteCustomValidate()
+        {
+            // sprawdzanie czy item jest powiazany z jakims zolnierzem
+            if(self::checkSoldierHasItem($this->id)){
+                $this->errors = "Do tego odznaczenia powiązani są żołnierze.";
+                return false;
+            }
+            
+            return true;
+        }
         
         /* **************** SQL *************** */
         /* ************************************ */
@@ -133,7 +168,7 @@
                 foreach($sql as $key => $val)
                 {
                     // Rodzaj jednostki nazwa
-                    $sql[$key]['badge_rank_name'] = self::sqlGetRankNameById($val['id_badge_rank']);
+                    $sql[$key]['badge_rank_name'] = ClassBadgeType::sqlGetItemNameByIdParent($val['id_badge_type']);
                     
                     // Nazwa statusu
                     $sql[$key]['active_name'] = ClassUser::getNameStatus($val['active']);
@@ -162,6 +197,25 @@
             }
             
             return $sql;
+        }
+        
+        // sprawdzanie czy item jest powiazany z jakims zolnierzem
+        public static function checkSoldierHasItem($id_badge){
+            global $DB;
+            
+            $zapytanie = "SELECT COUNT(*) as count_item
+                FROM `sew_soldier2badges`
+                WHERE `deleted` = '0'
+                    AND `id_badge` = '{$id_badge}'
+            ;";
+            
+            $sql = $DB->pdo_fetch($zapytanie);
+            
+            if(!$sql || !is_array($sql) || count($sql) < 1 || $sql['count_item'] < 1){
+                return false;
+            }
+            
+            return true;
         }
     }
 ?>

@@ -8,7 +8,7 @@
             $this->search_definition = $this->getSearchDefinition();
             
             $this->breadcroumb = array(
-                array('name' => 'Cantra szkoleń', 'link' => '/centra-szkolen')
+                array('name' => 'Centra szkoleń', 'link' => '/centra-szkolen')
             );
         }
         

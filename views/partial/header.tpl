@@ -187,6 +187,9 @@
                                     <li>
                                         <a href="/odznaczenia/dodaj">Dodaj Odznaczenie</a>
                                     </li>
+                                    <li>
+                                        <a href="/rodzaje-odznaczen">Rodzaje Odznaczeń</a>
+                                    </li>
                                 </ul>
                             </li>
                             

@@ -1062,3 +1062,23 @@ table tr.form_search td.table_akcje{
 #training_center_list table tr .table_id {
     width: 60px;
 }
+
+/* ODZNACZENIA */
+#badge_type_list table tr td.table_akcje,
+#badges_list table tr td.table_akcje{
+    text-align: center;
+}
+
+#badge_type_list table tr .table_akcje,
+#badges_list table tr .table_akcje{
+    width: 150px;
+}
+
+#badge_type_list table tr .table_id,
+#badges_list table tr .table_id {
+    width: 60px;
+}
+
+#badge_type_list table tr .table_status {
+    width: 150px;
+}

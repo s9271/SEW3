@@ -1,7 +1,7 @@
 <div id="training_center_list" class="new_admin_tpl m_table_list">
 
-        <?php $this->getAlerts(false); ?>
-        
+    <?php $this->getAlerts(false); ?>
+    
     <div class="row">
         <div class="col-sm-12">
             <table class="table table-striped table-bordered table-hover">
