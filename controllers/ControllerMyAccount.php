@@ -201,7 +201,7 @@
             $item->name = ClassTools::getValue('form_name');
             $item->surname = ClassTools::getValue('form_surname');
             $item->phone = ClassTools::getValue('form_phone');
-            $user->guard = ($guard && $guard == '1') ? '1' : '0';
+            $item->guard = ($guard && $guard == '1') ? '1' : '0';
             $item->id_user = ClassAuth::getCurrentUserId();
             
             // komunikaty bledu

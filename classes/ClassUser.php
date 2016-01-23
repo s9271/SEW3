@@ -263,7 +263,7 @@
                 $this->errors = "Użytkownik o takim adresie e-mail już istnieje.";
                 return false;
             }
-            
+            // print_r($values);
             if (!$this->sqlMyAccountUpdate(static::$definition['table'], $values, static::$definition['primary'].' = '.$this->id)){
                 $this->errors[] = "Aktualizacja mojego konta: Błąd aktualizacji rekordu w bazie.";
                 return false;
