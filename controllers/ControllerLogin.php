@@ -351,7 +351,7 @@
                 ob_start();
                     include_once 'views/login/header.tpl';
                     include_once 'views/'.$page_name.'.tpl';
-                    include_once 'views/partial/footer.php';
+                    include_once 'views/login/footer.tpl';
                     $content = ob_get_contents();
                 ob_end_clean();
                 return $content;

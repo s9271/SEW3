@@ -606,7 +606,7 @@ table tr.form_search td.table_akcje{
 }
 
 #soldier_list table .table_id{
-    width: 80px;
+    width: 60px;
 }
 
 #soldier_list table .table_akcje{
@@ -622,7 +622,6 @@ table tr.form_search td.table_akcje{
     word-wrap: break-word;
 }
 
-#soldier_list table td.table_id,
 #soldier_list table td.table_akcje{
     text-align: center;
 }
