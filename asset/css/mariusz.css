@@ -1220,3 +1220,9 @@ table tr.form_search td.table_akcje{
 #soldier_drive_licenses_list table.table_list tr .table_id{
     width: 60px;
 }
+
+/* LISTA ZOLNIERZY */
+#soldier_list table tr .table_akcje ul.dropdown-menu li a i.fa{
+    text-align: center;
+    width: 18px;
+}

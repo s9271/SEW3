@@ -8,8 +8,6 @@
 <?php echo $script."\n"; ?>
             <?php }} ?>
 <!-- Custom -->
-            <link href="/asset/css/custom.css" rel="stylesheet" />
-            <link href="/css/simple-sidebar.css" rel="stylesheet" />
             <link href="/asset/css/admin.css" rel="stylesheet" />
             <link href="/asset/css/mariusz.css" rel="stylesheet" />
         </head>

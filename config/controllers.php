@@ -1,15 +1,5 @@
 <?php
     $controllers = array();
-    // $controllers['uzytkownicy'] = 'ControllerUsers';
-    // $controllers['jednostki'] = 'ControllerMilitaries';
-    // $controllers['zolnierze'] = 'ControllerSoldiers';
-    // $controllers['wyposazenie'] = 'ControllerEquipments';
-    // $controllers['misje'] = 'ControllerMissions';
-    // $controllers['szkolenia'] = 'ControllerTrainings';
-    // $controllers['odznaczenia'] = 'ControllerOrders';
-    // $controllers['404'] = 'Controller404';
-    // $controllers['login'] = 'ControllerLogin';
-    
     
     $controllers['uzytkownicy']      = array('controller' => 'ControllerUsers', 'permissions' => array('1'));
     $controllers['jednostki']        = array('controller' => 'ControllerMilitaries', 'permissions' => array('1'));

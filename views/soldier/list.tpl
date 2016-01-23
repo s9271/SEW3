@@ -54,27 +54,27 @@
                                         <li class="dropdown-header">Informacje wojskowe</li>
                                         <li>
                                             <a href="/zolnierze/<?php echo $item['id_soldier']; ?>/stopien" title="Stopień Wojskowy">
-                                                <span class="glyphicon glyphicon-screenshot"></span>Stopień Wojskowy
+                                                <i class="fa fa-angle-double-up"></i> Stopień Wojskowy
                                             </a>
                                         </li>
                                         <li>
                                             <a href="/zolnierze/<?php echo $item['id_soldier']; ?>/wyposazenie" title="Wyposażenie">
-                                                <span class="glyphicon glyphicon-screenshot"></span>Wyposażenie
+                                                <i class="fa fa-shield"></i> Wyposażenie
                                             </a>
                                         </li>
                                         <li>
                                             <a href="/zolnierze/<?php echo $item['id_soldier']; ?>/misje" title="Misje">
-                                                <span class="glyphicon glyphicon-move"></span>Misje
+                                                <i class="fa fa-question"></i> Misje
                                             </a>
                                         </li>
                                         <li>
                                             <a href="/zolnierze/<?php echo $item['id_soldier']; ?>/szkolenia" title="Szkolenia">
-                                                <span class="glyphicon glyphicon-check"></span>Szkolenia
+                                                <i class="fa fa-graduation-cap"></i> Szkolenia
                                             </a>
                                         </li>
                                         <li>
                                             <a href="/zolnierze/<?php echo $item['id_soldier']; ?>/odznaczenia" title="Odznaczenia">
-                                                <span class="glyphicon glyphicon-tags"></span>Odznaczenia
+                                                <i class="fa fa-trophy"></i> Odznaczenia
                                             </a>
                                         </li>
                                         
@@ -82,17 +82,17 @@
                                         <li class="dropdown-header">Wykształcenie</li>
                                         <li>
                                             <a href="/zolnierze/<?php echo $item['id_soldier']; ?>/szkoly-wyzsze" title="Szkoły wyższe">
-                                                <span class="glyphicon glyphicon-screenshot"></span>Szkoły wyższe
+                                                <i class="fa fa-book"></i> Szkoły wyższe
                                             </a>
                                         </li>
                                         <li>
                                             <a href="/zolnierze/<?php echo $item['id_soldier']; ?>/jezyki" title="Języki">
-                                                <span class="glyphicon glyphicon-screenshot"></span>Języki
+                                                <i class="fa fa-language"></i> Języki
                                             </a>
                                         </li>
                                         <li>
                                             <a href="/zolnierze/<?php echo $item['id_soldier']; ?>/prawo-jazdy" title="Prawo jazdy">
-                                                <span class="glyphicon glyphicon-screenshot"></span>Prawo jazdy
+                                                <i class="fa fa-car"></i> Prawo jazdy
                                             </a>
                                         </li>
                                         
@@ -100,12 +100,12 @@
                                         <li class="dropdown-header">Dane identyfikacyjne</li>
                                         <li>
                                             <a href="/zolnierze/<?php echo $item['id_soldier']; ?>/dzieci" title="Dzieci">
-                                                <span class="glyphicon glyphicon-screenshot"></span>Dzieci
+                                                <i class="fa fa-child"></i> Dzieci
                                             </a>
                                         </li>
                                         <li>
                                             <a href="/zolnierze/<?php echo $item['id_soldier']; ?>/adresy" title="Adresy">
-                                                <span class="glyphicon glyphicon-screenshot"></span>Adresy
+                                                <i class="fa fa-home"></i> Adresy
                                             </a>
                                         </li>
                                         
