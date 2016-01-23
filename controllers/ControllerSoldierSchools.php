@@ -1,5 +1,14 @@
 <?php
     class ControllerSoldierSchools extends ControllerModel{
+        protected $using_top_title = true;
+        protected $top_ico = 'book';
+        
+        public function __construct(){
+            $this->breadcroumb = array(
+                array('name' => 'Żołnierze', 'link' => '/zolnierze')
+            );
+        }
+        
         // funkcja ktora jest pobierana w indexie, jest wymagana w kazdym kontrolerze!!!!!
         public function getContent(){
             return $this->getPage();
@@ -11,17 +20,24 @@
         // pobieranie strony
         protected function getPage()
         {
+            // tylul na pasku
+            $this->top_title = 'Lista szkół wyższych żołnierza';
+            
             // ladowanie klasy
             $item = new ClassSoldier(ClassTools::getValue('id_item'));
             
             // sprawdzanie czy klasa zostala poprawnie zaladowana
             if(!$item->load_class){
+                $this->tpl_values['wstecz'] = '/zolnierze';
                 $this->alerts['danger'] = 'Żołnierz nie istnieje';
                 
                 // ladowanie strony do wyswietlania bledow
                 // zmienne ktore mozna uzyc: wstecz, title oraz alertow
                 return $this->loadTemplate('alert');
             }
+            
+            $this->breadcroumb[] = array('name' => "{$item->name} {$item->surname}", 'link' => "/zolnierze/podglad/{$item->id}");
+            $this->breadcroumb[] = array('name' => "Szkoły wyższe", 'link' => "/zolnierze/{$item->id}/szkoly-wyzsze");
             
             // sprawdzanie czy jest sie na podstronie
             if($page_action = ClassTools::getValue('page_action')){
@@ -75,6 +91,9 @@
         protected function getPageAdd($item){
             $this->actions();
             
+            // tylul na pasku
+            $this->top_title = 'Dodaj wyższą szkołę żołnierza';
+            
             // tytul strony
             $this->tpl_title = "{$item->name} {$item->surname}: Szkoły wyższe: Dodaj";
             
@@ -85,6 +104,8 @@
             
             // pobieranie tytulow zawodowych
             $this->tpl_values['academic_degrees'] = ClassAcademicDegree::sqlGetAllItemsNameById(NULL, false, true);
+            
+            $this->breadcroumb[] = array('name' => "Dodaj", 'link' => "/zolnierze/{$item->id}/szkoly-wyzsze/dodaj");
             
             // id zolnierza
             $this->tpl_values['id_soldier'] = $item->id;
@@ -97,10 +118,13 @@
         }
         
         // strona edycji
-        protected function getPageEdit($soldier){
+        protected function getPageEdit($soldier)
+        {
+            // tylul na pasku
+            $this->top_title = 'Edytuj wyższą szkołę żołnierza';
+            
             // zmienne wyswietlania na wypadek gdy strona z odznaczeniem nie istnieje
             $this->tpl_values['wstecz'] = "/zolnierze/{$soldier->id}/szkoly-wyzsze";
-            $this->tpl_values['title'] = "{$soldier->name} {$soldier->surname}: Szkoły wyższe: Edycja";
             
             // sprawdzanie czy id istnieje w linku
             if(!$id_child_item = ClassTools::getValue('id_child_item')){
@@ -113,12 +137,14 @@
             
             $this->actions();
             
+            $this->tpl_values['wstecz'] = "/zolnierze/{$soldier->id}/szkoly-wyzsze";
+            
             // ladowanie klasy
             $item = new ClassSoldierSchool($id_child_item);
             
             // sprawdzanie czy klasa zostala poprawnie zaladowana
             if(!$item->load_class){
-                $this->alerts['danger'] = 'Szkoła nie istnieje';
+                $this->alerts['danger'] = 'Szkoła nie jest powiązana z tym żołnierzem.';
                 
                 // ladowanie strony do wyswietlania bledow
                 // zmienne ktore mozna uzyc: wstecz, title oraz alertow
@@ -136,6 +162,9 @@
             
             // tytul
             $this->tpl_title = "{$soldier->name} {$soldier->surname}: Szkoły wyższe: Edycja";
+            
+            $this->breadcroumb[] = array('name' => htmlspecialchars($item->name), 'link' => "/zolnierze/{$soldier->id}/szkoly-wyzsze/podglad/{$item->id}");
+            $this->breadcroumb[] = array('name' => "Edytuj", 'link' => "/zolnierze/{$soldier->id}/szkoly-wyzsze/edytuj/{$item->id}");
             
             // skrypty
             $this->load_select2 = true;
@@ -176,7 +205,7 @@
                 return;
             }
             
-            print_r($_POST);
+            // print_r($_POST);
             
             // przypisanie zmiennych posta do zmiennych template
             $this->tpl_values = $this->setValuesTemplateByPost();
@@ -260,6 +289,7 @@
             // sprawdza czy klasa zostala poprawnie zaladowana
             if(!$item->load_class){
                 $this->alerts['danger'] = "Szkoła żołnierza nie istnieje.";
+                return;
             }
             
             $item->name = ClassTools::getValue('form_name');

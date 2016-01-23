@@ -1175,3 +1175,20 @@ table tr.form_search td.table_akcje{
 #soldier_badges_list table.table_list tr .table_akcje{
     width: 150px;
 }
+
+/* SZKOLY WYZSZE ZOLNIERZA */
+#soldier_schools_list table.table_list tr td.table_akcje{
+    text-align: center;
+}
+
+#soldier_schools_list table.table_list tr .table_akcje{
+    width: 135px;
+}
+
+#soldier_schools_list table.table_list tr .table_id{
+    width: 60px;
+}
+
+#soldier_schools_list table.table_list tr .table_specialization{
+    width: 200px;
+}
