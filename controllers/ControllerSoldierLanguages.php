@@ -1,7 +1,7 @@
 <?php
     class ControllerSoldierLanguages extends ControllerModel{
         protected $using_top_title = true;
-        protected $top_ico = 'book';
+        protected $top_ico = 'language';
         
         public function __construct(){
             $this->breadcroumb = array(

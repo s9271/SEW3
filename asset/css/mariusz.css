@@ -1206,3 +1206,17 @@ table tr.form_search td.table_akcje{
 #soldier_languages_list table.table_list tr .table_id{
     width: 60px;
 }
+
+/* KATEGORIE PRAWA JAZDY ZOLNIERZA */
+#soldier_drive_licenses_list table.table_add tr td.table_akcje,
+#soldier_drive_licenses_list table.table_list tr td.table_akcje{
+    text-align: center;
+}
+
+#soldier_drive_licenses_list table.table_list tr .table_akcje{
+    width: 80px;
+}
+
+#soldier_drive_licenses_list table.table_list tr .table_id{
+    width: 60px;
+}

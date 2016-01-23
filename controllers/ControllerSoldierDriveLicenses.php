@@ -1,5 +1,14 @@
 <?php
     class ControllerSoldierDriveLicenses extends ControllerModel{
+        protected $using_top_title = true;
+        protected $top_ico = 'car';
+        
+        public function __construct(){
+            $this->breadcroumb = array(
+                array('name' => 'Żołnierze', 'link' => '/zolnierze')
+            );
+        }
+        
         // funkcja ktora jest pobierana w indexie, jest wymagana w kazdym kontrolerze!!!!!
         public function getContent(){
             return $this->getPage();
@@ -11,17 +20,24 @@
         // pobieranie strony
         protected function getPage()
         {
+            // tylul na pasku
+            $this->top_title = 'Kategorie prawa jazdy żołnierza';
+            
             // ladowanie klasy
             $item = new ClassSoldier(ClassTools::getValue('id_item'));
             
             // sprawdzanie czy klasa zostala poprawnie zaladowana
             if(!$item->load_class){
+                $this->tpl_values['wstecz'] = '/zolnierze';
                 $this->alerts['danger'] = 'Żołnierz nie istnieje';
                 
                 // ladowanie strony do wyswietlania bledow
                 // zmienne ktore mozna uzyc: wstecz, title oraz alertow
                 return $this->loadTemplate('alert');
             }
+            
+            $this->breadcroumb[] = array('name' => "{$item->name} {$item->surname}", 'link' => "/zolnierze/podglad/{$item->id}");
+            $this->breadcroumb[] = array('name' => "Prawo jazdy", 'link' => "/zolnierze/{$item->id}/prawo-jazdy");
             
             return $this->getPageList($item);
         }

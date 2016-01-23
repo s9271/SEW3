@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-sm-8">
             <form method="post" class="clearfix">
-                <table class="table table_add table-striped table-bordered table-hover table_add">
+                <table class="table table_add table-striped table-bordered table-hover">
                     <thead>
                         <tr>
                             <th class="table_name">*Nazwa</th>
