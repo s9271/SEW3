@@ -25,5 +25,6 @@
     $controllers['rodzaje-jednostek']   = array('controller' => 'ControllerMilitaryTypes', 'permissions' => array('1'));
     $controllers['rodzaje-misji']       = array('controller' => 'ControllerMissionTypes', 'permissions' => array('1'));
     $controllers['rodzaje-odznaczen']   = array('controller' => 'ControllerBadgeTypes', 'permissions' => array('1'));
+    $controllers['moje-konto']          = array('controller' => 'ControllerMyAccount', 'permissions' => array('1', '2'));
     $controllers['login']               = array('controller' => 'ControllerLogin');
 ?>

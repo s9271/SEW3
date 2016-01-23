@@ -12,6 +12,9 @@
         // login
         public $login;
         
+        // login tymczasowy
+        public $login_tmp;
+        
         // mail
         public $mail;
         
@@ -131,6 +134,9 @@
             // nazwa guard
             $this->guard_name = self::getNameGuard($this->guard);
             
+            // login tymczasowo
+            $this->login_tmp = $this->login;
+            
             $this->load_class = true;
             return true;
         }
@@ -229,6 +235,100 @@
         // pobieranie loginu usera przez klucz z sesji
         public static function getUserByAuthKey($auth_key){
             return self::sqlGetUserByAuthKey($auth_key);
+        }
+        
+        /* ************* MOJE KONTO ************ */
+        /* ************************************ */
+        
+        public function myAccountEdit($auto_date = true)
+        {
+            if(!isset($this->id)){
+                $this->errors = "Brak podanego id.";
+                return false;
+            }
+            
+            if ($auto_date && property_exists($this, 'date_update')) {
+                $this->date_update = date('Y-m-d H:i:s');
+            }
+            
+            // spawdzenie zmiennych
+            $values = $this->getFieldsValidate();
+            
+            if($this->errors && count($this->errors) > 0){
+                return false;
+            }
+            
+            // sprawdzanie czy uzytkownik z takim mailem juz istnieje
+            if($this->sqlCheckUserMailExists($this->mail)){
+                $this->errors = "Użytkownik o takim adresie e-mail już istnieje.";
+                return false;
+            }
+            
+            if (!$this->sqlMyAccountUpdate(static::$definition['table'], $values, static::$definition['primary'].' = '.$this->id)){
+                $this->errors[] = "Aktualizacja mojego konta: Błąd aktualizacji rekordu w bazie.";
+                return false;
+            }
+            
+            // return false;
+            return true;
+        }
+        
+        // zmiana hasla
+        public function myAccountEditPassword($new_password, $new_password_repeat)
+        {
+            if(!isset($this->id)){
+                $this->errors = "Brak podanego id.";
+                return false;
+            }
+            
+            $empty = false;
+            $new_password = trim($new_password);
+            $new_password_repeat = trim($new_password_repeat);
+            
+            // sprawdzanie czy haslo jest puste
+            if($new_password == '' || empty($new_password)){
+                $this->errors[] = "<b>Nowe hasło</b>: Pole jest puste.";
+                $empty = true;
+            }
+            
+            // sprawdzanie czy haslo jest puste
+            if($new_password_repeat == '' || empty($new_password_repeat)){
+                $this->errors[] = "<b>Powtórz nowe hasło</b>: Pole jest puste.";
+                $empty = true;
+            }
+            
+            if($empty){
+                return false;
+            }
+            
+            // sprawdzanie czy hasla sie nie roznia
+            if($new_password != $new_password_repeat){
+                $this->errors = "Hasła się różnią.";
+                return false;
+            }
+            
+            // haslo
+            $name = static::$definition['fields']['password']['name'];
+            if(strlen($new_password) < (int)$this->min_length_password){ // sprawdzanie dlugosci hasla
+                $this->errors[] = "<b>{$name}</b>: Hasło jest za krótkie, minimalna długość <b>{$this->min_length_password}</b> znaków.";
+            }elseif (preg_match("/\\s/", $new_password)) { // sprawdzanie czy haslo ma spacje i inne biale znaki
+                $this->errors[] = "<b>{$name}</b>: Hasło posiada spacje.";
+            }elseif (preg_match("/['\"]/", $new_password)) { // sprawdzanie czy haslo ma cudzyslow lub apostrof
+                $this->errors[] = "<b>{$name}</b>: Hasło posiada cudzysłów lub apostrof.";
+            }elseif(!$this->checkPasswordStrong($new_password)){ // sprawdzanie sily hasla
+                $this->errors[] = "<b>{$name}</b>: Hasło powinno składać się minimalnie z jednego znaku małego, jednego znaku dużego i jednej cyfry.";
+            }
+            
+            if($this->errors && count($this->errors) > 0){
+                return false;
+            }
+            
+            if (!$id = $this->sqlUpdatePassword($new_password)){
+                $this->errors[] = "Zmiana hasła: Błąd zapisu do bazy.";
+                return false;
+            }
+            
+            return true;
         }
         
         /* *************** AKCJE ************** */
@@ -674,6 +774,56 @@
             return $DB->update('sew_user_options', $data2, $where);
         }
         
+        // aktualizacja w bazie mojego konta
+        protected function sqlMyAccountUpdate($table, $data, $where){
+            global $DB;
+            
+            // dodawanie logu
+            if(!$user = $this->sqlGetUser($this->id, true)){
+                $this->errors[] = "LOG: Błąd podczas pobierania rekordu z bazy.";
+                return false;
+            }
+            
+            $data_log = array(
+                'id_user'        => $user['id_user'],
+                'login'          => $user['login'],
+                'mail'           => $user['mail'],
+                'password'       => $user['password'],
+                'id_permission'  => $user['id_permission'],
+                'id_military'    => $user['id_military'],
+                'active'         => $user['active'],
+                'guard'          => $user['guard'],
+                'name'           => $user['name'],
+                'surname'        => $user['surname'],
+                'phone'          => $user['phone'],
+                'date_update'    => $data['date_update'],
+                'id_user_update' => $data['id_user_update']
+            );
+                
+            if(!$DB->insert('log_users', $data_log)){
+                $this->errors[] = "LOG: Błąd podczas zapisywania rekordu w tabeli z logami.";
+                return false;
+            }
+            
+            // zapis poprawny
+            $data1 = array(
+                'mail'           => $data['mail'],
+                'guard'          => $data['guard'],
+            );
+            
+            $data2 = array(
+                'name'           => $data['name'],
+                'surname'        => $data['surname'],
+                'phone'          => $data['phone'],
+            );
+            
+            if(!$DB->update('sew_users', $data1, $where)){
+                return false;
+            }
+            
+            return $DB->update('sew_user_options', $data2, $where);
+        }
+        
         protected function sqlGetUser($id_user, $password = false){
             global $DB;
             
@@ -834,11 +984,17 @@
             }
             
             $where = "`id_user` = '{$this->id}'";
-            $DB->update('sew_users', array('password' => ClassAuth::generatePassword($new_password)), $where);
+            
+            if(!$DB->update('sew_users', array('password' => ClassAuth::generatePassword($new_password)), $where)){
+                return false;
+            }
             
             if($id_user_new_password){
                 $where = "`id_user_new_password` = '{$id_user_new_password}'";
-                $DB->update('sew_user_new_password', array('generated' => '1'), $where);
+                
+                if(!$DB->update('sew_user_new_password', array('generated' => '1'), $where)){
+                    return false;
+                }
             }
             
             return true;

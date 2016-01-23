@@ -312,7 +312,6 @@
             $zapytanie = "SELECT COUNT(*) as count_soldiers
                 FROM `sew_soldier2missions`
                 WHERE `deleted` = '0'
-                    AND `deleted_pernament` = '0'
                     AND `id_mission` = '{$id_mission}'
             ;";
             

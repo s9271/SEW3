@@ -13,6 +13,9 @@ RewriteRule ^([_A-Za-z\-]+)/(edytuj|podglad|usun)/([0-9]+)/([_A-Za-z\-]+)/?$ ind
 #RewriteRule ^(zolnierze)/([0-9]+)/(wyposazenie|misje|szkolenia|odznaczenia)/([0-9]+)/(podglad|usun|oddeleguj)/([0-9]+)/?$ index\.php?controller=zolnierze&id_soldier=$2&page_action=$3&page_action_id=$4&page_action_option=$5&page_action_option_id=$6 [L]
 #RewriteRule ^(zolnierze)/([0-9]+)/(wyposazenie|misje|szkolenia|odznaczenia)/(strona)/([0-9]+)/?$ index\.php?controller=zolnierze&id_soldier=$2&page_action=$3&page=$5 [L]
 
+#MOJE KONTO
+RewriteRule ^(moje-konto)/(haslo)/?$ index\.php?controller=$1&page_action_password=$2 [L]
+
 #ZOLNIERZ
 RewriteRule ^(zolnierze)/([0-9]+)/([_A-Za-z\-]+)/?$ index\.php?controller=$1&id_item=$2&child_controller=$3 [L]
 RewriteRule ^(zolnierze)/([0-9]+)/([_A-Za-z\-]+)/(dodaj)/?$ index\.php?controller=$1&id_item=$2&child_controller=$3&page_action=$4 [L]

@@ -37,5 +37,6 @@ jak bedzie czas
 dzieci
     sprawdzenie czy nie jest przypadkiem starsze od zolnierza
 
-
+user
+    sprawdzic czy jak sie wylaczy usera to automatycznie wyloguje sie
 
