@@ -1032,6 +1032,12 @@
             return array('error' => 'test');
             // return ClassTools::generateRandomPasswd();
         }
+        
+        // zmiana menu na duze/male
+        public static function sessionMenuType($ajaxData){
+            $_SESSION['user']['menu_type'] = $ajaxData['menu_type'];
+            return true;
+        }
             
         
         /* *********** WYSZUKIWARKA ********** */

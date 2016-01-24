@@ -3,6 +3,8 @@
         protected $search_controller = 'militaries';
         protected $using_top_title = true;
         protected $top_ico = 'map-marker';
+        protected $top_help_button = true;
+        protected $top_help_file = 'militaries';
         
         public function __construct(){
             $this->search_definition = $this->getSearchDefinition();

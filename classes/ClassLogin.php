@@ -33,6 +33,7 @@
                 $this->is_session_auth = false;
                 $this->auth_user = array();
                 unset($_SESSION['user']['auth_key']);
+                unset($_SESSION['user']);
             }
             // ClassTools::redirect('login');
             ClassTools::redirect('');

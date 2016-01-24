@@ -2,6 +2,8 @@
     class ControllerMyAccount extends ControllerModel{
         protected $using_top_title = true;
         protected $top_ico = 'user';
+        protected $top_help_button = true;
+        protected $top_help_file = 'my-account';
         
         public function __construct(){
             $this->breadcroumb = array(

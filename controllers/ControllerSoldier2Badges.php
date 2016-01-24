@@ -2,6 +2,8 @@
     class ControllerSoldier2Badges extends ControllerModel{
         protected $using_top_title = true;
         protected $top_ico = 'trophy';
+        protected $top_help_button = true;
+        protected $top_help_file = 'soldier_badges';
         
         public function __construct(){
             $this->breadcroumb = array(

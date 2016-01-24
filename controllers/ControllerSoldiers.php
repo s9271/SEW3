@@ -3,6 +3,8 @@
         protected $search_controller = 'soldiers';
         protected $using_top_title = true;
         protected $top_ico = 'male';
+        protected $top_help_button = true;
+        protected $top_help_file = 'soldiers';
         
         public function __construct(){
             // potrzebne do ajaxa i stronnicowania

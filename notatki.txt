@@ -1,42 +1,11 @@
-zolnierz - misje
-    dodanie aktywnej misji do zolnierza -> zmiana misji na nieaktywna i dac zapytanie co zrobic z zolnierzami ktorzy sa juz przypisani do niej (nic, oddelegowanie czy usuniecie)
-    sprawdzenie przy przydzielaniu misji kolidacji z inna misja lub szkoleniem
-    zrobienie warunku ze gdy misja jest aktywna nie mozna zmienic nazwy ani dat
-    potrzebne stronnicowanie do listy
-    
-haslo w sesji
-    +przy kazdym poprawnym logowaniu bedzie generowac random ciag znakow przypisany do uzytkowanika i ip i bedzie podmieniany w sesji aby nikt z zewnatrz nie mogl podejrzec hasla.
-    
-Odznaczenia
-    podczas edycji ze zmiana ilosci stopni trzeba sprawdzic czy z ktoryms zolnierzem nie jest juz powiazany, jesli tak, to ma uniemozliwic usuniecie
-
-    poprawic user_tmp na soldier_tmp w szkoleniach, jezykach zolnierza
-    
 misje/szkolenia
     sprawdzanie czy zolnierz jest w rezerwie
-    
-sprawdzenie czy podczas usuwania typu ekwipunku nie jest jakis ekwipunek z nia powiazany
 
 podglad zolnierza
-    prawo jazdy sprawdzanie czy data poczatku jest mniejsza niz data konca
     w podgladzie zolnierza pobieranie praw jazdy ktore nie sa jeszcze zakonczone
     
-stopien wojskowy
-    sprawdzanie kolidacji daty z istniejacymi juz stopniami
-    
-szkolenia i misje
-    podczas edycji czasu sprawdzanie czy nie sa powiazani z zolnierzami.
-    
-    
-    
-DODAC DO ZOLNIERZA JEDNOSTKE WOJSKOWA!!!
+misje
+    statusy wyszukiwarka
 
-jak bedzie czas
-    dodac date przydzialu i date oddelegowania do misji i szkolenia
-    dodac walidacje co do ilosci znakow
-dzieci
-    sprawdzenie czy nie jest przypadkiem starsze od zolnierza
-
-user
-    sprawdzic czy jak sie wylaczy usera to automatycznie wyloguje sie
-
+help
+    douzupelniac wazne wskazowki

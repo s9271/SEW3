@@ -2,6 +2,8 @@
     class ControllerSoldier2Missions extends ControllerModel{
         protected $using_top_title = true;
         protected $top_ico = 'question';
+        protected $top_help_button = true;
+        protected $top_help_file = 'soldier_missions';
         
         public function __construct(){
             $this->breadcroumb = array(

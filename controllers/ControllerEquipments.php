@@ -3,6 +3,8 @@
         protected $search_controller = 'equipments';
         protected $using_top_title = true;
         protected $top_ico = 'shield';
+        protected $top_help_button = true;
+        protected $top_help_file = 'equipments';
         
         public function __construct(){
             $this->search_definition = $this->getSearchDefinition();

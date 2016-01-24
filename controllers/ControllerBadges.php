@@ -3,6 +3,8 @@
         protected $search_controller = 'badges';
         protected $using_top_title = true;
         protected $top_ico = 'trophy';
+        protected $top_help_button = true;
+        protected $top_help_file = 'badges';
         
         public function __construct(){
             $this->search_definition = $this->getSearchDefinition();

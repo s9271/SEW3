@@ -169,6 +169,39 @@ if (typeof jQuery === 'undefined') {
         });
     };
     
+    $.fn.sewJsChangeMenu = function() {
+        $(this).on( "click", function(){
+            if (!$(this).attr('data-id-user')) {
+                sew_error = 'Nie podano atrybutu "data-id-user".';
+                console.error(sew_error);
+                return;
+            }
+        
+            var class_id_user = $(this).data('data-id-user');
+            var menu_type = 'sew-menu-big';
+            
+            if($('body > #page').hasClass('sew-menu-big')){
+                menu_type = 'sew-menu-small';
+            }
+            
+            $.ajax({
+                // method: "POST",
+                url: '/ajax',
+                delay: 250,
+                dataType: "json",
+                data: { ajax_module: "user", ajax_function: "sessionMenuType", id_user: class_id_user, menu_type: menu_type }
+            }).done(function( data_ajax ) {
+                if(!data_ajax){
+                    console.error('Błąd pobierania danych.');
+                }else if(typeof data_ajax.error != 'undefined'){
+                    console.error(data_ajax.error);
+                }
+                
+                $('body > #page').removeClass().addClass(menu_type);
+            });
+        });
+    };
+    
     $.fn.sewJsConfirm = function(){
         $(this).on( "click", function(){
             var show_text = 'Czy na pewno chcesz usunąć rekord?';
@@ -242,4 +275,7 @@ jQuery(document).ready(function($){
     if ($('textarea.jstextareaautoheight').length > 0){
         $('textarea.jstextareaautoheight').sewJsTextareaAutoHeight();
     }
+    
+    // menu responsive
+    $('#left_menu .menu-collapse').sewJsChangeMenu();
 });

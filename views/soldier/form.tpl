@@ -215,11 +215,11 @@
                     ?>
                 </select>
                 
-                <?php if($this->tpl_values['sew_action'] == 'edit'){ ?>
+                <?php /*if($this->tpl_values['sew_action'] == 'edit'){ ?>
                 
                     <span class="sew_hint">Przy zmianie status na "W rezerwie", "W stanie spoczynku" lub "Zmarły", żołnierz zostaje automatycznie oddelegowany z misji oraz usunięty ze szkolenia na których obecnie przebywał.</span>
                     
-                <?php } ?>
+                <?php }*/ ?>
                 
             </div>
         </div>

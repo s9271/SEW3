@@ -188,7 +188,7 @@ a:focus {
 
 #center_column .center_column_head{
     box-shadow: 0 7px 0 rgba(0, 0, 0, 0.15);
-    height: 70px;
+    min-height: 70px;
     left: 0;
     margin: 0;
     padding: 0;
@@ -337,4 +337,74 @@ a:focus {
 #center_column .new_admin_tpl{
     padding: 30px 15px;
     /* overflow: hidden; */
+}
+
+/* HELP */
+.modal {
+    z-index: 4050;
+}
+
+#center_column .center_column_head .help_button{
+    background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+    border: medium none;
+    border-radius: 5px;
+    box-shadow: none;
+    color: #3b3b3b;
+    font-weight: bold;
+    height: 56px;
+    margin: -26px 0 0;
+    padding: 5px;
+    position: absolute;
+    right: 0;
+    text-align: center;
+    text-transform: uppercase;
+    top: 50%;
+}
+
+#center_column .center_column_head .help_button span{
+    display: block;
+    font-size: 12px;
+    height: 16px;
+    line-height: 16px;
+}
+
+#center_column .center_column_head.brown .page_top.has_ico .help_button i,
+#center_column .center_column_head .help_button i.fa{
+    color: #3b3b3b;
+    display: block;
+    font-size: 30px;
+    height: 30px;
+    line-height: 30px;
+}
+
+#center_column .center_column_head .help_button:hover{
+    /* background-color: #a58350; */
+    background-color: #d3b17e;
+}
+
+#center_column .center_column_head .help_button:focus{
+    outline: medium none;
+}
+
+.modal .modal-image{
+    display: block;
+    margin-bottom: 10px;
+    max-width: 100%;
+}
+
+.modal .modal-image img{
+    height: auto;
+    max-width: 100%;
+}
+
+.menu-collapse {
+    color: #999999;
+    cursor: pointer;
+    display: block;
+    font-size: 20px;
+    height: 40px;
+    line-height: 40px;
+    margin-top: 20px;
+    text-align: center;
+    width: 100%;
 }

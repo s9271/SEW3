@@ -3,6 +3,8 @@
         protected $search_controller = 'users';
         protected $using_top_title = true;
         protected $top_ico = 'users';
+        protected $top_help_button = true;
+        protected $top_help_file = 'users';
         
         public function __construct(){
             $this->search_definition = $this->getSearchDefinition();

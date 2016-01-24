@@ -2,6 +2,8 @@
     class ControllerSoldierChildrens extends ControllerModel{
         protected $using_top_title = true;
         protected $top_ico = 'child';
+        protected $top_help_button = true;
+        protected $top_help_file = 'soldier_child';
         
         public function __construct(){
             $this->breadcroumb = array(

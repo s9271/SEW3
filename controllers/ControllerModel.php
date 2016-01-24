@@ -64,6 +64,12 @@
         // przycisk dodawania
         protected $top_add_button = false;
         
+        // przycisk pomocy
+        protected $top_help_button = false;
+        
+        // plik pomocy
+        protected $top_help_file = false;
+        
         // ladowanie template
         protected function loadTemplate($page_name){
             if($page_name && file_exists($_SERVER['DOCUMENT_ROOT'].'/views/'.$page_name.'.tpl')){
@@ -80,6 +86,11 @@
                     include_once 'views/partial/header.tpl';
                     // include_once 'views/partial/top-nav.php';
                     include_once 'views/'.$page_name.'.tpl';
+                    
+                    if($this->top_help_file && $this->top_help_file != '' && file_exists($_SERVER['DOCUMENT_ROOT']."/views/help/{$this->top_help_file}.tpl")){
+                        include_once "views/help/{$this->top_help_file}.tpl";
+                    }
+                    
                     include_once 'views/partial/footer.php';
                     $content = ob_get_contents();
                 ob_end_clean();

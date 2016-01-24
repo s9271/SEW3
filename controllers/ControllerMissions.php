@@ -3,6 +3,8 @@
         protected $search_controller = 'misje';
         protected $using_top_title = true;
         protected $top_ico = 'question';
+        protected $top_help_button = true;
+        protected $top_help_file = 'missions';
         
         public function __construct(){
             $this->search_definition = $this->getSearchDefinition();

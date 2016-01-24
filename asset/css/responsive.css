@@ -1,0 +1,83 @@
+@media only screen and (max-width: 1200px) {
+    #page:not(.sew-menu-big) #left_menu {
+        width: 30px;
+    }
+
+    #page:not(.sew-menu-big) #left_menu > ul > li > a{
+        padding: 0;
+        text-align: center;
+    }
+
+    #page:not(.sew-menu-big) #left_menu > ul > li > a > span{
+        display: none;
+    }
+
+    #page:not(.sew-menu-big) #center_column {
+        margin-left: 30px;
+    }
+
+    #page:not(.sew-menu-big) #center_column .center_column_head .page_top.has_ico {
+        margin-left: 115px;
+    }
+
+    #page:not(.sew-menu-big) #left_menu ul li ul.submenu {
+        left: 30px;
+    }
+    
+    #badges_list{
+        /* min-width: 900px; */
+    }
+    
+    #training_center_list{
+        /* min-width: 900px; */
+    }
+}
+
+@media only screen and (max-width: 750px) {
+    .new_admin_tpl form div.text-right.col-sm-3{
+        text-align: left;
+    }
+    
+    .new_admin_tpl div.text-right.row_title{
+        margin-bottom: 5px;
+        text-align: left;
+    }
+}
+
+@media only screen and (max-width: 900px) {
+    #center_column .m_table_list table {
+        table-layout: auto;
+    }
+}
+
+@media only screen and (max-width: 1630px) {
+    #center_column #mission_list.m_table_list table,
+    #center_column #training_list.m_table_list table {
+        table-layout: auto;
+    }
+}
+
+body .sew-menu-small #left_menu {
+    width: 30px;
+}
+
+body .sew-menu-small #left_menu > ul > li > a{
+    padding: 0;
+    text-align: center;
+}
+
+body .sew-menu-small #left_menu > ul > li > a > span{
+    display: none;
+}
+
+body .sew-menu-small #center_column {
+    margin-left: 30px;
+}
+
+body .sew-menu-small #center_column .center_column_head .page_top.has_ico {
+    margin-left: 115px;
+}
+
+body .sew-menu-small #left_menu ul li ul.submenu {
+    left: 30px;
+}

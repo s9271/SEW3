@@ -2,6 +2,7 @@
     <html>
         <head>
             <meta charset="utf-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
             <title>SEW - System Ewidencji Wojskowej<?php echo $this->tpl_title ? " - {$this->tpl_title}" : ''; ?></title>
             
             <?php if($this->scripts){ foreach($this->scripts as $script){ ?>
@@ -10,6 +11,7 @@
 <!-- Custom -->
             <link href="/asset/css/admin.css" rel="stylesheet" />
             <link href="/asset/css/mariusz.css" rel="stylesheet" />
+            <link href="/asset/css/responsive.css" rel="stylesheet" />
         </head>
         <body>
 
@@ -56,7 +58,7 @@
             </header>
             
             <!-- start page -->
-            <div id="page">
+            <div id="page"<?php echo isset($_SESSION['user']['menu_type']) && $_SESSION['user']['menu_type'] != '' ? ' class="'.$_SESSION['user']['menu_type'].'"' : ''; ?>>
             
                 <!-- start left_column -->
                 <div id="left_column">
@@ -194,6 +196,10 @@
                             <?php } ?>
                             
                         </ul>
+                        
+                        <span class="menu-collapse" data-id-user="<?php echo $login->auth_user['id_user']; ?>">
+                            <i class="fa fa-bars"></i>
+                        </span>
                     </nav>
                 </div>
                 <!-- end left_column -->
@@ -222,9 +228,18 @@
                                 
                                 <?php } ?>
                                 
+                                <?php if($this->top_help_button){ ?>
+                                
+                                <button type="button" class="help_button" data-toggle="modal" data-target="#help_module">
+                                    <i class="fa fa-life-ring"></i>
+                                    <span>Pomoc</span>
+                                </button>
+                                
+                                <?php } ?>
+                                
                             </div>
                         </div>
                     </div>
                     
                 <?php } ?>
-                    
+

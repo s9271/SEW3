@@ -2,6 +2,8 @@
     class ControllerSoldierLanguages extends ControllerModel{
         protected $using_top_title = true;
         protected $top_ico = 'language';
+        protected $top_help_button = true;
+        protected $top_help_file = 'soldier_languages';
         
         public function __construct(){
             $this->breadcroumb = array(

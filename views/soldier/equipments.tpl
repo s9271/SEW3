@@ -1,4 +1,4 @@
-<div id="soldier_eqipments_list" class="new_admin_tpl soldier_children_list">
+<div id="soldier_eqipments_list" class="new_admin_tpl soldier_children_list m_table_list">
 
     <?php $this->getAlerts(false); ?>
     

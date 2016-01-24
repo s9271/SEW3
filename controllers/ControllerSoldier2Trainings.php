@@ -2,6 +2,8 @@
     class ControllerSoldier2Trainings extends ControllerModel{
         protected $using_top_title = true;
         protected $top_ico = 'graduation-cap';
+        protected $top_help_button = true;
+        protected $top_help_file = 'soldier_trainings';
         
         public function __construct(){
             $this->breadcroumb = array(
