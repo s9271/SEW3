@@ -22,6 +22,9 @@
                 <p>
                     Klikając przycisk 'Powrót do listy żołnierzy' zostaniesz przeniesiony do strony z aktualną listą żołnierzy, natomiast "Podgląd żołnierza' pozwoli ci uzyskać pozostałe szczegółowe informacje na temat obecnie przeglądanego żołnierza.
                 </p>
+                <p>
+                    <strong>Data przypisania do misji</strong> - Data kiedy żołnierz został wysłany na misję.
+                </p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Zamknij</button>
